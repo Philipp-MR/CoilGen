@@ -1,0 +1,97 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cite}
+\usepackage{enumitem}
+\usepackage{mathptmx} 
+\usepackage{titlepic}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+\titlepic{\includegraphics[width=\textwidth]{GoilGen_Logo_simple.png}}
+\author{Philipp Amrein}
+\title{CoilGen Documentation}
+\date{February 2022}
+\end{titlepage}
+
+%\frontmatter
+
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section{{Purpose, Introduction}}
+This procect is supposed to be a community based tool that facilitates the design of coils within the MRI/NMR environment.
+Up to now, the code is written in MATLAB, but future migration to python might be advantageous, especially since it does not need proprietary software licenses. The author is very willing to collaborate with anyone who wants do the translation.
+
+\section{Installation}
+The project requires MATLAB and additionally FastHenry2 for calculation of the inductance.  The MATLAB version should not be older than \textit{2020A}. It also requires the MAPPING toolbox since the functions \textit{polyxpoly} and \textit{inpolyon}. Non-propriaty versions of these functions are also very welcome.
+
+\section{Code description}
+Test
+
+\subsection{File structure}
+
+\begin{itemize}
+	\item  Geometry\textunderscore Data: \textit{stl} files of surface geometries
+	\item  sub\textunderscore functions: Folder of \textit{MATLAB} functions for the algorithm
+	\item  Pre\textunderscore Optimized\textunderscore Solutions: \textit{.mat} data containers pre-optimized stream functions  
+	\item  plotting:
+	\item  Results: 
+	
+\end{itemize}
+
+\section{Usage}
+The main function is named "coilgen.m". It must be called with a sufficient set of inpu parameters. 
+
+In general, 
+
+\subsection{Necessary input parameters}
+
+\begin{itemize}
+\item  \textit{coil\textunderscore mesh\textunderscore file}: The name of the \textit{.stl} file for the current carrying surface.  It must be in the\textit{ Geometry\textunderscore Data} folder.
+\item  \textit{field\textunderscore shape}: The functional that specifies the target field i.e. the \textit{z} component of the magnetic field i.e. $B_{z}$. In general, it can be any function of the Cartesian coordinates $x,y,z$. To generate a linear transverse gradient specify: $field\textunderscore shape='y'$. This variable must be a character array. 
+
+Other examples: 
+\begin{itemize}
+	\item  field\textunderscore shape='$x$' (linear x-Gradient)
+	\item  field\textunderscore shape='$y$' (linear y-Gradient)
+	\item  field\textunderscore shape='$z$' (linear z-Gradient)
+	\item  field\textunderscore shape='$x.*sin(\alpha)-y.*cos(\alpha)$' (linear x-Gradient rotated with angle $\alpha$ around the z-axis)
+	\item  field\textunderscore shape='$2.*x.*y$' (Spherical harmonic $S2$ shim field)
+	\item  field\textunderscore shape='$1$' (constant field,  $B0$ offset)
+\end{itemize}
+
+The $x,y,z$ coordinates refer to the coordinate system which is also used for the coordinates of the surface geometry.
+\textbf{Important}: Use the MATLAB $.*$ operator for element wise multiplication.
+
+\end{itemize}
+
+\subsection{Optional input parameters}
+
+All other settings and variables are optional. If not specified the default values set. The definitions of the default values can be seen within the function \textit{parse\textunderscore inputs.m}.
+
+
+\begin{itemize}
+	\item  \textit{coil\textunderscore mesh\textunderscore file}: The name of the .stl file 
+\end{itemize}
+
+
+\section{TO DO}
+
+
+
+%\mainmatter
+%\include{./TeX_files/chapter01}
+%\include{./TeX_files/chapter02}
+
+%\backmatter
+% bibliography, glossary and index would go here.
+
+\end{document}
