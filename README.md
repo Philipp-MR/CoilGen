@@ -1,7 +1,7 @@
 <div id="top"></div>
 
 
-![plot](./Documentation/GoilGen_Logo_simple.png)
+![plot](./Documentation/GoilGen_Logo_simple.svg)
 
 
 
