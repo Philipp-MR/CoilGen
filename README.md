@@ -9,31 +9,6 @@
 This procect is supposed to be a community based tool that facilitates the design of coils within the MRI/NMR environment.
 Up to now, the code is written in MATLAB, but future migration to python might be advantageous, especially since it does not need proprietary software licenses. The author is very willing to collaborate with anyone who wants do the translation.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-### Built With
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
@@ -121,7 +96,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+ See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
