@@ -6,7 +6,7 @@
 
 <!-- ABOUT THE PROJECT -->
 
-This procect is supposed to be a community based tool that facilitates the design of coils within the MRI/NMR environment.
+This procect is a community based tool that facilitates the design of coil layouts within the MRI/NMR environment.
 Up to now, the code is written in MATLAB, but future migration to python might be advantageous, especially since it does not need proprietary software licenses. The author is very willing to collaborate with anyone who wants do the translation.
 
 
