@@ -13,7 +13,7 @@
 \begin{document}
 
 \begin{titlepage}
-\titlepic{\includegraphics[width=\textwidth]{GoilGen_Logo_simple.png}}
+\titlepic{\includegraphics[width=\textwidth]{GoilGen_Logo.png}}
 \author{Philipp Amrein}
 \title{CoilGen Documentation}
 \date{February 2022}
@@ -34,7 +34,9 @@ Up to now, the code is written in MATLAB, but future migration to python might b
 The project requires MATLAB and additionally FastHenry2 for calculation of the inductance.  The MATLAB version should not be older than \textit{2020A}. It also requires the MAPPING toolbox since the functions \textit{polyxpoly} and \textit{inpolyon}. Non-propriaty versions of these functions are also very welcome.
 
 \section{Code description}
-Test
+The algorithm is written within the main function named "coilgen.m". It can be called with various necessary and optional input parameters.
+
+
 
 \subsection{File structure}
 
@@ -48,9 +50,7 @@ Test
 \end{itemize}
 
 \section{Usage}
-The main function is named "coilgen.m". It must be called with a sufficient set of inpu parameters. 
-
-In general, 
+"Coilgen.m" must be called with the required set of input parameters. All other settings and variables are optional. If not specified the default values set. The definitions of the default values can be seen within the function \textit{parse\textunderscore inputs.m}.
 
 \subsection{Necessary input parameters}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6880 64-bit) (preloaded format=pdflatex 2018.12.18)  18 FEB 2022 15:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6880 64-bit) (preloaded format=pdflatex 2018.12.18)  18 FEB 2022 19:04
 entering extended mode
 **./CoilGen_Documention.tex
 (CoilGen_Documention.tex
@@ -315,17 +315,17 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 24.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 24.
-<GoilGen_Logo_simple.png, id=1, 441.71423pt x 106.38144pt>
-File: GoilGen_Logo_simple.png Graphic file (type png)
-<use GoilGen_Logo_simple.png>
-Package pdftex.def Info: GoilGen_Logo_simple.png  used on input line 24.
-(pdftex.def)             Requested size: 390.0pt x 93.93085pt.
+<GoilGen_Logo.png, id=1, 406.51875pt x 97.86563pt>
+File: GoilGen_Logo.png Graphic file (type png)
+<use GoilGen_Logo.png>
+Package pdftex.def Info: GoilGen_Logo.png  used on input line 24.
+(pdftex.def)             Requested size: 390.0pt x 93.89168pt.
  [1
 
 
 
 {C:/Users/amrein/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./GoilGen_
-Logo_simple.png>] [2
+Logo.png>] [2
 
 ]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24.88> not available
@@ -344,13 +344,13 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
  [3]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 29.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 42.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 44.
 
 ("C:\Users\amrein\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 42.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 44.
  [4]
 
 LaTeX Warning: Command \textunderscore invalid in math mode on input line 59.
@@ -358,12 +358,12 @@ LaTeX Warning: Command \textunderscore invalid in math mode on input line 59.
 [5] (CoilGen_Documention.aux) ) 
 Here is how much of TeX's memory you used:
  2944 strings out of 492969
- 42566 string characters out of 3126141
+ 42346 string characters out of 3126141
  105004 words of memory out of 3000000
  6745 multiletter control sequences out of 15000+200000
  42133 words of font info for 93 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,6n,27p,401b,253s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,6n,27p,401b,251s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/amrein/AppData/Local/Programs/MiKTeX 2
 .9/fonts/enc/dvips/base/8r.enc}<C:/Users/amrein/AppData/Local/Programs/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/amrein/AppData/Local/Pro
@@ -375,7 +375,7 @@ b><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmr
 8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times
 /utmr8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/
 times/utmri8a.pfb>
-Output written on CoilGen_Documention.pdf (5 pages, 122437 bytes).
+Output written on CoilGen_Documention.pdf (5 pages, 88616 bytes).
 PDF statistics:
  54 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
