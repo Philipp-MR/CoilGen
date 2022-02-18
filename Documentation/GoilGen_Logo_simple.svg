@@ -36,8 +36,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.204492"
-     inkscape:cx="427.15103"
-     inkscape:cy="264.42683"
+     inkscape:cx="388.13043"
+     inkscape:cy="131.59075"
      inkscape:window-width="1920"
      inkscape:window-height="1137"
      inkscape:window-x="-8"
@@ -47,37 +47,6 @@
      inkscape:snap-nodes="false" />
   <defs
      id="defs2">
-    <inkscape:path-effect
-       effect="powerclip"
-       id="path-effect20668"
-       is_visible="true"
-       lpeversion="1"
-       inverse="true"
-       flatten="false"
-       hide_clip="false"
-       message="Füllregel Gerade-Ungerade im &lt;b&gt;Füllung und Kontur&lt;/b&gt;-Dialog verwenden, wenn das Anwenden des Ausschnitts mit nachfolgendem Umwandeln in Pfade kein Ergebnis bringt" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect20182"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-0.1"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect20178"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-1.3"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
     <inkscape:path-effect
        effect="offset"
        id="path-effect17268"
@@ -89,337 +58,12 @@
        miter_limit="4"
        attempt_force_join="false"
        update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect17264"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-1.3"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect17026"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-0.1"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect17022"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-1.3"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect15971"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect15943"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-0.1"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="offset"
-       id="path-effect15861"
-       is_visible="true"
-       lpeversion="1"
-       linejoin_type="miter"
-       unit="mm"
-       offset="-1.3"
-       miter_limit="4"
-       attempt_force_join="false"
-       update_on_knot_move="true" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect14852"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="interpolate_points"
-       id="path-effect12023"
-       is_visible="true"
-       lpeversion="1"
-       interpolator_type="CubicBezierFit" />
-    <inkscape:path-effect
-       effect="powerclip"
-       id="path-effect3878"
-       is_visible="true"
-       lpeversion="1"
-       inverse="true"
-       flatten="false"
-       hide_clip="false"
-       message="Füllregel Gerade-Ungerade im &lt;b&gt;Füllung und Kontur&lt;/b&gt;-Dialog verwenden, wenn das Anwenden des Ausschnitts mit nachfolgendem Umwandeln in Pfade kein Ergebnis bringt" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect3763"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect36864"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect24746"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect24643"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect17226"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect16737"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect16554"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect14414"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect14311"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect14241"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect13775"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect12987"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect12851"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="powerclip"
-       id="path-effect12033"
-       is_visible="true"
-       lpeversion="1"
-       inverse="true"
-       flatten="false"
-       hide_clip="false"
-       message="Füllregel Gerade-Ungerade im &lt;b&gt;Füllung und Kontur&lt;/b&gt;-Dialog verwenden, wenn das Anwenden des Ausschnitts mit nachfolgendem Umwandeln in Pfade kein Ergebnis bringt" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect11912"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect3489"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect3470"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect1417"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
-    <inkscape:path-effect
-       effect="simplify"
-       id="path-effect913"
-       is_visible="true"
-       lpeversion="1"
-       steps="1"
-       threshold="0.00961538"
-       smooth_angles="360"
-       helper_size="0"
-       simplify_individual_paths="false"
-       simplify_just_coalesce="false" />
     <rect
        x="100.29386"
        y="133.72514"
        width="385.7456"
        height="353.60013"
        id="rect719" />
-    <rect
-       x="100.29386"
-       y="133.72514"
-       width="385.74561"
-       height="353.60013"
-       id="rect719-4" />
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath12029">
-      <path
-         style="display:block;fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 54.773195,26.536081 c 2.133189,0.593387 3.830839,2.303618 6.043479,2.598611 1.564792,0.208621 1.844079,-1.069968 0.669742,-1.999133 -1.357598,-1.074165 -1.306762,-5.088823 -2.758325,-4.171642 -1.486959,0.939546 -2.800646,2.244718 -3.954896,3.572164 z"
-         id="path12031"
-         inkscape:original-d="m 54.773195,26.536081 c 0.724741,0.238694 1.41441,0.558366 2.083763,0.893043 1.994469,0.997233 4.00657,2.584926 5.485826,1.10567 0.362492,-0.362495 -1.339318,-1.83252 -1.488403,-2.041237 -0.529365,-0.741111 -1.389354,-3.161173 -2.12629,-3.52964 -0.25451,-0.127255 -3.7818,3.139431 -3.954896,3.572164 z"
-         inkscape:path-effect="#path-effect11912" />
-    </clipPath>
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath3874">
-      <path
-         style="display:block;fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 80.678515,30.040191 c -0.401486,-0.902961 -1.812769,-1.52051 -1.581226,-2.473215 0.20904,-0.860116 1.526103,-0.80266 2.189275,-0.575896 0.364923,0.124781 1.435592,-0.692474 0.937446,0.158865 -0.550393,0.94063 -0.661151,2.149217 -1.545495,2.890246 z"
-         id="path3876"
-         inkscape:original-d="m 80.678515,30.040191 c -1.02792,-2.07872 -3.020978,-3.037096 0.03007,-3.037096 2.754098,0 1.708036,-0.733845 1.202809,0.781827 -0.286909,0.860722 -0.615572,1.715127 -1.232879,2.255269 z"
-         inkscape:path-effect="#path-effect3763" />
-    </clipPath>
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath20664">
@@ -436,10 +80,10 @@
      id="layer1">
     <g
        aria-label="CoilGen"
-       transform="matrix(0.86879883,0,0,0.86879883,-57.161168,-27.205348)"
+       transform="matrix(0.61346152,0,0,0.61346152,-54.696389,-81.372558)"
        id="text717-7"
        style="font-size:40px;line-height:1.25;font-family:Magneto;-inkscape-font-specification:'Magneto, Normal';white-space:pre;shape-inside:url(#rect719);stroke:none;stroke-opacity:1"
-       inkscape:export-filename="C:\Users\amrein\Documents\PhD_Work\Own_Publications\CoilGen_Documentation_8_2_2022\GoilGen_Logo.png"
+       inkscape:export-filename="C:\Users\amrein\Documents\PhD_Work\CoilGen\Documentation\GoilGen_Logo.png"
        inkscape:export-xdpi="500"
        inkscape:export-ydpi="500">
       <path

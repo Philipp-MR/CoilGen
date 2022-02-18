@@ -1,8 +1,6 @@
 <div id="top"></div>
 
-
-![plot](./Documentation/GoilGen_Logo_simple.svg)
-
+![plot](./Documentation/GoilGen_Logo_simple.png)
 
 
 
