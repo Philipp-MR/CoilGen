@@ -12,7 +12,7 @@ coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz(abs(coil_layouts(s
 std_gradients=[std(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gx,'omitnan') std(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gy,'omitnan') std(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz,'omitnan')];
 plot_range=[stongest_gradient_val-std_plot_factor*std_gradients(stongest_gradient),stongest_gradient_val+std_plot_factor*std_gradients(stongest_gradient)];
 
-dot_size=200;
+dot_size=100;
 
 %Plot Histograms of the gradient
 figure('name',plot_title);
@@ -36,7 +36,7 @@ view(45,45);
 colorbar;
 colormap(parula);
 scatter3(pos_data(1,:),pos_data(2,:),pos_data(3,:),dot_size*ones(1,numel(pos_data,2)),plot_colors,'filled');
-caxis(plot_range);
+caxis([min(g_mag).*0.9 min(g_mag).*1.1]);
 xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
 
 switch stongest_gradient
@@ -157,7 +157,7 @@ view(45,45);
 colorbar;
 colormap(parula);
 scatter3(pos_data(1,:),pos_data(2,:),pos_data(3,:),dot_size*ones(1,numel(pos_data,2)),plot_colors,'filled');
-%caxis(plot_range);
+caxis([min(plot_colors).*0.9 max(plot_colors).*1.1]);
 xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
 end
 
