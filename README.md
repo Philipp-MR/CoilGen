@@ -24,6 +24,7 @@ Check the documentation to get started
 1. Download and extract the file of the CoilGen repository
 2. Run on of the examples
 
+### Examplary Images
 
 ![plot](./Documentation/Results_CoilGen_YGradient.png)
 
