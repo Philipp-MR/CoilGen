@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6880 64-bit) (preloaded format=pdflatex 2018.12.18)  18 FEB 2022 19:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6880 64-bit) (preloaded format=pdflatex 2018.12.18)  21 FEB 2022 14:36
 entering extended mode
 **./CoilGen_Documention.tex
 (CoilGen_Documention.tex
@@ -353,9 +353,9 @@ LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 44.
  [4]
 
-LaTeX Warning: Command \textunderscore invalid in math mode on input line 59.
+LaTeX Warning: Command \textunderscore invalid in math mode on input line 61.
 
-[5] (CoilGen_Documention.aux) ) 
+[5] [6] (CoilGen_Documention.aux) ) 
 Here is how much of TeX's memory you used:
  2944 strings out of 492969
  42346 string characters out of 3126141
@@ -363,21 +363,21 @@ Here is how much of TeX's memory you used:
  6745 multiletter control sequences out of 15000+200000
  42133 words of font info for 93 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,6n,27p,401b,251s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/amrein/AppData/Local/Programs/MiKTeX 2
-.9/fonts/enc/dvips/base/8r.enc}<C:/Users/amrein/AppData/Local/Programs/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/amrein/AppData/Local/Pro
-grams/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/amrein/AppD
-ata/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Use
-rs/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/symbol/usyr.pfb><C:
-/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pf
-b><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmr
-8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times
-/utmr8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/
-times/utmri8a.pfb>
-Output written on CoilGen_Documention.pdf (5 pages, 88616 bytes).
+ 41i,6n,27p,420b,252s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/amrein/AppData/Local/Programs/MiKT
+eX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Users/amrein/AppData/Local/Programs/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/amrein/AppData/Local
+/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/amrein/
+AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
+/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/symbol/usyr.pfb
+><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmb8
+a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/
+utmr8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/t
+imes/utmr8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/
+urw/times/utmri8a.pfb>
+Output written on CoilGen_Documention.pdf (6 pages, 94209 bytes).
 PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
+ 57 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
