@@ -1,8 +1,8 @@
 <div id="top"></div>
 
-![plot](./Documentation/GoilGen_Logo.png)
 
 
+ <img src="./Documentation/GoilGen_Logo.png" width="100" height="100">
 
 <!-- ABOUT THE PROJECT -->
 
