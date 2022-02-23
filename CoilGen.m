@@ -9,13 +9,15 @@ function result_out=CoilGen(varargin)
 %%%% 5.10.2021
 
 % the following external functions were used in modifcated form:
-% intreparc@John D'Errico (2010), @matlabcentral/fileexchange
+% intreparc@John D'Errico (2010), @matlabcentral/fileexchange;  Copyright (c) 2012, John D'Errico; All rights reserved
 %The non-cylidnrical parameterization is taken from "matlabmesh @ Ryan
 %Schmidt  rms@dgp.toronto.edu" based on desbrun et al (2002), "Intrinsic Parameterizations of {Surface} Meshes",
-%NS (2021). Curve intersections (https://www.mathworks.com/matlabcentral/fileexchange/22441-curve-intersections), MATLAB Central File Exchange. Retrieved October 6, 2021. 
+%NS (2021). Curve intersections (https://www.mathworks.com/matlabcentral/fileexchange/22441-curve-intersections), MATLAB Central File Exchange. Retrieved October 6, 2021. Copyright (c) 2009, NS All rights reserved.
 
 
- 
+
+
+
 
 %%% ALGORITHM %%%
 
