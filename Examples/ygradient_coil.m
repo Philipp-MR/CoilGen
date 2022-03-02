@@ -26,11 +26,11 @@ cd('..\');
     'target_region_radius',0.15,...  % in meter
     'use_only_target_mesh_verts',false, ...
     'sf_source_file','none', ...
-    'levels',20, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
+    'levels',10, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.25, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'surface_is_cylinder_flag',true, ...
-    'interconnection_cut_width',0.1, ... % the width for the interconnections are interconnected; in meter
-    'normal_shift_length',0.01, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
+    'interconnection_cut_width',0.05, ... % the width for the interconnections are interconnected; in meter
+    'normal_shift_length',0.05, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
     'iteration_num_stream_func_refinement',1, ... % the number of refinements for the mesh;
     'set_roi_into_mesh_center',true, ...
     'force_cut_selection',{'high'},...
@@ -54,6 +54,7 @@ addpath(strcat(pwd,'\','plotting'));
 single_ind_to_plot= find_even_leveled_solution(coil_layouts);
 plot_error_different_solutions(coil_layouts,single_ind_to_plot,coil_name);
 plot_2D_contours_with_sf(coil_layouts,single_ind_to_plot,coil_name);
+plot_3D_sf(coil_layouts,single_ind_to_plot,coil_name);
 plot_groups_and_interconnections(coil_layouts,single_ind_to_plot,coil_name);
 plot_coil_parameters(coil_layouts,coil_name);
 plot_coil_track_with_resulting_bfield(coil_layouts,single_ind_to_plot,coil_name);

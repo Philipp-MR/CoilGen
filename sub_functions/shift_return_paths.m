@@ -6,7 +6,7 @@ function coil_parts= shift_return_paths(coil_parts,vertical_separation)
 %local variables
 vec_normal_local_smoothing_length=2;
 shift_length=2;
-smoothing_length=2;
+smoothing_length=5;
 up_sample_factor=1;
 
 
