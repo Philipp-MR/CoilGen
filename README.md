@@ -5,7 +5,8 @@
 
 <!-- ABOUT THE PROJECT -->
 
-This procect is a community based tool that facilitates the design of coil layouts within the MRI/NMR environment.
+The CoilGen Project is a community based tool for the generation of coil Layouts within the MRI/NMR environment. It is based on a boundary element method and generates interconnected non overlapping wire-tracks on 3D support structures. The main focus of this work is post processing.
+
 Up to now, the code is written in MATLAB, but future migration to python might be advantageous, especially since it does not need proprietary software licenses. The author is very willing to collaborate with anyone who wants do the translation.
 
 
@@ -55,11 +56,6 @@ Project Link: [https://github.com/Philipp-MR/CoilGen]
 ## Acknowledgments
 
 
-* [Choose an Open Source License](https://choosealicense.com)
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-
