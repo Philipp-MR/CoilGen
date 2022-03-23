@@ -56,7 +56,7 @@ Project Link: [https://github.com/Philipp-MR/CoilGen]
 
 
 
-<!-- ACKNOWLEDGMENTS -->
+##<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
 
