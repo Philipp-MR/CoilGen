@@ -1,7 +1,7 @@
 <div id="top"></div>
 
 
- <img src="./Documentation/GoilGen_Logo.png" width="300">
+ <img src="./Documentation/GoilGen_Logo.png" width="500">
 
 <!-- ABOUT THE PROJECT -->
 
