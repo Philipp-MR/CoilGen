@@ -41,7 +41,7 @@ The algorithm is written within the main function named "coilgen.m". It can be c
 \subsection{File structure}
 
 \begin{itemize}
-	\item Documentation\textunderscore 
+	\item Documentation
 	\item  Examples: Here are the Matlab scripts of the different projects that calls the main algorithm \textit{CoilGen.m} together with the input parameters
 	\item  Geometry\textunderscore Data: \textit{.stl} files of surface geometries for the definition of the current carrying surfaces and the target fields. It should be in the bindary format.
 	\item  sub\textunderscore functions: Folder of \textit{MATLAB} sub-functions that are called by the main function \textit{CoilGen.m} algorithm
@@ -75,17 +75,63 @@ The $x,y,z$ coordinates refer to the coordinate system which is also used for th
 
 \end{itemize}
 
+\newpage
+
 \subsection{Optional input parameters}
 
 All other settings and variables are optional. If not specified the default values set. The definitions of the default values can be seen within the function \textit{parse\textunderscore inputs.m}.
 
 
 \begin{itemize}
-	\item  \textit{coil\textunderscore mesh\textunderscore file}: The name of the .stl file 
+	\item  \textit{pot\textunderscore offset\textunderscore factor}: Offset factor for contour levels, default value: 0,5, Type: numeric
+	\item  \textit{target\textunderscore mesh\textunderscore file}: File of the target surface mesh, which will define the target field, default value: 'none', Type: Character array
+	\item  \textit{ secondary\textunderscore target\textunderscore mesh\textunderscore file}:  File of a secondary target surface mesh, which will define the target field, default value: 'none', Type: Character array
+	\item  \textit{secondary\textunderscore target\textunderscore weight}: weight for the secondary target points , default value: 1, Type: numeric
+	\item  \textit{use\textunderscore only\textunderscore target\textunderscore mesh\textunderscore verts}: flag to use only the target mesh vertices as target coordinates, default value: false, Type: logical
+	\item  \textit{sf\textunderscore source\textunderscore file}: file of an already optimized stream function, default value: 'none', Type: Character array
+	\item  \textit{levels}: Number of potential levels, default value: 10, Type: numeric
+	\item  \textit{level\textunderscore set\textunderscore method}: Specify one of the three ways the level sets are calculated:
+	"primary","combined", or "independent", Default value: "primary" 0,5, Type: Character array
+	\item  \textit{fieldtype\textunderscore to\textunderscore evaluate}: Fieldtype to evaluate; 'gradient' or 'field', default value: 'field', Type: Character array
+	\item  \textit{surface\textunderscore is\textunderscore cylinder\textunderscore flag}: Fag for cylindrical surface; in case of cylinder, a special parameterization will be used: Default value: true, Type: Logical
+	\item  \textit{circular\textunderscore diameter\textunderscore factor\textunderscore cylinder\textunderscore parameterization}: for the cylinder parameterization the ration of outer and inner boundary, default value: 1, Type: numeric
+	\item  \textit{interconnection\textunderscore cut\textunderscore width}: The width in meter of the opening cut for the interconnection of the loops: Default value: 0.01, Type: numeric
+	\item  \textit{target\textunderscore region\textunderscore radius}: Radius of a spherical target field, default value: 0.15, Type: numeric
+	\item  \textit{target\textunderscore region\textunderscore resolution}: Number of target points per dimension within the target region: Default value: 10, Type: numeric
+	\item  \textit{normal\textunderscore shift\textunderscore length}:  The distance in meter for which crossing lines will be seperated along the normal direction of the surface, Default value: 0.001, Type: numeric
+	\item  \textit{min\textunderscore point\textunderscore loop\textunderscore number}: The minimal required number of point of a single loop; otherwise loops will be removed.., default value: 20, Type: numeric
+	\item  \textit{area\textunderscore perimeter\textunderscore deletion\textunderscore ratio}: Additional loop removal criteria which relates to the perimeter to surface ratio of the loop, default value: 5, Type: numeric
+	\item  \textit{max\textunderscore allowed\textunderscore angle\textunderscore within\textunderscore coil\textunderscore track}: Max allowed angle of the track of the contours, Default value: 120, Type: numeric
+	\item  \textit{min\textunderscore allowed\textunderscore angle\textunderscore within\textunderscore coil\textunderscore track}: Min allowed angle of the track of the contours; smaller angles will be converted to straight lines in order to reduce the number of points, Default value: 0.0001, Type: numeric
+	\item  \textit{tiny\textunderscore segment\textunderscore length\textunderscore percentage}: Minimum relative percentage for which points will be deleted which contribute to segments which is extremly short, default value: 0, Type: numeric
+	\item  \textit{iteration\textunderscore num\textunderscore stream\textunderscore func\textunderscore refinement}: Number of refinement iterations of the mesh (together with the stream function), default value: 0, Type: numeric
+	\item  \textit{b\textunderscore 0\textunderscore direction}: The direction (vector) along the interconnections will be aligned, default value: [0 0 1], Type: numeric array
+	\item  \textit{track\textunderscore width\textunderscore factor}: In case of pcb layout, specify the track width: 0,5, Type: numeric
+	\item  \textit{conductor\textunderscore cross\textunderscore section\textunderscore width}: cross section width of the conductor (for the inductance calculation) in meter, default value: 0.002, Type: numeric
+	\item  \textit{conductor\textunderscore cross\textunderscore section\textunderscore height}: cross section height of the conductor (for the inductance calculation) in meter, default value: 0.002, Type: numeric
+	\item  \textit{specific\textunderscore conductivity\textunderscore conductor}: Conducter conductiviy, default value:$  0.018*10^{-6}  $(Copper), Type: numeric
+	\item  \textit{conductor\textunderscore thickness}: Thickness of the sheet current density of within the stream function representation: 0.005, Type: numeric
+	\item  \textit{cross\textunderscore sectional\textunderscore points}: 2D edge points for direct defintion of the cross section of the conductor, default value: $ [2 1.5 ;2 -1.5; -2 -1.5; -2 1.5; 2 1.5 ]'/2000 $, Type: numeric array
+	\item  \textit{geometry\textunderscore source\textunderscore path}: Directory of the .stl  geometry files: 'Geometry\textunderscore Data', Type: Character array
+	\item  \textit{output\textunderscore directory}: Output directory for saving results, default value: 'Results', Type: character array
+	\item  \textit{save\textunderscore stl\textunderscore flag}: Flag to save sweeped .stl: false, Type: logical
+	\item  \textit{plot\textunderscore flag}: Flag to plot results, default value: true, Type: logical
+	\item  \textit{interconnection\textunderscore method}: Interconnection method: Regular or spiral in/out, default value: 'regular', Type: Character array
+	\item  \textit{skip\textunderscore postprocessing}: Flag to skip post processin, default value: false, Type: logical
+	\item  \textit{skip\textunderscore inductance\textunderscore calculation}: Flag to skip inductance calculation, default value: false, Type: logical
+	\item  \textit{force\textunderscore cut\textunderscore selection}: Force selection of the orientation of the interconnection areas \{'low' 'high'...\}, default value: \{\}, Type: cell
+	\item  \textit{gauss\textunderscore order}: Gaus integration order, for the calculation of the sensitivity matrix default value: 2, Type: numeric
+	\item  \textit{set\textunderscore roi\textunderscore into\textunderscore mesh\textunderscore center}: Flag to set the roi into the geometric center of the mesh, default value:false, Type: logical
+	\item  \textit{tikonov\textunderscore reg\textunderscore factor}: Tikonov regularization factor for the SF optimization, default value: 1, Type: numeric
+														
 \end{itemize}
 
 
-%\section{TO DO}
+\section{How to design your own coil with CoilGen}
+
+Make a copy of \textit{y\textunderscore gradient\textunderscore coil.m} within the folder \textit{Examples} as a starting point. 
+
+Wihtin this script, adjust the input parameters of the call of CoilGen. 
 
 
 

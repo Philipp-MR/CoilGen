@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6880 64-bit) (preloaded format=pdflatex 2018.12.18)  23 MAR 2022 15:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6880 64-bit) (preloaded format=pdflatex 2018.12.18)  23 MAR 2022 18:08
 entering extended mode
 **./CoilGen_Documention.tex
 (CoilGen_Documention.tex
@@ -355,13 +355,43 @@ LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
 
 LaTeX Warning: Command \textunderscore invalid in math mode on input line 61.
 
-[5] (CoilGen_Documention.aux) ) 
+[5]
+Overfull \hbox (3.33054pt too wide) in paragraph at lines 97--98
+[]\OT1/ptm/m/it/12 circular[]diameter[]factor[]cylinder[]parameterization\OT1/p
+tm/m/n/12 : for the cylin-der pa-ram-
+ []
+
+[6]
+Overfull \hbox (10.4032pt too wide) in paragraph at lines 112--113
+[]\OT1/ptm/m/it/12 specific[]conductivity[]conductor\OT1/ptm/m/n/12 : Con-duc-t
+er con-duc-tiviy, de-fault value:$\OT1/ztmcm/m/n/12 0\OML/ztmcm/m/it/12 :\OT1/z
+tmcm/m/n/12 018 \OMS/ztmcm/m/n/12 
+ []
+
+
+Overfull \hbox (19.56355pt too wide) in paragraph at lines 114--115
+\OT1/ptm/m/n/12 tion of the con-duc-tor, de-fault value: $\OT1/ztmcm/m/n/12 [21
+\OML/ztmcm/m/it/12 :\OT1/ztmcm/m/n/12 5; 2 \OMS/ztmcm/m/n/12   \OT1/ztmcm/m/n/1
+2 1\OML/ztmcm/m/it/12 :\OT1/ztmcm/m/n/12 5; \OMS/ztmcm/m/n/12  \OT1/ztmcm/m/n/1
+2 2 \OMS/ztmcm/m/n/12   \OT1/ztmcm/m/n/12 1\OML/ztmcm/m/it/12 :\OT1/ztmcm/m/n/1
+2 5; \OMS/ztmcm/m/n/12  \OT1/ztmcm/m/n/12 21\OML/ztmcm/m/it/12 :\OT1/ztmcm/m/n/
+12 5; 21\OML/ztmcm/m/it/12 :\OT1/ztmcm/m/n/12 5][]\OML/ztmcm/m/it/12 =\OT1/ztmc
+m/m/n/12 2000$\OT1/ptm/m/n/12 ,
+ []
+
+[7]
+Overfull \hbox (6.48672pt too wide) in paragraph at lines 115--116
+[]\OT1/ptm/m/it/12 geometry[]source[]path\OT1/ptm/m/n/12 : Di-rec-tory of the .
+stl ge-om-e-try files: 'Ge-om-e-try[]Data',
+ []
+
+[8] (CoilGen_Documention.aux) ) 
 Here is how much of TeX's memory you used:
- 2944 strings out of 492969
- 42346 string characters out of 3126141
- 105004 words of memory out of 3000000
- 6745 multiletter control sequences out of 15000+200000
- 42133 words of font info for 93 fonts, out of 3000000 for 9000
+ 2947 strings out of 492969
+ 42386 string characters out of 3126141
+ 106004 words of memory out of 3000000
+ 6747 multiletter control sequences out of 15000+200000
+ 42433 words of font info for 94 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,6n,27p,420b,252s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/amrein/AppData/Local/Programs/MiKTeX 2
@@ -375,9 +405,9 @@ b><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmr
 8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times
 /utmr8a.pfb><C:/Users/amrein/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/
 times/utmri8a.pfb>
-Output written on CoilGen_Documention.pdf (5 pages, 93308 bytes).
+Output written on CoilGen_Documention.pdf (8 pages, 105857 bytes).
 PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
+ 65 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
