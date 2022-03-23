@@ -5,4 +5,4 @@
 \contentsline {section}{\numberline {0.4}Usage}{5}
 \contentsline {subsection}{\numberline {0.4.1}Necessary input parameters}{5}
 \contentsline {subsection}{\numberline {0.4.2}Optional input parameters}{6}
-\contentsline {section}{\numberline {0.5}How to design your own coil with CoilGen}{8}
+\contentsline {section}{\numberline {0.5}How to design your own coil with CoilGen}{9}
