@@ -135,13 +135,13 @@ Make a copy of \textit{y\textunderscore gradient\textunderscore coil.m} within t
 Wihtin this script, adjust the input parameters of the call of CoilGen to your need.  Especially, make sure the following parameters are well specified:
 
 \begin{itemize}
-	\item field\textunderscore shape: Choose the kind of target field
+	\item field\textunderscore shape: Choose the kind of target field: '$x$' ,'$y$' ,'$z$'  etc.
 	\item coil\textunderscore mesh\textunderscore file: Specify the .stl file of the current carrying surface
-	\item levels: Specifiy how many turns the coil supposed to have..
-	\item surface\textunderscore is\textunderscore cylinder\textunderscore flag: If your current carrying is similar to a cylinder, set this flag to true
+	\item levels: Specifiy the number of turns of the coil
+	\item surface\textunderscore is\textunderscore cylinder\textunderscore flag: This relates to the surface parameterization. If your current carrying is similar to a cylinder, set this flag to true
 	\item interconnection\textunderscore cut\textunderscore width: The width of the connections, which determines their steepness
 	\item normal\textunderscore shift\textunderscore length: The distance in meter for which crossing lines will be seperated along the normal direction of the surface
-	\item iteration\textunderscore num\textunderscore stream\textunderscore func\textunderscore refinement: Choose a number between (0,1,2). The higher the number, the smoother the result, but the greater the effort required for the calculation. 
+	\item iteration\textunderscore num\textunderscore stream\textunderscore func\textunderscore refinement: Choose a number between (0,1,2). The higher the number, the smoother the result, but the greater the computational effort.
 \end{itemize}
 
 
