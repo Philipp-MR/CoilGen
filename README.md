@@ -7,6 +7,8 @@
 
 The CoilGen Project is a community based tool for the generation of coil Layouts within the MRI/NMR environment. It is based on a boundary element method and generates interconnected non overlapping wire-tracks on 3D support structures. The main focus of this work is post processing.
 
+The user must specify a target field (e.g., bz(x,y,z)=y for a constant gradient in the y-direction) and a surface mesh geometry (e.g., a cylinder defined in an .stl file). The code then generates a coil layout in the form of a non-overlapping, interconnected wire trace to achieve the desired field.
+
 Up to now, the code is written in MATLAB, but future migration to python might be advantageous, especially since it does not need proprietary software licenses. The author is very willing to collaborate with anyone who wants do the translation.
 
 
