@@ -21,9 +21,12 @@ function result_out=CoilGen(varargin)
 
 %%% ALGORITHM %%%
 
-
-
+%Add the subunctions to the path
+if ispc
 addpath(strcat(pwd,'\','sub_functions'));
+else
+addpath(strcat(pwd,'/','sub_functions'));
+end
 
 %Parse the input variables
 tic;

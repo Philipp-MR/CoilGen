@@ -11,7 +11,11 @@
 
 clc; clear all; 
 
+if ispc
 cd('..\');
+else
+cd('../');
+end
 
 
 level_potentials=8:14;
@@ -53,7 +57,11 @@ close all;
 
 coil_name='coil';
 
+if ispc
 addpath(strcat(pwd,'\','plotting'));
+else
+addpath(strcat(pwd,'/','plotting'));
+end
 %Chose a even leveled solution for plotting
 solutions_to_plot=find(arrayfun(@(x) ~isempty(coil_layouts(x).out),1:numel(coil_layouts)));
 single_ind_to_plot= find_even_leveled_solution(coil_layouts);

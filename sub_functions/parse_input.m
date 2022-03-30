@@ -72,9 +72,17 @@ addParameter(input_parser,'conductor_thickness',0.005,@isnumeric);
 %2D edge points for direct defintion of the cross section of the conductor
 addParameter(input_parser,'cross_sectional_points',[2 1.5 ;2 -1.5; -2 -1.5; -2 1.5; 2 1.5 ]'/2000,@isnumeric);
 %directory of the .stl  geometry files
+if ispc
 addParameter(input_parser,'geometry_source_path',strcat(pwd,'\','Geometry_Data'),@ischar);
+else
+addParameter(input_parser,'geometry_source_path',strcat(pwd,'/','Geometry_Data'),@ischar);
+end
 %output directory
+if ispc
 addParameter(input_parser,'output_directory',strcat(pwd,'\','Results'),@ischar);
+else
+addParameter(input_parser,'output_directory',strcat(pwd,'/','Results'),@ischar);
+end
 %flag to save sweeped .stl
 addParameter(input_parser,'save_stl_flag',false,@islogical);
 %flag to plot results

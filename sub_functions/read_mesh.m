@@ -6,7 +6,12 @@ function [coil_mesh,target_mesh,shielded_mesh]=read_mesh(input)
 if strcmp(input.sf_source_file,'none')
 
 %Read the coil mesh surface
+
+if ispc
 coil_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.coil_mesh_file));
+else
+coil_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.coil_mesh_file));
+end
 coil_mesh=create_unique_noded_mesh(coil_mesh);
 
 %Change to format convenction used here
@@ -23,7 +28,11 @@ end
 
 %Read the target mesh surface
 if ~strcmp(input.target_mesh_file,'none')
+if ispc
 target_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.target_mesh_file));
+else
+target_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.target_mesh_file));
+end
 target_mesh=create_unique_noded_mesh(target_mesh);
 else
 target_mesh=[];
@@ -31,7 +40,11 @@ end
 
 %Read the shielded mesh surface
 if ~strcmp(input.secondary_target_mesh_file,'none')
+if ispc
 shielded_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.secondary_target_mesh_file));
+else
+shielded_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.secondary_target_mesh_file));
+end
 shielded_mesh=create_unique_noded_mesh(shielded_mesh);
 else
 shielded_mesh=[];
@@ -71,18 +84,7 @@ end
 
 
 function varargout = stlread_local(file)
-% STLREAD imports geometry from an STL file into MATLAB.
-%    FV = STLREAD(FILENAME) imports triangular faces from the ASCII or binary
-%    STL file idicated by FILENAME, and returns the patch struct FV, with fields
-%    'faces' and 'vertices'.
-%
-%    [F,V] = STLREAD(FILENAME) returns the faces F and vertices V separately.
-%
-%    [F,V,N] = STLREAD(FILENAME) also returns the face normal vectors.
-%
-%    The faces and vertices are arranged in the format used by the PATCH plot
-%    object.
-% Copyright 2011 The MathWorks, Inc.
+
     if ~exist(file,'file')
         error(['File ''%s'' not found. If the file is not on MATLAB''s path' ...
                ', be sure to specify the full path to the file.'], file);
