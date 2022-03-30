@@ -20,7 +20,12 @@ coil_mesh.faces=coil_mesh.faces';
 
 
 else
+    
+if ispc
 loaded_file=load(strcat(cd,'\',input.sf_source_file));
+else
+loaded_file=load(strcat(cd,'/',input.sf_source_file));
+end
 coil_mesh=loaded_file.coil_mesh;
 
 end
