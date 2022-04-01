@@ -57,6 +57,7 @@ else  % the 3D mesh is already planar but the normals must be aligned to the z-a
 mean_norm=mean(face_normals,1);
 new_norm=[0 0 1];
 v_c=cross(mean_norm,new_norm);
+if norm(v_c)>10^(-8) %check wether the normals are already aligned to z
 v_d=dot(mean_norm,new_norm);
 mat_v=[0 (-1)*v_c(3) v_c(2); v_c(3) 0 (-1)*v_c(1); (-1)*v_c(2) v_c(1) 0];
 rot_mat=eye(3)+mat_v+mat_v*mat_v*(1/(1+v_d));
@@ -64,6 +65,9 @@ out_a=sum(repmat(rot_mat(1,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1
 out_b=sum(repmat(rot_mat(2,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1]).*coil_parts(part_ind).coil_mesh.vertices',2);
 out_c=sum(repmat(rot_mat(3,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1]).*coil_parts(part_ind).coil_mesh.vertices',2);
 coil_parts(part_ind).coil_mesh.uv=[out_a'; out_b'];
+else
+coil_parts(part_ind).coil_mesh.uv=[coil_parts.coil_mesh.vertices(1,:); coil_parts.coil_mesh.vertices(2,:)];
+end
     
 boundary_edges=freeBoundary(triangulation(coil_parts(part_ind).coil_mesh.faces',[coil_parts(part_ind).coil_mesh.uv; zeros(1,size(coil_parts(part_ind).coil_mesh.uv(1,:),2))]'));
 %Build the boundary loops form the boundary edges
