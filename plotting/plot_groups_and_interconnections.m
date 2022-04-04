@@ -1,5 +1,7 @@
 function  plot_groups_and_interconnections(coil_layouts,single_ind_to_plot,plot_title)
 
+if exist('coil_layout(single_ind_to_plot).out.coil_parts(part_ind).groups','var')
+
 figure('name',plot_title);
 tiledlayout('flow');
 %Plot grouped loops together with the interconnection areas
@@ -35,7 +37,7 @@ set(gca,'XColor', 'none','YColor','none');
 hold off;
 end
 
-
+end
 
 
 end

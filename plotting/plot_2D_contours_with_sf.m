@@ -16,6 +16,7 @@ hold on;
 %triplot(triangulation(coil_layout(single_ind).out.parameterized_mesh.f,coil_layout(single_ind).out.parameterized_mesh.uv),'color',[0.8 0.8 0.8]);
 patch('Faces',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces','Vertices',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.uv','FaceVertexCData',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).stream_function,'FaceColor','interp','edgealpha',0.0);
 my_color=parula(numel(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).potential_level_list));
+if exist('coil_layout(single_ind_to_plot).out.coil_parts(part_ind).groups','var')
 for group_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).groups)
 for loop_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).groups(group_ind).loops)
 p=plot(   coil_layout(single_ind_to_plot).out.coil_parts(part_ind).groups(group_ind).loops(loop_ind).uv(1,:),...
@@ -26,6 +27,7 @@ p=plot(   coil_layout(single_ind_to_plot).out.coil_parts(part_ind).groups(group_
 % p.Color=my_color(color_ind,:);
 p.MarkerFaceColor=[0;0;0];
 p.Color=[0;0;0];
+end
 end
 end
 set(gca,'YTick',[]);
