@@ -30,7 +30,7 @@ The project requires MATLAB and optionally FastHenry2 for calculation of the coi
 
 ### Exemplary Images
 
-![plot](./Documentation/flow_chart_algorithm_revised.png)
+<!-- ![plot](./Documentation/flow_chart_algorithm_revised.png)  -->
 ![plot](./Documentation/Results_CoilGen_YGradient.png)
 
 
