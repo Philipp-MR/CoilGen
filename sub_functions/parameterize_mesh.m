@@ -66,7 +66,7 @@ out_b=sum(repmat(rot_mat(2,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1
 out_c=sum(repmat(rot_mat(3,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1]).*coil_parts(part_ind).coil_mesh.vertices',2);
 coil_parts(part_ind).coil_mesh.uv=[out_a'; out_b'];
 else
-coil_parts(part_ind).coil_mesh.uv=[coil_parts.coil_mesh.vertices(1,:); coil_parts.coil_mesh.vertices(2,:)];
+coil_parts(part_ind).coil_mesh.uv=[coil_parts(part_ind).coil_mesh.vertices(1,:); coil_parts(part_ind).coil_mesh.vertices(2,:)];
 end
     
 boundary_edges=freeBoundary(triangulation(coil_parts(part_ind).coil_mesh.faces',[coil_parts(part_ind).coil_mesh.uv; zeros(1,size(coil_parts(part_ind).coil_mesh.uv(1,:),2))]'));
