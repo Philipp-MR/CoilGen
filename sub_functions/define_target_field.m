@@ -136,57 +136,7 @@ end
 
 
 function in = intriangulation(vertices,faces,testp,heavytest)
-% intriangulation: Test points in 3d wether inside or outside a (closed) triangulation
-% usage: in = intriangulation(vertices,faces,testp,heavytest)
-%
-% arguments: (input)
-%  vertices   - points in 3d as matrix with three columns
-%
-%  faces      - description of triangles as matrix with three columns.
-%               Each row contains three indices into the matrix of vertices
-%               which gives the three cornerpoints of the triangle.
-%
-%  testp      - points in 3d as matrix with three columns
-%
-%  heavytest  - int n >= 0. Perform n additional randomized rotation tests.
-%
-% IMPORTANT: the set of vertices and faces has to form a watertight surface!
-%
-% arguments: (output)
-%  in - a vector of length size(testp,1), containing 0 and 1.
-%       in(nr) =  0: testp(nr,:) is outside the triangulation
-%       in(nr) =  1: testp(nr,:) is inside the triangulation
-%       in(nr) = -1: unable to decide for testp(nr,:) 
-%
-% Thanks to Adam A for providing the FEX submission voxelise. The
-% algorithms of voxelise form the algorithmic kernel of intriangulation.
-%
-% Thanks to Sven to discussions about speed and avoiding problems in
-% special cases.
-%
-% Example usage:
-%
-%      n = 10;
-%      vertices = rand(n, 3)-0.5; % Generate random points
-%      tetra = delaunayn(vertices); % Generate delaunay triangulization
-%      faces = freeBoundary(TriRep(tetra,vertices)); % use free boundary as triangulation
-%      n = 1000;
-%      testp = 2*rand(n,3)-1; % Generate random testpoints
-%      in = intriangulation(vertices,faces,testp);
-%      % Plot results
-%      h = trisurf(faces,vertices(:,1),vertices(:,2),vertices(:,3));
-%      set(h,'FaceColor','black','FaceAlpha',1/3,'EdgeColor','none');
-%      hold on;
-%      plot3(testp(:,1),testp(:,2),testp(:,3),'b.');
-%      plot3(testp(in==1,1),testp(in==1,2),testp(in==1,3),'ro');
-%
-% See also: intetrahedron, tsearchn, inpolygon
-%
-% Author: Johannes Korsawe, heavily based on voxelise from Adam A.
-% E-mail: johannes.korsawe@volkswagen.de
-% Release: 1.3
-% Release date: 25/09/2013
-% check number of inputs
+
 if nargin<3,
     fprintf('??? Error using ==> intriangulation\nThree input matrices are needed.\n');in=[];return;
 end
