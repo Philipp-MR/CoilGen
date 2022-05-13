@@ -11,6 +11,7 @@ The user must specify a target field (e.g., bz(x,y,z)=y for a constant gradient 
 
 Up to now, the code is written in MATLAB, but future migration to python might be advantageous, especially since it does not need proprietary software licenses. The author is very willing to collaborate with anyone who wants do the translation.
 
+A full description is given in the following publication: https://onlinelibrary.wiley.com/doi/10.1002/mrm.29294
 
 
 <!-- GETTING STARTED -->
