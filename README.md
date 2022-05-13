@@ -56,9 +56,10 @@ Project Link: [https://github.com/Philipp-MR/CoilGen]
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-## Acknowledgments
+## Citation
 
-
-
+For citation of this work, please refer to the following publication:
+https://onlinelibrary.wiley.com/doi/10.1002/mrm.29294
+https://doi.org/10.1002/mrm.29294
 
 <p align="right">(<a href="#top">back to top</a>)</p>
