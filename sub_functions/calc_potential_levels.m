@@ -1,8 +1,10 @@
-function [coil_parts,primary_surface_ind] = calc_potential_levels(coil_parts,combined_mesh,num_levels,level_offset,level_set_method)
+function [coil_parts,primary_surface_ind] = calc_potential_levels(coil_parts,combined_mesh,input)
 %center the stream function potential around zero and add zeros around the
 %periphery
 
-
+num_levels=input.levels;
+level_offset=input.pot_offset_factor;
+level_set_method=input.level_set_method;
 
 
 switch level_set_method

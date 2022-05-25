@@ -25,6 +25,7 @@ faces_of_group = coil_mesh_in.faces(vert_group==current_group,:);
 [unqVertIds, ~, newVertIndices] = unique(faces_of_group);
 coil_parts(current_group).coil_mesh.faces = reshape(newVertIndices,size(faces_of_group))';
 coil_parts(current_group).coil_mesh.vertices = coil_mesh_in.vertices(:,unqVertIds);
+coil_parts(current_group).coil_mesh.unique_vert_inds=unqVertIds;
 end
 
 end

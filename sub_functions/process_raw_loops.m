@@ -1,29 +1,17 @@
-function coil_parts= process_raw_loops(coil_parts,min_point_loop_number,area_perimeter_deletion_ratio,max_allowed_angle_within_coil_track,min_allowed_angle_within_coil_track,tiny_segment_length_percentage)
+function coil_parts= process_raw_loops(coil_parts,input)
 %take care of loops crossing boundaries or off boundary loops
 
 
-
+min_point_loop_number=input.min_point_loop_number;
+area_perimeter_deletion_ratio=input.area_perimeter_deletion_ratio;
+max_allowed_angle_within_coil_track=input.max_allowed_angle_within_coil_track;
+min_allowed_angle_within_coil_track=input.min_allowed_angle_within_coil_track;
+tiny_segment_length_percentage=input.tiny_segment_length_percentage;
 
 for part_ind=1:numel(coil_parts)
 
-%first delete loops which are either to small or 
-%have a very high boundary-length-to-surface ratio
-%loops which such ratios will not contribute significantly to the target
-%field since of narrow opposing currents on the boundary
-loop_surface_areas=zeros(1,numel(coil_parts(part_ind).contour_lines));
-loop_perimeter=zeros(1,numel(coil_parts(part_ind).contour_lines));
-
-warning off all;
-for loop_ind=1:numel(coil_parts(part_ind).contour_lines) 
-    loop_points=coil_parts(part_ind).contour_lines(loop_ind).uv;
-    poly_object=polyshape(loop_points');
-    loop_surface_areas(loop_ind)=area(poly_object);
-    loop_perimeter(loop_ind)=perimeter(poly_object);
-end
-warning on all;
-perimeter_to_area_ratio=loop_perimeter.*loop_perimeter./loop_surface_areas;
-loops_to_delete=find(perimeter_to_area_ratio>area_perimeter_deletion_ratio*mean(perimeter_to_area_ratio));
-coil_parts(part_ind).contour_lines(loops_to_delete)=[];
+planary_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.uv');
+curved_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.v);
 
 
 %primitive deleting small loops
@@ -31,8 +19,46 @@ loops_to_delete=arrayfun(@(x) size(coil_parts(part_ind).contour_lines(x).uv,2)<m
 coil_parts(part_ind).contour_lines(loops_to_delete)=[];
 
 
+%Smooth the loops
+for loop_ind=1:numel(coil_parts(part_ind).contour_lines)
+%coil_parts(part_ind).contour_lines(loop_ind).uv = equilize_point_distances_spline(coil_parts(part_ind).contour_lines(loop_ind).uv,1);
+if coil_parts(part_ind).contour_lines(loop_ind).uv(1,end)~=coil_parts(part_ind).contour_lines(loop_ind).uv(1,1) & coil_parts(part_ind).contour_lines(loop_ind).uv(2,end)~=coil_parts(part_ind).contour_lines(loop_ind).uv(2,1) 
+coil_parts(part_ind).contour_lines(loop_ind).uv=[coil_parts(part_ind).contour_lines(loop_ind).uv coil_parts(part_ind).contour_lines(loop_ind).uv(:,1)]; %close the loops
+end
+end
+
+%Generate the curved coordinates
+for loop_num=1:numel(coil_parts(part_ind).contour_lines)
+[coil_parts(part_ind).contour_lines(loop_num).v,coil_parts(part_ind).contour_lines(loop_num).uv]=uv_to_xyz(coil_parts(part_ind).contour_lines(loop_num).uv,planary_mesh,curved_mesh);
+end
 
 
+end
+
+
+
+
+end
+
+
+% % % %first delete loops which are either to small or 
+% % % %have a very high boundary-length-to-surface ratio
+% % % %loops which such ratios will not contribute significantly to the target
+% % % %field since of narrow opposing currents on the boundary
+% % % loop_surface_areas=zeros(1,numel(coil_parts(part_ind).contour_lines));
+% % % loop_perimeter=zeros(1,numel(coil_parts(part_ind).contour_lines));
+% % % 
+% % % warning off all;
+% % % for loop_ind=1:numel(coil_parts(part_ind).contour_lines) 
+% % %     loop_points=coil_parts(part_ind).contour_lines(loop_ind).uv;
+% % %     poly_object=polyshape(loop_points');
+% % %     loop_surface_areas(loop_ind)=area(poly_object);
+% % %     loop_perimeter(loop_ind)=perimeter(poly_object);
+% % % end
+% % % warning on all;
+% % % perimeter_to_area_ratio=loop_perimeter.*loop_perimeter./loop_surface_areas;
+% % % loops_to_delete=find(perimeter_to_area_ratio>area_perimeter_deletion_ratio*mean(perimeter_to_area_ratio));
+% % % coil_parts(part_ind).contour_lines(loops_to_delete)=[];
 
 % % % % %check for sharp angles which might be removed
 % % % % %delete points which build a degenerate angle of almost zero i.e. the point
@@ -103,124 +129,10 @@ coil_parts(part_ind).contour_lines(loops_to_delete)=[];
 % % % % end
     
 
-%Smooth the loops
-for loop_ind=1:numel(coil_parts(part_ind).contour_lines)
-%coil_parts(part_ind).contour_lines(loop_ind).uv = equilize_point_distances_spline(coil_parts(part_ind).contour_lines(loop_ind).uv,1);
-coil_parts(part_ind).contour_lines(loop_ind).uv=[coil_parts(part_ind).contour_lines(loop_ind).uv coil_parts(part_ind).contour_lines(loop_ind).uv(:,1)]; %close the loops
-end
-
-%Generate the curved coordinates
-coil_parts(part_ind).contour_lines=create_curved_contour_lines(coil_parts(part_ind).contour_lines,triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.uv'),triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.vertices'));
-
-end
 
 
-function contour_lines_curved=create_curved_contour_lines(contour_lines,planary_mesh,curved_mesh)
-%Create the contour lines on the curved surface
-contour_lines_curved=contour_lines;
-%contour_lines_curved = rmfield(contour_lines_curved,'uv');
-% for loop_num=1:numel(contour_lines)
-% contour_lines_curved(loop_num).point_coordinates=zeros(3,size(contour_lines(loop_num).uv,2));
-% end
-for loop_num=1:numel(contour_lines)
-[contour_lines_curved(loop_num).point_coordinates,contour_lines(loop_num).uv]=uv_to_xyz(contour_lines(loop_num).uv,planary_mesh,curved_mesh);
-%disp(strcat('Loop Number',' ',num2str(loop_num),' Point Number ',num2str(point_num)));      
-end
-
-end
 
 
-function sampled_points = equilize_point_distances_spline(unsampled_points,upsampling_factor)
-%Equilize the point the distances, keeping the same number of points
-number_points=size(unsampled_points,2);
-t=0:(1/(number_points*upsampling_factor)):1;
-t = t(:);
-nt = numel(t);
-ndim = 2;
-%delete non-unique points
-ind_point_x=diff(unsampled_points(1,:))==0;
-ind_point_y=diff(unsampled_points(2,:))==0;
-unique_points=~(ind_point_x|ind_point_y);
-unsampled_points=unsampled_points(:,unique_points')';
-pt = NaN(nt,ndim);
-chordlen = sqrt(sum(diff(unsampled_points,[],1).^2,2));
-chordlen = chordlen/sum(chordlen);
-cumarc = [0;cumsum(chordlen)];
-spline_interpol = cell(1,ndim);
-spld = spline_interpol;
-diffarray = [3 0 0;0 2 0;0 0 1;0 0 0];
-for spl_dim = 1:ndim
-spline_interpol{spl_dim} = spline(cumarc,unsampled_points(:,spl_dim));
-nc = numel(spline_interpol{spl_dim}.coefs);
-if nc < 4
-spline_interpol{spl_dim}.coefs = [zeros(1,4-nc),spline_interpol{spl_dim}.coefs];
-spline_interpol{spl_dim}.order = 4;
-end
-xp = spline_interpol{spl_dim};
-xp.coefs = xp.coefs*diffarray;
-xp.order = 3;
-spld{spl_dim} = xp;
-end
-cumarc = spline_interpol{1}.breaks;
-n = numel(cumarc);
-polyarray = zeros(ndim,3);
-segment_length = zeros(n-1,1);
-opts = odeset('reltol',1.e-9);
-for iii = 1:spline_interpol{1}.pieces
-for jjj = 1:ndim
-polyarray(jjj,:) = spld{jjj}.coefs(iii,:);
-end
-[tout,yout] = ode45(@(t,y) segkernel(t,y,ndim,polyarray),[0,chordlen(iii)],0,opts); %#ok
-segment_length(iii) = yout(end);
-end
-totalsplinelength = sum(segment_length);
-cumulative_segment_length = [0;cumsum(segment_length)];
-[junk,tbins] = histc(t*totalsplinelength,cumulative_segment_length); %#ok
-tbins((tbins <= 0) | (t <= 0)) = 1;
-tbins((tbins >= n) | (t >= 1)) = n - 1;
-s = totalsplinelength*t;
-opts = odeset('reltol',1.e-9,'events',@ode_events);
-ti = t;
-for ii = 1:nt
-si = s(ii) - cumulative_segment_length(tbins(ii));
-for jj = 1:ndim
-polyarray(jj,:) = spld{jj}.coefs(tbins(ii),:);
-end
-[tout,yout,te,ye] = ode45(@(t,y) segkernel(t,y,ndim,polyarray),[0,chordlen(tbins(ii))],-si,opts); %#ok
-if ~isempty(te)
-ti(ii) = te(1) + cumarc(tbins(ii));
-else
-if abs(yout(1)) < abs(yout(end))
-ti(ii) = tout(1) + cumarc(tbins(ii));
-else
-ti(ii) = tout(end) + cumarc(tbins(ii));
-end
-end
-end
-for L = 1:ndim
-pt(:,L) = ppval(spline_interpol{L},ti);
-end
-dudt = zeros(nt,ndim);
-for L = 1:ndim
-dudt(:,L) = ppval(spld{L},ti);
-end
-function val = segkernel(t,y,dim_num,poly_array) %#ok
-val = zeros(size(t));
-for k = 1:dim_num
-val = val + polyval(poly_array(k,:),t).^2;
-end
-val = sqrt(val);
-end
-function [value,isterminal,direction] = ode_events(t,y) %#ok
-value = y;
-isterminal = ones(size(y));
-direction = ones(size(y));
-end
-sampled_points=transpose(pt);
-end
-
-
-end
 
 
 

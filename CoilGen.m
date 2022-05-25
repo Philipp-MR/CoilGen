@@ -16,9 +16,6 @@ function result_out=CoilGen(varargin)
 
 
 
-
-
-
 %%% ALGORITHM %%%
 
 %Add the subunctions to the path
@@ -51,13 +48,13 @@ toc;
 %upsample the mesh density by subdivision
 tic;
 disp('Upsample the mesh by subdivision:');
-coil_parts=refine_mesh(coil_parts,input.iteration_num_stream_func_refinement,input.sf_source_file);
+coil_parts=refine_mesh(coil_parts,input);
 toc; 
 
 %Parameterize the mesh
 tic;
 disp('Parameterize the mesh:');
-coil_parts=parameterize_mesh(coil_parts,input.surface_is_cylinder_flag); 
+coil_parts=parameterize_mesh(coil_parts,input); 
 toc; 
 
 %Define the target field
@@ -70,37 +67,37 @@ toc;
 tic;
 disp('Calculate mesh one ring:');
 coil_parts=calculate_one_ring_by_mesh(coil_parts);
-toc; 
+toc;
 
 % create the basis funtion container which represents the current density
 tic;
 disp('Create the basis funtion container which represents the current density:');
 coil_parts=calculate_basis_functions(coil_parts);
-toc; 
+toc;
 
 % calculate the sensitivity matrix Cn
 tic;
 disp('Calculate the sensitivity matrix:');
-coil_parts=calculate_sensitivity_matrix(coil_parts,target_field.coords,input.gauss_order);
-toc; 
+coil_parts=calculate_sensitivity_matrix(coil_parts,target_field,input);
+toc;
 
 % Calculate the resistance matrix Rmn
 tic;
 disp('Calculate the resistance matrix:');
-coil_parts=calculate_resistance_matrix(coil_parts,input.gauss_order,input.conductor_thickness,input.specific_conductivity_conductor);
-toc; 
+coil_parts=calculate_resistance_matrix(coil_parts,input);
+toc;
 
 %Optimize the stream function toward target field and further constraints
 tic;
 disp('Optimize the stream function toward target field and secondary constraints:');
-[coil_parts,combined_mesh,sf_b_field]= stream_function_optimization(coil_parts,target_field,input.tikonov_reg_factor,input.sf_source_file);
-toc; 
+[coil_parts,combined_mesh,sf_b_field]= stream_function_optimization(coil_parts,target_field,input);
+toc;
 
 else % load the preoptimized data
 tic;
 disp('Load preoptimized data:');
 [coil_parts,~,~,combined_mesh,sf_b_field,target_field,is_supressed_point]=load_preoptimized_data(input);
-toc; 
+toc;
 
 end
 
@@ -108,20 +105,20 @@ end
 %Calculate the potential levels for the discretization
 tic;
 disp('Calculate the potential levels for the discretization:');
-[coil_parts,primary_surface_ind]=calc_potential_levels(coil_parts,combined_mesh,input.levels,input.pot_offset_factor,input.level_set_method);
-toc; 
+[coil_parts,primary_surface_ind]=calc_potential_levels(coil_parts,combined_mesh,input);
+toc;
 
 %Generate the contours
 tic;
 disp('Generate the contours:');
 coil_parts=calc_contours_by_triangular_potential_cuts(coil_parts);
-toc; 
+toc;
 
 %Process contours
 tic;
 disp('Process contours:');
-coil_parts= process_raw_loops(coil_parts,input.min_point_loop_number,input.area_perimeter_deletion_ratio,input.max_allowed_angle_within_coil_track,input.min_allowed_angle_within_coil_track,input.tiny_segment_length_percentage);
-toc; 
+coil_parts= process_raw_loops(coil_parts,input);
+toc;
 
 if ~input.skip_postprocessing 
 
@@ -129,33 +126,27 @@ if ~input.skip_postprocessing
 %Find the minimal distance between the contour lines
 tic;
 disp('Find the minimal distance between the contour lines:');
-coil_parts= find_minimal_contour_distance(coil_parts,input.track_width_factor);
-toc; 
+coil_parts= find_minimal_contour_distance(coil_parts,input);
+toc;
 
 %Group the contour loops in topological order
 tic;
 disp('Group the contour loops in topological order:');
 coil_parts=topological_loop_grouping(coil_parts);
-toc; 
+toc;
 
 %Calculate center locations of groups
 tic;
 disp('Calculate center locations of groups:');
 coil_parts=calculate_group_centers(coil_parts);
-toc; 
-
-%open the groups along the b0 direction and surface openings
-tic;
-disp('Find the interconnection areas:');
-coil_parts = calculate_opening_directions(coil_parts,input.b_0_direction,input.interconnection_cut_width);
-toc; 
-
+toc;
 
 %interconnect the single groups
 tic;
 disp('Interconnect the single groups:');
-coil_parts = interconnect_within_groups(coil_parts,input.force_cut_selection);
-toc; 
+coil_parts = interconnect_within_groups(coil_parts,input);
+toc;
+
 
 if ~strcmp(input.interconnection_method,'regular')
 
@@ -172,35 +163,35 @@ else % do the spiral in-out double layer interconnection method
 %interconnect the groups to a single wire path
 tic;
 disp('Interconnect the groups to a single wire path:');
-coil_parts=interconnect_among_groups(coil_parts,input.interconnection_cut_width);
-toc; 
+coil_parts=interconnect_among_groups(coil_parts,input);
+toc;
 
 %connect the groups and shift the return paths over the surface
 tic;
 disp('Shift the return paths over the surface:');
-coil_parts = shift_return_paths(coil_parts,input.normal_shift_length);
-toc; 
+coil_parts = shift_return_paths(coil_parts,input);
+toc;
     
 end
 
 %Calculate the inductance with fast henry
 tic;
 disp('Calculate the inductance with fast henry:');
-coil_parts = calculate_inductance_by_coil_layout(coil_parts,input.conductor_cross_section_width,input.conductor_cross_section_height,input.skip_inductance_calculation); % output in ohm,Henry,m,m²
-toc; 
+coil_parts = calculate_inductance_by_coil_layout(coil_parts,input); % output in ohm,Henry,m,m²
+toc;
 
 %Evaluate the result for the final wire track
 tic;
 disp('Evaluate the result for the final wire track:');
 [coil_parts,field_by_layout,field_by_unconnected_loops,field_layout_per1Amp,field_loops_per1Amp,field_error_vals,opt_current_layout] = evaluate_field_errors(coil_parts,target_field,sf_b_field);
-toc; 
+toc;
 
 %Calculate the resuting gradient field
 tic;
 disp('Calculate the resuting gradient field:');
 layout_gradient = calculate_gradient(coil_parts,target_field,field_layout_per1Amp,field_loops_per1Amp,combined_mesh);
-toc; 
-
+toc;
+%layout_gradient=[];
 
 else
     

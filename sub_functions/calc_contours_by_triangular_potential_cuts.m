@@ -2,8 +2,7 @@ function coil_parts=calc_contours_by_triangular_potential_cuts(coil_parts)
 %center the stream function potential around zero and add zeros around the
 %periphery
 
-
-
+part(numel(coil_parts)).raw=[]; %initialize container
 
 for part_ind=1:numel(coil_parts)
 
@@ -81,13 +80,12 @@ end
 
 %creat a struct with the unsorted points
 empty_potential_groups=cellfun(@isempty,potential_sorted_cut_points);
-clear unsorted_points
-unsorted_points(sum(~empty_potential_groups))=struct();
+part(part_ind).raw.unsorted_points(sum(~empty_potential_groups))=struct();
 running_ind=1;
 for struct_ind=find(~empty_potential_groups)
-unsorted_points(running_ind).potential=coil_parts(part_ind).potential_level_list(struct_ind);
-unsorted_points(running_ind).edge_ind=potential_sorted_cut_points{struct_ind}(:,3);
-unsorted_points(running_ind).uv=potential_sorted_cut_points{struct_ind}(:,[1 2]);
+part(part_ind).raw.unsorted_points(running_ind).potential=coil_parts(part_ind).potential_level_list(struct_ind);
+part(part_ind).raw.unsorted_points(running_ind).edge_ind=potential_sorted_cut_points{struct_ind}(:,3);
+part(part_ind).raw.unsorted_points(running_ind).uv=potential_sorted_cut_points{struct_ind}(:,[1 2]);
 running_ind=running_ind+1;
 end
 
@@ -98,20 +96,19 @@ end
 
 
 %select the one of two possible triangles which has not been used yet
-clear unarranged_loops
-unarranged_loops.loop.edge_inds=[];
-unarranged_loops.loop.uv=[];
+part(part_ind).raw.unarranged_loops.loop.edge_inds=[];
+part(part_ind).raw.unarranged_loops.loop.uv=[];
 
 
 %create loops
-for potential_group=1:numel(unsorted_points)
+for potential_group=1:numel(part(part_ind).raw.unsorted_points)
     
     
-all_current_edges=edge_nodes(unsorted_points(potential_group).edge_ind,:);
-all_current_opposed_nodes=edge_opposed_nodes(unsorted_points(potential_group).edge_ind,:);
-all_current_uv_coords=unsorted_points(potential_group).uv;
-% all_opposed_triangles=edge_attached_triangles_array(unsorted_points(potential_group).edge_ind,:);
-% all_current_triangles=edge_attached_triangles(unsorted_points(potential_group).edge_ind,:);   
+all_current_edges=edge_nodes(part(part_ind).raw.unsorted_points(potential_group).edge_ind,:);
+all_current_opposed_nodes=edge_opposed_nodes(part(part_ind).raw.unsorted_points(potential_group).edge_ind,:);
+all_current_uv_coords=part(part_ind).raw.unsorted_points(potential_group).uv;
+% all_opposed_triangles=edge_attached_triangles_array(part(part_ind).raw.unsorted_points(potential_group).edge_ind,:);
+% all_current_triangles=edge_attached_triangles(part(part_ind).raw.unsorted_points(potential_group).edge_ind,:);   
 
 set_new_start=1;    
 num_build_loops=0;
@@ -125,8 +122,8 @@ edge_already_used=zeros(size(all_current_edges,1),1);
         %initialize the starting position
         num_build_loops=num_build_loops+1;
         starting_edge=min(find(edge_already_used==0));
-        unarranged_loops(potential_group).loop(num_build_loops).uv=[all_current_uv_coords(starting_edge,:)];
-        unarranged_loops(potential_group).loop(num_build_loops).edge_inds=all_current_edges(starting_edge,:);
+        part(part_ind).raw.unarranged_loops(potential_group).loop(num_build_loops).uv=[all_current_uv_coords(starting_edge,:)];
+        part(part_ind).raw.unarranged_loops(potential_group).loop(num_build_loops).edge_inds=all_current_edges(starting_edge,:);
         %mark the start postion as "included"
         edge_already_used(starting_edge)=1;
         current_edge=starting_edge;
@@ -155,8 +152,8 @@ edge_already_used=zeros(size(all_current_edges,1),1);
         while ~(next_edge==starting_edge)
             %include the next point
             edge_already_used(next_edge)=1;
-            unarranged_loops(potential_group).loop(num_build_loops).uv=[unarranged_loops(potential_group).loop(num_build_loops).uv; all_current_uv_coords(next_edge,:)];
-            unarranged_loops(potential_group).loop(num_build_loops).edge_inds=[unarranged_loops(potential_group).loop(num_build_loops).edge_inds; all_current_edges(next_edge,:)];
+            part(part_ind).raw.unarranged_loops(potential_group).loop(num_build_loops).uv=[part(part_ind).raw.unarranged_loops(potential_group).loop(num_build_loops).uv; all_current_uv_coords(next_edge,:)];
+            part(part_ind).raw.unarranged_loops(potential_group).loop(num_build_loops).edge_inds=[part(part_ind).raw.unarranged_loops(potential_group).loop(num_build_loops).edge_inds; all_current_edges(next_edge,:)];
             current_edge=next_edge;
             %find the next edge
             %find the edges which contains the opposed nodes of the current edge as
@@ -187,14 +184,14 @@ end
 
 
 %evalute for each loop the current orientation
-unarranged_loops(numel(unsorted_points)).loop(1).current_orientation=[];
-for pot_ind=1:numel(unsorted_points)
-    center_segment_potential=unsorted_points(pot_ind).potential;
-for loop_ind=1:numel(unarranged_loops(pot_ind).loop)
-if numel(unarranged_loops(pot_ind).loop(loop_ind).edge_inds)>2
-test_edge=floor(size(unarranged_loops(pot_ind).loop(loop_ind).edge_inds,1)/2);
-first_edge=unarranged_loops(pot_ind).loop(loop_ind).edge_inds(test_edge,:);
-second_edge=unarranged_loops(pot_ind).loop(loop_ind).edge_inds(test_edge+1,:);
+part(part_ind).raw.unarranged_loops(numel(part(part_ind).raw.unsorted_points)).loop(1).current_orientation=[];
+for pot_ind=1:numel(part(part_ind).raw.unsorted_points)
+    center_segment_potential=part(part_ind).raw.unsorted_points(pot_ind).potential;
+for loop_ind=1:numel(part(part_ind).raw.unarranged_loops(pot_ind).loop)
+if numel(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).edge_inds)>2
+test_edge=floor(size(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).edge_inds,1)/2);
+first_edge=part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).edge_inds(test_edge,:);
+second_edge=part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).edge_inds(test_edge+1,:);
 node_1=intersect(first_edge,second_edge);
 node_2=setdiff(first_edge,node_1);
 node_3=setdiff(second_edge,node_1);
@@ -205,7 +202,7 @@ node_1_pot=coil_parts(part_ind).stream_function(node_1);
 node_2_pot=coil_parts(part_ind).stream_function(node_2);
 node_3_pot=coil_parts(part_ind).stream_function(node_3);
 %calculate the 2D gradient of the triangle
-center_segment_positon=(unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge,:)+unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge+1,:))./2;
+center_segment_positon=(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge,:)+part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge+1,:))./2;
 vec_center_node_1=node_1_uv-center_segment_positon;
 vec_center_node_2=node_2_uv-center_segment_positon;
 vec_center_node_3=node_3_uv-center_segment_positon;
@@ -215,13 +212,13 @@ pot_diff_center_node_3=node_3_pot-center_segment_potential;
 pot_gradient_vec=vec_center_node_1*pot_diff_center_node_1+vec_center_node_2*pot_diff_center_node_2+vec_center_node_3*pot_diff_center_node_3;
 %test the chirality of the segment on the potential gradient on that
 %segment
-segment_vec=unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge+1,:)-unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge,:);
+segment_vec=part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge+1,:)-part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(test_edge,:);
 cross_vec=cross([segment_vec 0],[pot_gradient_vec 0]);
-unarranged_loops(pot_ind).loop(loop_ind).current_orientation=sign(cross_vec(3));
+part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).current_orientation=sign(cross_vec(3));
 
-if unarranged_loops(pot_ind).loop(loop_ind).current_orientation==-1
-    unarranged_loops(pot_ind).loop(loop_ind).uv=flipud(unarranged_loops(pot_ind).loop(loop_ind).uv);
-    unarranged_loops(pot_ind).loop(loop_ind).edge_inds=flipud(unarranged_loops(pot_ind).loop(loop_ind).edge_inds);
+if part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).current_orientation==-1
+    part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv=flipud(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv);
+    part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).edge_inds=flipud(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).edge_inds);
 end
 else
 error('Some loops are to small and contain only 2 points, therefore ill-defined');
@@ -236,11 +233,11 @@ coil_parts(part_ind).contour_lines.uv=[];
 coil_parts(part_ind).contour_lines.potential=[];
 coil_parts(part_ind).contour_lines.current_orientation=[];
 build_ind=1;
-for pot_ind=1:numel(unsorted_points)
-for loop_ind=1:numel(unarranged_loops(pot_ind).loop)
-%coil_parts(part_ind).contour_lines(build_ind).uv=[unarranged_loops(pot_ind).loop(loop_ind).uv; unarranged_loops(pot_ind).loop(loop_ind).uv(1,:)]';
-coil_parts(part_ind).contour_lines(build_ind).uv=unarranged_loops(pot_ind).loop(loop_ind).uv';
-coil_parts(part_ind).contour_lines(build_ind).potential=unsorted_points(pot_ind).potential;
+for pot_ind=1:numel(part(part_ind).raw.unsorted_points)
+for loop_ind=1:numel(part(part_ind).raw.unarranged_loops(pot_ind).loop)
+%coil_parts(part_ind).contour_lines(build_ind).uv=[part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv; part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(1,:)]';
+coil_parts(part_ind).contour_lines(build_ind).uv=part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv';
+coil_parts(part_ind).contour_lines(build_ind).potential=part(part_ind).raw.unsorted_points(pot_ind).potential;
 %find the current orientation (for comparisson with other loops)
 uv_center=mean(coil_parts(part_ind).contour_lines(build_ind).uv,2);
 uv_to_center_vecs=coil_parts(part_ind).contour_lines(build_ind).uv(:,1:end-1)-uv_center;
@@ -272,15 +269,15 @@ end
 % hold off
 
 % %plot build loops
-% my_color=colorcube(3*numel(unarranged_loops));
+% my_color=colorcube(3*numel(part(part_ind).raw.unarranged_loops));
 % my_color(find([[my_color(:,1)==my_color(:,2)].*[my_color(:,1)==my_color(:,3)]]'),:)=[]; %#ok
 % color_ind=1;
 % figure; hold on; axis equal;
 % %triplot(triangulation(parameterized_mesh.f,parameterized_mesh.uv),'color',[0.9 0.9 0.9]);
-% for pot_ind=1:numel(unarranged_loops)
-% for loop_ind=1:numel(unarranged_loops(pot_ind).loop)
-% if ~isempty(unarranged_loops(pot_ind).loop(loop_ind).uv)
-% plot(unarranged_loops(pot_ind).loop(loop_ind).uv(:,1),unarranged_loops(pot_ind).loop(loop_ind).uv(:,2),'color',my_color(color_ind,:));
+% for pot_ind=1:numel(part(part_ind).raw.unarranged_loops)
+% for loop_ind=1:numel(part(part_ind).raw.unarranged_loops(pot_ind).loop)
+% if ~isempty(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv)
+% plot(part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(:,1),part(part_ind).raw.unarranged_loops(pot_ind).loop(loop_ind).uv(:,2),'color',my_color(color_ind,:));
 % end
 % end
 % color_ind=color_ind+1;

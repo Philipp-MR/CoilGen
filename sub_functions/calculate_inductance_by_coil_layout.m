@@ -1,6 +1,12 @@
-function coil_parts =calculate_inductance_by_coil_layout(coil_parts,conductor_width,conductor_height,skip_inductance_calculation)
+function coil_parts =calculate_inductance_by_coil_layout(coil_parts,input)
 %Calculate the inducate by means of integration of the vector potential
 %along the coil track
+
+
+conductor_width=input.conductor_cross_section_width;
+conductor_height=input.conductor_cross_section_height;
+skip_inductance_calculation=input.skip_inductance_calculation;
+
 
 down_sample_factor=10; % reduce the number of track points since fasthenry has an upper limit..
 

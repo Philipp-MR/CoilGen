@@ -1,6 +1,8 @@
-function coil_parts=calculate_sensitivity_matrix(coil_parts,target_points,gauss_order)
+function coil_parts=calculate_sensitivity_matrix(coil_parts,target_field,input)
 
 
+target_points=target_field.coords;
+gauss_order=input.gauss_order;
 
 % calculate the sensitivity matrix
 coil_parts(numel(coil_parts)).sensitivity_matrix=[];

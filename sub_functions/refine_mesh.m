@@ -1,6 +1,9 @@
-function coil_parts=refine_mesh(coil_parts,iteration_num_stream_func_refinement,sf_source_file)
+function coil_parts=refine_mesh(coil_parts,input)
 %increase the resoltion of the mesh and interpolate the stream function
 
+
+iteration_num_stream_func_refinement=input.iteration_num_stream_func_refinement;
+sf_source_file=input.sf_source_file;
 
 if strcmp(sf_source_file,'none')
 

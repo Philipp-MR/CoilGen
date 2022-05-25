@@ -3,10 +3,10 @@ function contour_lines_curved=create_curved_contour_lines(contour_lines,planary_
 contour_lines_curved=contour_lines;
 %contour_lines_curved = rmfield(contour_lines_curved,'uvcoords');
 % for loop_num=1:numel(contour_lines)
-% contour_lines_curved(loop_num).point_coordinates=zeros(3,size(contour_lines(loop_num).uvcoords,2));
+% contour_lines_curved(loop_num).v=zeros(3,size(contour_lines(loop_num).uvcoords,2));
 % end
 for loop_num=1:numel(contour_lines)
-contour_lines_curved(loop_num).point_coordinates=uv_to_xyz_loc(contour_lines(loop_num).uvcoords,planary_mesh,curved_mesh);
+contour_lines_curved(loop_num).v=uv_to_xyz_loc(contour_lines(loop_num).uvcoords,planary_mesh,curved_mesh);
 %disp(strcat('Loop Number',' ',num2str(loop_num),' Point Number ',num2str(point_num)));      
 end
 

@@ -1,6 +1,6 @@
-function coil_parts= shift_return_paths(coil_parts,vertical_separation)
+function coil_parts= shift_return_paths(coil_parts,input)
     
-
+vertical_separation=input.normal_shift_length;
 
 
 %local variables

@@ -13,7 +13,7 @@ for part_ind=1:numel(coil_parts)
 %Calcuate the combined field of the unconnected contours
 coil_parts(part_ind).field_by_loops=zeros(3,size(target_field.b,2));
 for loop_ind=1:numel(coil_parts(part_ind).contour_lines)
-loop_field=biot_savart_calc_b(coil_parts(part_ind).contour_lines(loop_ind).point_coordinates,target_field);
+loop_field=biot_savart_calc_b(coil_parts(part_ind).contour_lines(loop_ind).v,target_field);
 coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops+loop_field;
 end
 coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops.*coil_parts(part_ind).contour_step;
@@ -69,7 +69,7 @@ end
 for part_ind=1:numel(coil_parts)
 if possible_polarities(best_dir_loops,part_ind)~=1
 for loop_ind=1:numel(coil_parts(part_ind).contour_lines)
-coil_parts(part_ind).contour_lines(loop_ind).point_coordinates=fliplr(coil_parts(part_ind).contour_lines(loop_ind).point_coordinates);
+coil_parts(part_ind).contour_lines(loop_ind).v=fliplr(coil_parts(part_ind).contour_lines(loop_ind).v);
 coil_parts(part_ind).contour_lines(loop_ind).uv=fliplr(coil_parts(part_ind).contour_lines(loop_ind).uv);
 end
 end

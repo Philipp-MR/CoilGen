@@ -23,7 +23,7 @@ all_points_v=[];
 all_points_uv=[];
 for group_ind=1:numel(coil_parts(part_ind).groups)
 for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops  )
-all_points_v=[all_points_v coil_parts(part_ind).groups(group_ind).loops(loop_ind).point_coordinates];
+all_points_v=[all_points_v coil_parts(part_ind).groups(group_ind).loops(loop_ind).v];
 all_points_uv=[all_points_uv coil_parts(part_ind).groups(group_ind).loops(loop_ind).uv];
 end
 end
@@ -49,7 +49,7 @@ low_cuts(group_ind).uv(loop_num).coords=[];
 
 
 %loop_normal=calc_mean_loop_normal(groups,group_ind,group_center,total_center_v);
-loop_normal=calc_mean_loop_normal2(coil_parts(part_ind).groups,group_ind,coil_parts(part_ind).coil_mesh);
+loop_normal=calc_mean_loop_normal(coil_parts(part_ind).groups(group_ind),coil_parts(part_ind).coil_mesh);
 
 %test if loop normal and b0_direction are not independent enough
 if norm(cross(b_0_direction./norm(b_0_direction),loop_normal))<0.05
@@ -82,10 +82,10 @@ end
 
 %find the cut points of the cut plane with the loops
 for loop_ind=1:loop_num
-for point_ind=2:size(coil_parts(part_ind).groups(group_ind).loops(loop_ind).point_coordinates,2)
-point_a=coil_parts(part_ind).groups(group_ind).loops(loop_ind).point_coordinates(:,point_ind-1)';
-point_b=coil_parts(part_ind).groups(group_ind).loops(loop_ind).point_coordinates(:,point_ind)';
-[cut_p,cut_flag]=plane_line_intersect(cut_plane_direction,coil_parts(part_ind).group_centers.v(:,group_ind)',point_a,point_b);
+for point_ind=2:size(coil_parts(part_ind).groups(group_ind).loops(loop_ind).v,2)
+point_a=coil_parts(part_ind).groups(group_ind).loops(loop_ind).v(:,point_ind-1)';
+point_b=coil_parts(part_ind).groups(group_ind).loops(loop_ind).v(:,point_ind)';
+[cut_p,cut_flag]=calc_plane_line_intersection(cut_plane_direction,coil_parts(part_ind).group_centers.v(:,group_ind)',point_a,point_b);
 if cut_flag==1 %test if there is a cut between the line points
 cut_points(group_ind).v(loop_ind).coords=[cut_points(group_ind).v(loop_ind).coords cut_p'];
 %build the corresponding uv point
@@ -152,31 +152,6 @@ coil_parts(part_ind).rectangle_cuts.low=create_cut_rectangle(coil_parts(part_ind
 
 end
 
-function [I,check]=plane_line_intersect(n,V0,P0,P1)
-I=[0 0 0];
-u = P1-P0;
-w = P0 - V0;
-D = dot(n,u);
-N = -dot(n,w);
-check=0;
-if abs(D) < 10^-7        % The segment is parallel to plane
-        if N == 0           % The segment lies in plane
-            check=2;
-            return
-        else
-            check=0;       %no intersection
-            return
-        end
-end
-%compute the intersection parameter
-sI = N / D;
-I = P0+ sI.*u;
-if (sI < 0 || sI > 1)
-    check= 3;          %The intersection point  lies outside the segment, so there is no intersection
-else
-    check=1;
-end
-end
 
 function rectangle_points=create_cut_rectangle(group_container,cut_points,coil_mesh,opening_gap,group_center,vol_diagonal,expand_factor)
 %createting the "cut rectangles" for the groups of loops, which whom the
@@ -268,113 +243,6 @@ end
 
 
 
-function loop_normal=calc_mean_loop_normal(group_container,group_ind,group_center,total_center)
-single_group_center=group_center.v(:,group_ind);
-cross_p=zeros(3,numel(group_container(group_ind).loops));
-for iiii=1:numel(group_container(group_ind).loops)
-loop_vecs=group_container(group_ind).loops(iiii).point_coordinates(:,2:end)-group_container(group_ind).loops(iiii).point_coordinates(:,1:end-1);
-if group_container(group_ind).loops(iiii).current_orientation==-1
-loop_vecs=loop_vecs.*(-1);
-end
-vecs_to_group_center=group_container(group_ind).loops(iiii).point_coordinates(:,2:end)-single_group_center;
-cross_p(:,iiii)=mean(cross(loop_vecs,vecs_to_group_center),2);
-end
-loop_normal=mean(cross_p,2);
-loop_normal=loop_normal./norm(loop_normal);
-%mirror the normal if does not point toward the center
-loop_orientation=dot(total_center-single_group_center,loop_normal);
-if loop_orientation<0
-loop_normal=loop_normal.*(-1);
-end
-end
-
-
-function loop_normal=calc_mean_loop_normal2(group_container,group_ind,coil_mesh)
-all_loops=[];
-for contour_ind=1:numel(group_container(group_ind).loops)
-all_loops=[all_loops group_container(group_ind).loops(contour_ind).uv];
-end
-curved_mesh=triangulation(coil_mesh.faces',coil_mesh.vertices');
-%Calculate vertex normals for later
-face_normal=faceNormal(curved_mesh);
-%make sure that they are pointing to the outisde of the surface
-if mean(dot([vertexNormal(curved_mesh)]',[curved_mesh.Points-mean(curved_mesh.Points)]'))<0
-face_normal=face_normal.*(-1);
-end
-[target_triangle_normal,~] = pointLocation(triangulation(coil_mesh.faces',coil_mesh.uv'),all_loops(1,:)',all_loops(2,:)');
-loop_normal=mean(face_normal(target_triangle_normal(~isnan(target_triangle_normal)),:),1)';
-loop_normal=loop_normal./norm(loop_normal);
-end
-
-
-% function contour_lines= turn_loops(contour_lines,planary_mesh_matlab_format)
-% %Turn the loops in a unifying way by point shifting
-% mesh_boundaries=[max(planary_mesh_matlab_format.Points(:,1)); max(planary_mesh_matlab_format.Points(:,2))];
-% for loop_inds=1:numel(contour_lines)
-% point_inds=vecnorm(contour_lines(loop_inds).uv-mesh_boundaries);
-% [~,min_ind]=min(point_inds);
-% contour_lines(loop_inds).uv=circshift(contour_lines(loop_inds).uv,min_ind*(-1)+1,2);
-% contour_lines(loop_inds).point_coordinates=circshift(contour_lines(loop_inds).point_coordinates,min_ind*(-1)+1,2);
-% end
-% end
-
-    
-% figure;
-% hold on;
-% for group_ind=1:numel(group_container)
-% high_cut_p=[high_cuts(group_ind).v(:).coords];
-% low_cut_p=[low_cuts(group_ind).v(:).coords];
-% for loop_ind=1:numel(group_container(group_ind).loops)
-% plot3(group_container(group_ind).loops(loop_ind).point_coordinates(1,:),...
-% group_container(group_ind).loops(loop_ind).point_coordinates(2,:),...
-% group_container(group_ind).loops(loop_ind).point_coordinates(3,:));
-% end
-% plot3(high_cut_p(1,:),high_cut_p(2,:),high_cut_p(3,:),'r');
-% plot3(low_cut_p(1,:),low_cut_p(2,:),low_cut_p(3,:),'g');
-% end
-% hold off;
-
-
-% hold on; 
-% for group_ind=1:numel(group_container)
-% for loop_ind=1:numel(group_container(group_ind).loops)
-%  scatter3(      group_container(group_ind).loops(loop_ind).point_coordinates(1,group_container(group_ind).loops(loop_ind).highest_lowest_point_ind),...
-%                     group_container(group_ind).loops(loop_ind).point_coordinates(2,group_container(group_ind).loops(loop_ind).highest_lowest_point_ind),...
-%                     group_container(group_ind).loops(loop_ind).point_coordinates(3,group_container(group_ind).loops(loop_ind).highest_lowest_point_ind),'g','filled');
-% end
-% end
-% hold off;
-
-% group_container(group_ind).is_perpendicular_to_b0=zeros(1,numel(group_container(group_ind).loops));
-% for loop_ind=1:numel(group_container(group_ind).loops)
-% loop_points=group_container(group_ind).loops(loop_ind).point_coordinates;
-% rotated_points=rotationMatrix*loop_points;
-% b0_projection_height=rotated_points(1,:);
-% %check if all loop points have simular projection heigth which means
-% %that the loop is perpendicular to the b0_direction
-% aprox_loop_radius=mean(vecnorm(group_container(group_ind).loops(loop_ind).point_coordinates-group_center.v(:,group_ind)));
-% if std(b0_projection_height)/aprox_loop_radius<0.1
-% group_container(group_ind).loops(loop_ind).highest_lowest_point_ind=[nan nan];
-% group_container(group_ind).is_perpendicular_to_b0(loop_ind)=1;
-% else
-% [~,b0_projection_height_sort_inds]=sort(b0_projection_height);
-% group_container(group_ind).loops(loop_ind).highest_lowest_point_ind=[b0_projection_height_sort_inds(1) b0_projection_height_sort_inds(end)];
-% end
-% end
-
-%define the orientation of the cut plane
-%find vector orthorgonal to B0 and the normal of vector of mesh at the
-%group center
-
-% if abs(dot(loop_normal,b_0_direction))>0.9
-% [~,vi_max_Ind]=max(v1);
-% loop_normal=v1.*point_vol_size(1,vi_max_Ind);
-% end
-
-% rot_angle=acos(dot(v1, v2) / (norm(v1) * norm(v2)));
-% rotationVector = cross(v1,v2);
-% rotationVector=rotationVector./norm(rotationVector).*rot_angle;
-% rotationMatrix = rotationVectorToMatrix(rotationVector);
 
 end
 

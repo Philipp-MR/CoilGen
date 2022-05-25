@@ -23,6 +23,10 @@ addParameter(input_parser,'secondary_target_weight',1,@isnumeric);
 addParameter(input_parser,'use_only_target_mesh_verts',false,@islogical);
 %file of an already optimized stream function
 addParameter(input_parser,'sf_source_file','none',@ischar);
+%target field file; pointwise definition
+addParameter(input_parser,'target_field_definition_file','none',@ischar);
+%Stream function optimization method; tikkonov, fmincon
+addParameter(input_parser,'sf_opt_method','tikkonov',@ischar);
 %Number of potential levels
 addParameter(input_parser,'levels',10,@isnumeric);
 %Specify one of the three ways the level sets are calculated:
@@ -89,6 +93,8 @@ addParameter(input_parser,'save_stl_flag',false,@islogical);
 addParameter(input_parser,'plot_flag',true,@islogical);
 %interconnection_method: Regular or spiral in/out
 addParameter(input_parser,'interconnection_method','regular',@ischar);
+%Group interconnection_method: 'straight' or 'crossed'
+addParameter(input_parser,'group_interconnection_method','crossed',@ischar);
 %Flag to skip post processing
 addParameter(input_parser,'skip_postprocessing',false,@islogical);
 %Flag to skip inductance_calculation

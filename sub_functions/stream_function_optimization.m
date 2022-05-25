@@ -1,6 +1,6 @@
-function [coil_parts,combined_mesh,b_field_opt_sf] = stream_function_optimization(coil_parts,target_field,tikonov_reg_factor,sf_source_file)
+function [coil_parts,combined_mesh,b_field_opt_sf] = stream_function_optimization(coil_parts,target_field,input)
 
-
+tikonov_reg_factor=input.tikonov_reg_factor;
 
 %combine the matrices from the different mesh parts
 sensitivity_matrix=[];
@@ -30,8 +30,6 @@ end
 
 combined_mesh.bounding_box=[min(combined_mesh.vertices(1,:)) max(combined_mesh.vertices(1,:)); min(combined_mesh.vertices(2,:)) max(combined_mesh.vertices(2,:)); min(combined_mesh.vertices(3,:)) max(combined_mesh.vertices(3,:))];
 
-if strcmp(sf_source_file,'none')
-
 set_zero_flag=false; %flag to force the potential on the boundary nodes to zero
 
 %Redece target field only to z component
@@ -47,34 +45,45 @@ target_field_single=[ squeeze(target_field.b(3,:))];
 %Scale the tikonov regularization factor with the number of target points and mesh vertices
 tikonov_reg_factor=tikonov_reg_factor*size(reduced_sensitivity_matrix,1)/size(reduced_sensitivity_matrix,2);
 
+if strcmp(input.sf_opt_method,'tikkonov')
+
 %Calculate the stream function by the tikonov optimization approach
 tik_reg_mat=tikonov_reg_factor*reduced_res_matrix;
 reduced_sf=pinv(reduced_sensitivity_matrix'*reduced_sensitivity_matrix+tik_reg_mat'*tik_reg_mat)*reduced_sensitivity_matrix'*target_field_single';
 
 
-% %find the constrained solution
-% stream_func_max=max(reduced_sf)*0.2;
-% lb=ones(size(reduced_sf)).*(-1).*stream_func_max;
-% ub=ones(size(reduced_sf)).*stream_func_max;
-% cost_function = @(x) sum((reduced_sensitivity_matrix*x-target_field_single').^2)+tikonov_reg_factor*(x'*reduced_res_matrix*x);
-% options = optimoptions('fmincon','Display','iter','Algorithm','interior-point');
-% %options = optimoptions('fmincon');
-% options.MaxIterations=200;
-% options.MaxFunctionEvaluations=10^5;
-% 
-% reduced_sf = fmincon(cost_function,...
-%                                                 reduced_sf,...
-%                                                 [], ...
-%                                                 [], ...
-%                                                 [], ...
-%                                                 [], ...
-%                                                 lb, ...
-%                                                 ub, ...
-%                                                 [], ...
-%                                                 options);                   
+else
+
+%find the constrained solution
+stream_func_max=max(reduced_sf)*2;
+lb=ones(size(reduced_sf)).*(-1).*stream_func_max;
+ub=ones(size(reduced_sf)).*stream_func_max;
+cost_function = @(x) sum((reduced_sensitivity_matrix*x-target_field_single').^2)+tikonov_reg_factor*(x'*reduced_res_matrix*x);
+options = optimoptions('fmincon','Display','iter','Algorithm','interior-point');
+%options = optimoptions('fmincon');
+options.MaxIterations=100;
+options.MaxFunctionEvaluations=10^8;
+options.OptimalityTolerance = 1.000000e-8;
+
+% % %extended values
+% % options.MaxIterations=20000;
+% % options.MaxFunctionEvaluations=10^10;
+% % options.OptimalityTolerance = 1.000000e-10;
 
 
+reduced_sf = fmincon(cost_function,...
+                                                reduced_sf,...
+                                                [], ...
+                                                [], ...
+                                                [], ...
+                                                [], ...
+                                                lb, ...
+                                                ub, ...
+                                                [], ...
+                                                options);                   
 
+
+end
 
 
 
@@ -90,12 +99,6 @@ b_field_opt_sf=[squeeze(sensitivity_matrix(1,:,:))*opt_stream_func squeeze(sensi
 for part_ind=1:numel(coil_parts)
 coil_parts(part_ind).stream_function=opt_stream_func(combined_mesh.mesh_part_vertex_ind==part_ind);
 end
-
-else
-b_field_opt_sf=sf_source_file.target_field;
-coil_parts(part_ind).stream_function=opt_stream_func;
-end
-
 
 
 

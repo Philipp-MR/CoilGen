@@ -21,14 +21,15 @@ point_sum_uv=[];
 point_sum_v=[];
 for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
 point_sum_uv=[point_sum_uv coil_parts(part_ind).groups(group_ind).loops(loop_ind).uv];
-point_sum_v=[point_sum_v coil_parts(part_ind).groups(group_ind).loops(loop_ind).point_coordinates];  
+point_sum_v=[point_sum_v coil_parts(part_ind).groups(group_ind).loops(loop_ind).v];  
 end
 total_group_center.uv(:,group_ind)=mean(point_sum_uv,2);
 total_group_center.v(:,group_ind)=mean(point_sum_v,2);
 inner_center=mean(coil_parts(part_ind).groups(group_ind).loops(end).uv,2);
 %check if the total group center is within the most inner loop of the group
 inner_test_loop=[coil_parts(part_ind).groups(group_ind).loops(end).uv-mean(coil_parts(part_ind).groups(group_ind).loops(end).uv,2)].*0.9+mean(coil_parts(part_ind).groups(group_ind).loops(end).uv,2);
-total_group_center_is_in=inpolygon(total_group_center.uv(1,group_ind),total_group_center.uv(2,group_ind),inner_test_loop(1,:),inner_test_loop(2,:));
+%total_group_center_is_in=inpolygon(total_group_center.uv(1,group_ind),total_group_center.uv(2,group_ind),inner_test_loop(1,:),inner_test_loop(2,:));
+total_group_center_is_in=check_mutual_loop_inclusion(total_group_center.uv(:,group_ind),inner_test_loop);
 if total_group_center_is_in==1
 % total group center and inner center is within inner loop
 group_centers_2d(:,group_ind)=total_group_center.uv(:,group_ind);
@@ -38,7 +39,9 @@ else
 scale_ind=1000;
 cut_line_x=[inner_center(1)+(total_center(1)-inner_center(1))*scale_ind inner_center(1)-(total_center(1)-inner_center(1))*scale_ind];
 cut_line_y=[inner_center(2)+(total_center(2)-inner_center(2))*scale_ind inner_center(2)-(total_center(2)-inner_center(2))*scale_ind];
-[line_cut_inner_total_x,line_cut_inner_total_y] = polyxpoly(coil_parts(part_ind).groups(group_ind).loops(end).uv(1,:),coil_parts(part_ind).groups(group_ind).loops(end).uv(2,:),cut_line_x,cut_line_y);
+intersection_points=find_segment_intersections(coil_parts(part_ind).groups(group_ind).loops(end).uv,[cut_line_x; cut_line_y]);
+line_cut_inner_total_x=intersection_points.uv(1,:)';
+line_cut_inner_total_y=intersection_points.uv(2,:)';
 if isempty(line_cut_inner_total_x)
 group_centers_2d(:,group_ind)=inner_center;
 else 

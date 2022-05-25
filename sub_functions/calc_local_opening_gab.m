@@ -1,16 +1,127 @@
-function local_opening_gab=calc_local_opening_gab(coil_mesh,middle_point,othorgonal_vector,opening_gab,vol_diagonal)
+function local_opening_gab=calc_local_opening_gab(loop,cut_point_segment_ind,opening_gab)
 
+%local_opening_gab=calc_local_opening_gab2(coil_mesh,loop,cut_point,cut_direction,opening_gab)
+
+uv_distance=vecnorm(loop.uv(:,cut_point_segment_ind+1)-loop.uv(:,cut_point_segment_ind));
+v_distane=vecnorm(loop.v(:,cut_point_segment_ind+1)-loop.v(:,cut_point_segment_ind));
+
+local_opening_gab=opening_gab*uv_distance/v_distane;
+
+
+
+
+%Old version with edge projection
 %Calulate the local opening width within the flat 2D domian
+% target_triangle=pointLocation(triangulation(coil_mesh.f,coil_mesh.uv'),cut_point.uv(1),cut_point.uv(2));
+% 
+% vertex(1).v=coil_mesh.v(coil_mesh.f(target_triangle,1),:)';
+% vertex(1).uv=coil_mesh.uv(:,coil_mesh.f(target_triangle,1));
+% 
+% vertex(2).v=coil_mesh.v(coil_mesh.f(target_triangle,2),:)';
+% vertex(2).uv=coil_mesh.uv(:,coil_mesh.f(target_triangle,2));
+% 
+% vertex(3).v=coil_mesh.v(coil_mesh.f(target_triangle,3),:)';
+% vertex(3).uv=coil_mesh.uv(:,coil_mesh.f(target_triangle,3));
+% 
+% edge(1).v=vertex(2).v-vertex(1).v;
+% edge(2).v=vertex(3).v-vertex(2).v;
+% edge(3).v=vertex(1).v-vertex(3).v;
+% 
+% edge(1).uv=vertex(2).uv-vertex(1).uv;
+% edge(2).uv=vertex(3).uv-vertex(2).uv;
+% edge(3).uv=vertex(1).uv-vertex(3).uv;
+% 
+% %calculate the length of shift in the wanted direction
+% cut_direction=cut_direction./vecnorm(cut_direction);
+% 
+% cut_direction_xyz=dot(cut_direction,edge(1).uv)*edge(1).v+dot(cut_direction,edge(2).uv)*edge(2).v;
+% curved_unit_length=vecnorm(cut_direction_xyz);
+% 
+% % calcalte the wanted length that corresponds to the targeted opening widht
+% % but in the uv domain
+% local_opening_gab=opening_gab/curved_unit_length;
 
 
-opening_gab=opening_gab/(1000000*vol_diagonal);
-point_aa=middle_point+opening_gab*othorgonal_vector/2;
-point_bb=middle_point-opening_gab*othorgonal_vector/2;
-[point_a_curved,~]=uv_to_xyz(point_aa,triangulation(coil_mesh.faces',coil_mesh.uv'),triangulation(coil_mesh.faces',coil_mesh.vertices'));
-[point_b_curved,~]=uv_to_xyz(point_bb,triangulation(coil_mesh.faces',coil_mesh.uv'),triangulation(coil_mesh.faces',coil_mesh.vertices'));
-curved_length=vecnorm(point_b_curved-point_a_curved);
-local_opening_gab=opening_gab*opening_gab/curved_length;
-local_opening_gab=local_opening_gab*(1000000*vol_diagonal);
+
+
+
+
+
+
+% % %Old version with Transformtion Matrix
+% % 
+% % %Calulate the local opening width within the flat 2D domian
+% % target_triangle=pointLocation(triangulation(coil_mesh.f,coil_mesh.uv'),cut_point.uv(1),cut_point.uv(2));
+% % 
+% % vertex(1).v=coil_mesh.v(coil_mesh.f(target_triangle,1),:)';
+% % vertex(1).uv=coil_mesh.uv(:,coil_mesh.f(target_triangle,1));
+% % 
+% % vertex(2).v=coil_mesh.v(coil_mesh.f(target_triangle,2),:)';
+% % vertex(2).uv=coil_mesh.uv(:,coil_mesh.f(target_triangle,2));
+% % 
+% % vertex(3).v=coil_mesh.v(coil_mesh.f(target_triangle,3),:)';
+% % vertex(3).uv=coil_mesh.uv(:,coil_mesh.f(target_triangle,3));
+% % 
+% % 
+% % % all_dx=[vertex(2).v(1)-vertex(1).v(1) vertex(3).v(1)-vertex(1).v(1) vertex(3).v(1)-vertex(2).v(1)];
+% % % all_dy=[vertex(2).v(2)-vertex(1).v(2) vertex(3).v(2)-vertex(1).v(2) vertex(3).v(2)-vertex(2).v(2)];
+% % % all_dz=[vertex(2).v(3)-vertex(1).v(3) vertex(3).v(3)-vertex(1).v(3) vertex(3).v(3)-vertex(2).v(3)];
+% % 
+% % all_du=[vertex(2).uv(1)-vertex(1).uv(1) vertex(3).uv(1)-vertex(1).uv(1) vertex(3).v(1)-vertex(2).uv(1)];
+% % all_dv=[vertex(2).uv(2)-vertex(1).uv(2) vertex(3).uv(2)-vertex(1).uv(2) vertex(3).v(2)-vertex(2).uv(2)];
+% % 
+% % %find the vertices with largest coordinate differnence
+% % 
+% % % [~,dx_max_ind]=max((all_dx));
+% % % [~,dy_max_ind]=max((all_dy));
+% % % [~,dz_max_ind]=max((all_dz));
+% % % 
+% % % [~,dx_min_ind]=min((all_dx));
+% % % [~,dy_min_ind]=min((all_dy));
+% % % [~,dz_min_ind]=min((all_dz));
+% % 
+% % [~,du_max_ind]=max((all_du));
+% % [~,dv_max_ind]=max((all_dv));
+% % 
+% % [~,du_min_ind]=min((all_du));
+% % [~,dv_min_ind]=min((all_dv));
+% % 
+% % 
+% % % % %Calculate the elements of the locally linear xyz->uv transformation matrix
+% % % du_dx=(vertex(dx_max_ind).uv(1)-vertex(dx_min_ind).uv(1))/(vertex(dx_max_ind).v(1)-vertex(dx_min_ind).v(1));
+% % % du_dy=(vertex(dy_max_ind).uv(1)-vertex(dy_min_ind).uv(1))/(vertex(dy_max_ind).v(2)-vertex(dy_min_ind).v(2));
+% % % du_dz=(vertex(dz_max_ind).uv(1)-vertex(dz_min_ind).uv(1))/(vertex(dz_max_ind).v(3)-vertex(dz_min_ind).v(3));
+% % % 
+% % % dv_dx=(vertex(dx_max_ind).uv(2)-vertex(dx_min_ind).uv(2))/(vertex(dx_max_ind).v(1)-vertex(dx_min_ind).v(1));
+% % % dv_dy=(vertex(dy_max_ind).uv(2)-vertex(dy_min_ind).uv(2))/(vertex(dy_max_ind).v(2)-vertex(dy_min_ind).v(2));
+% % % dv_dz=(vertex(dz_max_ind).uv(2)-vertex(dz_min_ind).uv(2))/(vertex(dz_max_ind).v(3)-vertex(dz_min_ind).v(3));
+% % 
+% % %Calculate the elements of the locally linear uv->xyz transformation matrix
+% % dx_du=(vertex(du_max_ind).v(1)-vertex(du_min_ind).v(1))/(vertex(du_max_ind).uv(1)-vertex(du_min_ind).uv(1));
+% % dx_dv=(vertex(dv_max_ind).v(1)-vertex(dv_min_ind).v(1))/(vertex(dv_max_ind).uv(2)-vertex(dv_min_ind).uv(2));
+% % 
+% % dy_du=(vertex(du_max_ind).v(2)-vertex(du_min_ind).v(2))/(vertex(du_max_ind).uv(1)-vertex(du_min_ind).uv(1));
+% % dy_dv=(vertex(dv_max_ind).v(2)-vertex(dv_min_ind).v(2))/(vertex(dv_max_ind).uv(2)-vertex(dv_min_ind).uv(2));
+% % 
+% % dz_du=(vertex(du_max_ind).v(3)-vertex(du_min_ind).v(3))/(vertex(du_max_ind).uv(1)-vertex(du_min_ind).uv(1));
+% % dz_dv=(vertex(dv_max_ind).v(3)-vertex(dv_min_ind).v(3))/(vertex(dv_max_ind).uv(2)-vertex(dv_min_ind).uv(2));
+% % 
+% % %Build the transformation matrix
+% % uv_to_xyz_mat=[dx_du dx_dv; dy_du dy_dv; dz_du dz_dv];
+% % % xyz_to_uv_mat=[du_dx du_dy du_dz; dv_dx dv_dy dv_dz];
+% % 
+% % 
+% % %calculate the length of shift in the wanted direction
+% % cut_direction=cut_direction./vecnorm(cut_direction);
+% % shift_vec=uv_to_xyz_mat*cut_direction;
+% % curved_unit_length=vecnorm(shift_vec);
+% % 
+% % %calcalte the wanted length that corresponds to the targeted opening widht
+% % %but in the uv domain
+% % local_opening_gab=opening_gab/curved_unit_length;
+
+
+
 
 
 end

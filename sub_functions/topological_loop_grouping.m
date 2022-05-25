@@ -11,19 +11,14 @@ coil_parts(numel(coil_parts)).level_positions=[];
 
 for part_ind=1:numel(coil_parts)
 
+%create cell array for each loop that give the embodied loops
 num_total_loops=numel(coil_parts(part_ind).contour_lines);
-loop_in_loop_cell_mat=cell(num_total_loops);
 loop_in_loop_mat=zeros(num_total_loops);
 for loop_to_test=1:num_total_loops
 for loop_num=1:num_total_loops
-loop_in_loop_cell_mat{loop_to_test,loop_num}=inpolygon(coil_parts(part_ind).contour_lines(loop_num).uv(1,:),coil_parts(part_ind).contour_lines(loop_num).uv(2,:),...
-                                                                                    coil_parts(part_ind).contour_lines(loop_to_test).uv(1,:),coil_parts(part_ind).contour_lines(loop_to_test).uv(2,:));
+if loop_to_test~=loop_num
+loop_in_loop_mat(loop_to_test,loop_num)=check_mutual_loop_inclusion(coil_parts(part_ind).contour_lines(loop_num).uv,coil_parts(part_ind).contour_lines(loop_to_test).uv);
 end
-end
-%create cell array for each loop that give the embodied loops
-for loop_to_test=1:num_total_loops
-for loop_num=1:num_total_loops
-loop_in_loop_mat(loop_to_test,loop_num)=sum(loop_in_loop_cell_mat{loop_to_test,loop_num})>0;
 end
 end
 loop_in_loop_mat=loop_in_loop_mat.*~diag(1:num_total_loops);
@@ -153,7 +148,7 @@ kkkk=0;
 for jjjj=sort_ind_loops
 kkkk=kkkk+1;
 coil_parts(part_ind).groups(iiii).loops(kkkk).number_points=size(coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).uv,2);
-coil_parts(part_ind).groups(iiii).loops(kkkk).point_coordinates=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).point_coordinates;
+coil_parts(part_ind).groups(iiii).loops(kkkk).v=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).v;
 coil_parts(part_ind).groups(iiii).loops(kkkk).uv=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).uv;
 coil_parts(part_ind).groups(iiii).loops(kkkk).potential=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).potential;
 coil_parts(part_ind).groups(iiii).loops(kkkk).current_orientation=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).current_orientation;
@@ -164,7 +159,7 @@ end
 % for jjjj=sort_ind_loops
 % kkkk=kkkk+1;
 % coil_parts(part_ind).groups(iiii).loops(kkkk).number_points=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).number_points;
-% coil_parts(part_ind).groups(iiii).loops(kkkk).point_coordinates=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).point_coordinates;
+% coil_parts(part_ind).groups(iiii).loops(kkkk).v=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).v;
 % coil_parts(part_ind).groups(iiii).loops(kkkk).uv=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).uv;
 % coil_parts(part_ind).groups(iiii).loops(kkkk).potential=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).potential;
 % coil_parts(part_ind).groups(iiii).loops(kkkk).current_orientation=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).current_orientation;

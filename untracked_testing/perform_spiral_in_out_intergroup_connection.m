@@ -64,8 +64,8 @@ min_pos_group2=cell(numel(groups_to_connect));
 for ind1=1:numel(groups_to_connect)
 for ind2=1:numel(groups_to_connect)
 if ind2<ind1
-[min_group_dists(ind1,ind2),min_pos_group1{ind1,ind2},min_pos_group2{ind1,ind2}]=find_shortest_path_between_loops(coil_parts(part_ind).groups(groups_to_connect(ind1)).loops(1).point_coordinates,...
-                                                                                                                                                                    coil_parts(part_ind).groups(groups_to_connect(ind2)).loops(1).point_coordinates);
+[min_group_dists(ind1,ind2),min_pos_group1{ind1,ind2},min_pos_group2{ind1,ind2}]=find_shortest_path_between_loops(coil_parts(part_ind).groups(groups_to_connect(ind1)).loops(1).v,...
+                                                                                                                                                                    coil_parts(part_ind).groups(groups_to_connect(ind2)).loops(1).v);
 
 end
 end

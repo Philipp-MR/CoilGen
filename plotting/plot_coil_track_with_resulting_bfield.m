@@ -12,7 +12,13 @@ nexttile;
 hold on;
 for part_ind=1:numel(coil_layouts(single_ind_to_plot).out.coil_parts)
 trisurf(triangulation(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces',coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.vertices'),'facecolor','black','facealpha',0.05,'edgecolor','black','edgealpha',0.05);
+if isfield(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind),'wire_path')
 plot3(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).wire_path.v(1,:),coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).wire_path.v(2,:),coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).wire_path.v(3,:),'linewidth',2,'color',[0 0.4470 0.7410]);
+else
+for loop_ind=1:numel(coil_layouts.out.coil_parts(part_ind).contour_lines) 
+plot3(coil_layouts.out.coil_parts(part_ind).contour_lines(loop_ind).v(1,:),coil_layouts.out.coil_parts(part_ind).contour_lines(loop_ind).v(2,:),coil_layouts.out.coil_parts(part_ind).contour_lines(loop_ind).v(3,:),'linewidth',2,'color',[0 0.4470 0.7410]);
+end
+end
 %title("n = "+num2str(coil_layout(single_ind_to_plot).out.num_levels));
 end
 xlabel("x[m]");
@@ -20,7 +26,7 @@ ylabel("y[m]");
 zlabel("z[m]");
 %target_sf=coil_layout(single_ind_to_plot).out.target_field;
 %plot_vals_scatter=coil_layout(single_ind_to_plot).out.field_by_layout(3,:)./mean(abs(coil_layout(single_ind_to_plot).out.field_by_layout(3,:)));
-plot_vals_scatter=layout_c_1A.*1000;
+plot_vals_scatter=coil_layouts.out.field_layout_per1Amp(3,:).*1000;
 %plot_vals_scatter=coil_layout(single_ind_to_plot).out.field_by_layout(3,:)./max(abs(coil_layout(single_ind_to_plot).out.field_by_layout(3,:)));
 %field_by_layout=coil_layout(single_ind_to_plot).out.field_by_layout(3,:);
 %plot_vals_scatter=abs((field_by_layout-target_sf))./max(abs(target_sf)).*100;

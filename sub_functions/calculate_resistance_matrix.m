@@ -1,5 +1,9 @@
-function coil_parts=calculate_resistance_matrix(coil_parts,gauss_order,conductor_thickness,specific_conductivity_copper)
+function coil_parts=calculate_resistance_matrix(coil_parts,input)
 
+
+gauss_order=input.gauss_order;
+conductor_thickness=input.conductor_thickness;
+specific_conductivity_copper=input.specific_conductivity_conductor;
 
 
 % coil_mesh
