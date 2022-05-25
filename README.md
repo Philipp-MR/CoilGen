@@ -26,13 +26,13 @@ Check the documentation to get started
 1. Download and extract the file of the CoilGen repository
 2. Run one of the examples in the folder "Examples"
 
-The project requires MATLAB and optionally FastHenry2 for calculation of the coil inductance.  The MATLAB version should not be older than 2020A. Important: It also requires the MATLAB MAPPING-toolbox since the functions polyxpoly and inpolyon are used. Non-proprietary versions of these functions are also very welcome.
+The project requires MATLAB and optionally FastHenry2 for calculation of the coil inductance.  The MATLAB version should not be older than 2020A.
 
 
 ### Exemplary Images
 
-<!-- ![plot](./Documentation/flow_chart_algorithm_revised.png)  -->
-![plot](./Documentation/Results_CoilGen_YGradient.png)
+![plot](./Documentation/flow_chart_algorithm_revised.png)
+
 
 
 
