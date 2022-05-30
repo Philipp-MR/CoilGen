@@ -21,7 +21,7 @@ end
 %plot the opening cuts within groups
 for group_ind=1:numel(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).groups)
 for cut_ind=1:numel(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).groups(group_ind))
-plot(coil_layouts(single_ind_to_plot).out.coil_parts.groups(group_ind).cutshape(cut_ind).uv(1,:),coil_layouts(single_ind_to_plot).out.coil_parts.groups(group_ind).cutshape(cut_ind).uv(2,:),'r','LineWidth',2);
+plot(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).groups(group_ind).cutshape(cut_ind).uv(1,:),coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).groups(group_ind).cutshape(cut_ind).uv(2,:),'r','LineWidth',2);
 end
 end
 
