@@ -1,13 +1,30 @@
-function local_opening_gab=calc_local_opening_gab(loop,cut_point_segment_ind,opening_gab)
+function local_opening_gab=calc_local_opening_gab(loop,point_1,point_2,opening_gab)
 
 %local_opening_gab=calc_local_opening_gab2(coil_mesh,loop,cut_point,cut_direction,opening_gab)
 
-uv_distance=vecnorm(loop.uv(:,cut_point_segment_ind+1)-loop.uv(:,cut_point_segment_ind));
-v_distane=vecnorm(loop.v(:,cut_point_segment_ind+1)-loop.v(:,cut_point_segment_ind));
+if ~isempty(point_2) %two points are specified
+
+uv_distance=vecnorm(loop.uv(:,point_1)-loop.uv(:,point_2));
+v_distane=vecnorm(loop.v(:,point_1)-loop.v(:,point_2));
+
+local_opening_gab=opening_gab*uv_distance/v_distane;
+
+else %only one point is specified, find the other to build the direction
+
+[~,min_ind_2]=min(vecnorm(loop.uv-point_1));
+
+min_ind_1=min_ind_2+2;
+
+if min_ind_1<0; min_ind_1=min_ind_1+size(loop.uv,2); end;
+if min_ind_1>size(loop.uv,2); min_ind_1=min_ind_1-size(loop.uv,2); end;
+
+uv_distance=vecnorm(loop.uv(:,min_ind_1)-loop.uv(:,min_ind_2));
+v_distane=vecnorm(loop.v(:,min_ind_1)-loop.v(:,min_ind_2));
 
 local_opening_gab=opening_gab*uv_distance/v_distane;
 
 
+end
 
 
 %Old version with edge projection

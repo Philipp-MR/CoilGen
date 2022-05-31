@@ -6,12 +6,19 @@ opening_gap=input.interconnection_cut_width;
 
 %local parameters
 cut_height_ratio=1/10;
+additional_points_to_remove=2;
 %ratio_criteria_for_return_path_usage=1.5;
 
 coil_parts(numel(coil_parts)).opening_cuts_among_groups= []; %save the opening cuts for plotting
 coil_parts(numel(coil_parts)).wire_path=[];
 
 for part_ind=1:numel(coil_parts)
+
+%gather all return points to dismiss them for search of the group cut points
+all_cut_points=[];
+for group_ind=1:numel(coil_parts(part_ind).connected_group)
+all_cut_points=[all_cut_points coil_parts(part_ind).connected_group(group_ind).return_path.uv];
+end
 
 
 planary_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.uv');
@@ -58,6 +65,19 @@ for connect_ind=1:num_connections_to_do
 %get the tracks to connect
 grouptracks_to_connect=coil_parts(part_ind).connected_group(groups_to_connect);
 
+%remove the return_path for the search of mutual group cuts
+grouptracks_to_connect_without_returns=coil_parts(part_ind).connected_group(groups_to_connect);
+for ind1=1:numel(groups_to_connect)
+for ind2=1:numel(groups_to_connect)
+if ind2<ind1
+[grouptracks_to_connect_without_returns(ind1).uv,grouptracks_to_connect_without_returns(ind1).v]=remove_points_from_loop(grouptracks_to_connect(ind1),all_cut_points,additional_points_to_remove);
+[grouptracks_to_connect_without_returns(ind2).uv,grouptracks_to_connect_without_returns(ind2).v]=remove_points_from_loop(grouptracks_to_connect(ind2),all_cut_points,additional_points_to_remove);
+end
+end
+end
+
+
+
 %select the return paths of those interconnected groups for later
 %groups_return_paths=return_paths(groups_to_connect);
 
@@ -71,13 +91,15 @@ min_pos_group2=cell(numel(groups_to_connect),numel(groups_to_connect));
 for ind1=1:numel(groups_to_connect)
 for ind2=1:numel(groups_to_connect)
 if ind2<ind1
-[min_group_dists(ind1,ind2),near_points_first,min_group_inds1(ind1,ind2),near_points_second,min_group_inds2(ind1,ind2)]=find_min_mutual_loop_distance(grouptracks_to_connect(ind1),grouptracks_to_connect(ind2));
+%remove the return_path for the search of mutual group cuts
+[min_group_dists(ind1,ind2),near_points_first,min_group_inds1(ind1,ind2),near_points_second,min_group_inds2(ind1,ind2)]=find_min_mutual_loop_distance(grouptracks_to_connect_without_returns(ind1),grouptracks_to_connect_without_returns(ind2),false);
+%[min_group_dists(ind1,ind2),near_points_first,min_group_inds1(ind1,ind2),near_points_second,min_group_inds2(ind1,ind2)]=find_min_mutual_loop_distance(grouptracks_to_connect(ind1),grouptracks_to_connect(ind2));
 min_pos_group1{ind1,ind2}=near_points_first.uv;
 min_pos_group2{ind1,ind2}=near_points_second.uv;
 end
 end
 end
-min_group_dists=min_group_dists+min_group_dists';
+%min_group_dists=min_group_dists+min_group_dists';
 min_group_dists(min_group_dists==0)=Inf;
 min_pos_group1=cellfun(@(x,y) [x y], min_pos_group1, min_pos_group1', 'UniformOutput', false);
 min_pos_group2=cellfun(@(x,y) [x y], min_pos_group2, min_pos_group2', 'UniformOutput', false);
@@ -93,15 +115,16 @@ min_dist_couple=find(min_dist_couple);
 % raw_cut_point_dist=min(min_group_dists(:));
 
 %build opening cutshapes for both groups
-cut_width_1=calc_local_opening_gab(grouptracks_to_connect(couple_group1),min_group_inds1(couple_group1,couple_group2),opening_gap);
-cut_width_2=calc_local_opening_gab(grouptracks_to_connect(couple_group2),min_group_inds2(couple_group1,couple_group2),opening_gap);
+cut_width_1=calc_local_opening_gab(grouptracks_to_connect_without_returns(couple_group1),min_pos_group1{couple_group1,couple_group2},[],opening_gap);
+cut_width_2=calc_local_opening_gab(grouptracks_to_connect_without_returns(couple_group2),min_pos_group2{couple_group1,couple_group2},[],opening_gap);
+
+
+% cut_width_1=calc_local_opening_gab(grouptracks_to_connect(couple_group1),min_group_inds1(couple_group1,couple_group2),opening_gap);
+% cut_width_2=calc_local_opening_gab(grouptracks_to_connect(couple_group2),min_group_inds2(couple_group1,couple_group2),opening_gap);
 % cut_shape_1=build_cut_rectangle(grouptracks_to_connect(couple_group1),min_pos_group1{couple_group1,couple_group2},min_group_inds1(couple_group1,couple_group2),cut_width_1,cut_height_ratio);
 % cut_shape_2=build_cut_rectangle(grouptracks_to_connect(couple_group2),min_pos_group2{couple_group1,couple_group2},min_group_inds2(couple_group1,couple_group2),cut_width_2,cut_height_ratio);
 cut_shape_1=build_cut_circle(min_pos_group1{couple_group1,couple_group2},cut_width_1);
 cut_shape_2=build_cut_circle(min_pos_group2{couple_group1,couple_group2},cut_width_2);
-
-
-
 
 
 %save the cutshapes for later plotting

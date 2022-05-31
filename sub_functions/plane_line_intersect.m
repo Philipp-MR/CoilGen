@@ -17,7 +17,7 @@ end
 %compute the intersection parameter
 sI = N / D;
 intersec_point = point_0+ sI.*line_vec;
-if (sI < 0 || sI > 1)
+if (sI < -0.0000001 || sI > 1.0000001)
     cut_flag= 3;          %The intersection point  lies outside the segment, so there is no intersection
 else
     cut_flag=1;

@@ -8,7 +8,7 @@ vec_normal_local_smoothing_length=2;
 shift_length=2;
 smoothing_length=5;
 up_sample_factor=1;
-
+input.smooth_factor=1;
 
 coil_parts(numel(coil_parts)).shift_array=[];
 coil_parts(numel(coil_parts)).points_to_shift=[];
@@ -32,26 +32,32 @@ wire_path_out=coil_parts(part_ind).wire_path;
 
 
 % %re-equiize the point to point distance
-% wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,1);
-% [wire_path_out.v,wire_path_out.uv]=uv_to_xyz(wire_path_out.uv,planary_mesh,curved_mesh);
 
 
-wire_path_out = upsample_loop(wire_path_out,1);
-%downsample the wire
-%if size(wire_path_out.uv,2)>max_point_number+1
-%[wire_buff,~,~] = interparc([0:1/max_point_number:1 1],wire_path_out.uv(1,:),wire_path_out.uv(2,:));
-if up_sample_factor~=1
-wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,up_sample_factor);
+if input.smooth_flag
+wire_path_out.uv = smooth_track_by_folding(wire_path_out.uv ,input.smooth_factor);
+%wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,input.smooth_factor);
+[wire_path_out.v,wire_path_out.uv]=uv_to_xyz(wire_path_out.uv,planary_mesh,curved_mesh);
 end
 
+
+% wire_path_out = upsample_loop(wire_path_out,1);
+% %downsample the wire
+% %if size(wire_path_out.uv,2)>max_point_number+1
+% %[wire_buff,~,~] = interparc([0:1/max_point_number:1 1],wire_path_out.uv(1,:),wire_path_out.uv(2,:));
+% if up_sample_factor~=1
+% wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,up_sample_factor);
+% end
+
 %close the final track
-if any(wire_path_out.uv(:,end)-wire_path_out.uv(:,1))
+if all(wire_path_out.uv(:,end)==wire_path_out.uv(:,1))
 wire_path_out.uv=[wire_path_out.uv wire_path_out.uv(:,1)];
+wire_path_out.v=[wire_path_out.v wire_path_out.v(:,1)];
 end
 
 
 %convert the tracks to 3d
-[wire_path_out.v,wire_path_out.uv]=uv_to_xyz(wire_path_out.uv,planary_mesh,curved_mesh);
+%[wire_path_out.v,wire_path_out.uv]=uv_to_xyz(wire_path_out.uv,planary_mesh,curved_mesh);
 
 
 
@@ -172,6 +178,7 @@ end
 
 coil_parts(part_ind).shift_array=shift_array;
 coil_parts(part_ind).points_to_shift=points_to_shift;
+coil_parts(part_ind).wire_path.uv=wire_path_out.uv;
 coil_parts(part_ind).wire_path.v=wire_path_out.v;
   
 end

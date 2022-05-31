@@ -72,16 +72,16 @@ cut_shapes(loop_ind).cut_point.segment_ind=[cut_shapes(loop_ind).cut_point.segme
 cut_point_ratio=norm(point_a-cut_p)/norm(point_a-point_b);
 point_a_uv=loop_group.loops(loop_ind).uv(:,point_ind-1);
 point_b_uv=loop_group.loops(loop_ind).uv(:,point_ind);
-cut_poin_uv=point_a_uv+(point_b_uv-point_a_uv)*cut_point_ratio;
+cut_poin_uv=point_a_uv+(point_b_uv- point_a_uv)*cut_point_ratio;
 cut_shapes(loop_ind).cut_point.uv=[cut_shapes(loop_ind).cut_point.uv cut_poin_uv];
 end
 end
 
 %delete repeating degenerate cut points 
-is_repeating_cutpoint=all([[1 1 1]' diff(cut_shapes(1).cut_point.v,1,2)]==0,1);
+is_repeating_cutpoint=all(abs([[1 1]' diff(cut_shapes(loop_ind).cut_point.uv,1,2)])<10^(-10),1);
 cut_shapes(loop_ind).cut_point.v(:,is_repeating_cutpoint)=[];
 cut_shapes(loop_ind).cut_point.uv(:,is_repeating_cutpoint)=[];
-cut_shapes(loop_ind).cut_point.segment_ind(:,is_repeating_cutpoint)=[];
+cut_shapes(loop_ind).cut_point.segment_ind(is_repeating_cutpoint)=[];
 
 %seperated in higher and lower cut points:
 %first: use the 2d representation of the loop 
@@ -94,29 +94,29 @@ cut_shapes(loop_ind).cut_point.segment_ind(:,is_repeating_cutpoint)=[];
 %smallest
 if loop_ind == 1
 
-pair_inds=repelem(1:size(cut_shapes(1).cut_point.v,2)/2,2); %create indices of the cut pairs
+pair_inds=repelem(1:size(cut_shapes(loop_ind).cut_point.v,2)/2,2); %create indices of the cut pairs
 
-first_pair_dists_to_center=vecnorm(cut_shapes(1).cut_point.v-group_center);
+first_pair_dists_to_center=vecnorm(cut_shapes(loop_ind).cut_point.v-group_center);
 first_pair_dists_to_center=first_pair_dists_to_center(1:end-1)+first_pair_dists_to_center(2:end);
 first_pair_dists_to_center=first_pair_dists_to_center(logical(mod(1:numel(first_pair_dists_to_center),2)));
 [~,first_pair_dists_to_center]=min(first_pair_dists_to_center);
 first_pair=find(pair_inds==first_pair_dists_to_center);
 
 %find the direction for which high and low cuts are seperated
-cut_direction=cut_shapes(1).cut_point.v(:,first_pair(2))-cut_shapes(1).cut_point.v(:,first_pair(1));
+cut_direction=cut_shapes(loop_ind).cut_point.v(:,first_pair(2))-cut_shapes(loop_ind).cut_point.v(:,first_pair(1));
 cut_direction=cut_direction./vecnorm(cut_direction);
 
 %project the coordinates of the cut pairs
 [~,min_ind]=min(sum(cut_shapes(loop_ind).cut_point.v(:,first_pair).*cut_direction,1));
 
-cut_shapes(1).high_cut.segment_ind=cut_shapes(1).cut_point.segment_ind(first_pair(min_ind));
-cut_shapes(1).low_cut.segment_ind=cut_shapes(1).cut_point.segment_ind(first_pair([1 2]~=min_ind));
-cut_shapes(1).high_cut.v=cut_shapes(1).cut_point.v(:,first_pair(min_ind));
-cut_shapes(1).low_cut.v=cut_shapes(1).cut_point.v(:,first_pair([1 2]~=min_ind));
-cut_shapes(1).high_cut.uv=cut_shapes(1).cut_point.uv(:,first_pair(min_ind));
-cut_shapes(1).low_cut.uv=cut_shapes(1).cut_point.uv(:,first_pair([1 2]~=min_ind));
+cut_shapes(loop_ind).high_cut.segment_ind=cut_shapes(loop_ind).cut_point.segment_ind(first_pair(min_ind));
+cut_shapes(loop_ind).low_cut.segment_ind=cut_shapes(loop_ind).cut_point.segment_ind(first_pair([1 2]~=min_ind));
+cut_shapes(loop_ind).high_cut.v=cut_shapes(loop_ind).cut_point.v(:,first_pair(min_ind));
+cut_shapes(loop_ind).low_cut.v=cut_shapes(loop_ind).cut_point.v(:,first_pair([1 2]~=min_ind));
+cut_shapes(loop_ind).high_cut.uv=cut_shapes(loop_ind).cut_point.uv(:,first_pair(min_ind));
+cut_shapes(loop_ind).low_cut.uv=cut_shapes(loop_ind).cut_point.uv(:,first_pair([1 2]~=min_ind));
 
-center_first_cut=(cut_shapes(1).high_cut.v+cut_shapes(1).low_cut.v)./2;
+center_first_cut=(cut_shapes(loop_ind).high_cut.v+cut_shapes(loop_ind).low_cut.v)./2;
 
 else
 %choose for every following loop the pair of interconnections for which has the smallest distance to the previous pair
@@ -141,8 +141,8 @@ cut_shapes(loop_ind).low_cut.uv=cut_shapes(loop_ind).cut_point.uv(:,first_pair([
 end
 
 %finaly build cut shapes for the high and low position
-cut_shapes(loop_ind).cut_widh_high=calc_local_opening_gab(loop_group.loops(loop_ind),cut_shapes(loop_ind).high_cut.segment_ind,cut_width);
-cut_shapes(loop_ind).cut_widh_low=calc_local_opening_gab(loop_group.loops(loop_ind),cut_shapes(loop_ind).low_cut.segment_ind,cut_width);
+cut_shapes(loop_ind).cut_widh_high=calc_local_opening_gab(loop_group.loops(loop_ind),cut_shapes(loop_ind).high_cut.segment_ind+1,cut_shapes(loop_ind).high_cut.segment_ind,cut_width);
+cut_shapes(loop_ind).cut_widh_low=calc_local_opening_gab(loop_group.loops(loop_ind),cut_shapes(loop_ind).high_cut.segment_ind+1,cut_shapes(loop_ind).high_cut.segment_ind,cut_width);
 
 cut_shapes(loop_ind).high_cutshape=build_cut_rectangle(loop_group.loops(loop_ind),cut_shapes(loop_ind).high_cut.uv,cut_shapes(loop_ind).high_cut.segment_ind,cut_shapes(loop_ind).cut_widh_high,cut_height_ratio);
 cut_shapes(loop_ind).low_cutshape=build_cut_rectangle(loop_group.loops(loop_ind),cut_shapes(loop_ind).low_cut.uv,cut_shapes(loop_ind).low_cut.segment_ind,cut_shapes(loop_ind).cut_widh_low,cut_height_ratio);

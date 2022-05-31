@@ -1,8 +1,10 @@
 
-function [min_dist,near_points_a,min_ind_a,near_points_b,min_ind_b]=find_min_mutual_loop_distance(loop_a,loop_b)
+function [min_dist,near_points_a,min_ind_a,near_points_b,min_ind_b]=find_min_mutual_loop_distance(loop_a,loop_b,only_point_flag)
 %Calculate the mutal nearest positions and segment indices between two
 %loops 
 % Copyright: Philipp Amrein, Uniklinik Freiburg Mai 2022
+
+if ~only_point_flag
 
 near_dists=zeros(1,size(loop_b.v,2)-1);
 near_t_b=zeros(1,size(loop_b.v,2)-1);
@@ -39,6 +41,28 @@ all_dists=vecnorm(all_near_points_a-near_points_b.v);
 near_points_a.v=all_near_points_a(:,min_ind_a);
 near_points_a.uv=loop_a.uv(:,min_ind_a)+(loop_a.uv(:,min_ind_a+1)-loop_a.uv(:,min_ind_a)).*repmat(t(min_ind_a),[2 1]);
 
+
+else
+%find mutual nearest points; neglecting positions between points
+
+min_test_ind=zeros(1,size(loop_b.v,2));
+min_dist_ind=zeros(1,size(loop_b.v,2));
+for test_point_ind=1:size(loop_b.v,2)
+[min_test_ind(test_point_ind),min_dist_ind(test_point_ind)]=min(vecnorm(loop_a.v-repmat(loop_b.v(:,test_point_ind),[1 size(loop_a.v,2)])));
+end
+
+[min_dist,min_ind_b]=min(min_test_ind);
+[~,min_ind_a]=min(vecnorm(loop_a.v-loop_b.v(:,min_ind_b)));
+
+near_points_a.v=loop_a.v(:,min_ind_a);
+near_points_a.uv=loop_a.uv(:,min_ind_a);
+
+near_points_b.v=loop_b.v(:,min_ind_b);
+near_points_b.uv=loop_b.uv(:,min_ind_b);
+
+
+
+end
 
 
 % figure;

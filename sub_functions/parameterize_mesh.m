@@ -13,6 +13,7 @@ face_normals=faceNormal(triangulation(coil_parts(part_ind).coil_mesh.faces',coil
 max_face_normal_std=max([std(face_normals(:,1)) std(face_normals(:,2)) std(face_normals(:,3))]);
 
 coil_parts(part_ind).coil_mesh.v=coil_parts(part_ind).coil_mesh.vertices';
+coil_parts(part_ind).coil_mesh.fn=faceNormal(triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.v));
 
 %Check if vertex coordinates are rather constant in one the three
 %dimensions

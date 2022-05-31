@@ -19,7 +19,7 @@ for ind_1=1:numel(coil_parts(part_ind).contour_lines)
         if ind_1~=ind_2
         
 
-        [min_dist,~,~,~,~]=find_min_mutual_loop_distance(coil_parts(part_ind).contour_lines(ind_1),coil_parts(part_ind).contour_lines(ind_2));
+        [min_dist,~,~,~,~]=find_min_mutual_loop_distance(coil_parts(part_ind).contour_lines(ind_1),coil_parts(part_ind).contour_lines(ind_2),false);
         
         min_vals=[min_vals min_dist];
         

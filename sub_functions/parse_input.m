@@ -74,7 +74,11 @@ addParameter(input_parser,'specific_conductivity_conductor',0.018*10^(-6),@isnum
 % thickness of the sheet current density of within the stream function representation
 addParameter(input_parser,'conductor_thickness',0.005,@isnumeric); 
 %2D edge points for direct defintion of the cross section of the conductor
-addParameter(input_parser,'cross_sectional_points',[2 1.5 ;2 -1.5; -2 -1.5; -2 1.5; 2 1.5 ]'/2000,@isnumeric);
+%build circular cut shapes
+circular_resolution=10;
+init_cross_sectional_points=[sin(0:(2*pi)/(circular_resolution-1):2*pi); cos(0:(2*pi)/(circular_resolution-1):2*pi)];
+init_cross_sectional_points=init_cross_sectional_points.*repmat(0.005,[2 1]);
+addParameter(input_parser,'cross_sectional_points',init_cross_sectional_points,@isnumeric);
 %directory of the .stl  geometry files
 if ispc
 addParameter(input_parser,'geometry_source_path',strcat(pwd,'\','Geometry_Data'),@ischar);
@@ -83,12 +87,18 @@ addParameter(input_parser,'geometry_source_path',strcat(pwd,'/','Geometry_Data')
 end
 %output directory
 if ispc
-addParameter(input_parser,'output_directory',strcat(pwd,'\','Results'),@ischar);
+%addParameter(input_parser,'output_directory',strcat(pwd,'\','Results'),@ischar);
+addParameter(input_parser,'output_directory',pwd,@ischar);
 else
-addParameter(input_parser,'output_directory',strcat(pwd,'/','Results'),@ischar);
+%addParameter(input_parser,'output_directory',strcat(pwd,'/','Results'),@ischar);
+addParameter(input_parser,'output_directory',pwd,@ischar);
 end
+%Flag if the track should be smoothed
+addParameter(input_parser,'smooth_flag',true,@islogical);
+%smoothing parameter
+addParameter(input_parser,'smooth_factor',3,@numeric);
 %flag to save sweeped .stl
-addParameter(input_parser,'save_stl_flag',false,@islogical);
+addParameter(input_parser,'save_stl_flag',true,@islogical);
 %flag to plot results
 addParameter(input_parser,'plot_flag',true,@islogical);
 %interconnection_method: Regular or spiral in/out

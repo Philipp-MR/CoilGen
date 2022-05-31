@@ -171,6 +171,14 @@ tic;
 disp('Shift the return paths over the surface:');
 coil_parts = shift_return_paths(coil_parts,input);
 toc;
+
+
+%connect the groups and shift the return paths over the surface
+tic;
+disp('Generate volumetric coil body:');
+coil_parts = create_sweep_along_surface(coil_parts,input);
+toc;
+
     
 end
 

@@ -1,5 +1,20 @@
-function [layout_surface_mesh,ohmian_resistance]= create_sweep_along_surface(wire_path,shift_array,points_to_shift,parameterized_mesh,planary_mesh_matlab_format, curved_mesh_matlab_format,cross_section_points,save_mesh,output_directory,conductor_conductivity)
-     
+function coil_parts= create_sweep_along_surface(coil_parts,input)
+%create a volumetric coil body by surface sweep, @Philipp Amrein, Uniklinik
+%Freiburg 2022
+
+
+for part_ind=1:numel(coil_parts)
+
+parameterized_mesh=coil_parts(part_ind).coil_mesh;
+points_to_shift=coil_parts(part_ind).points_to_shift;
+shift_array=coil_parts(part_ind).shift_array;
+wire_path=coil_parts(part_ind).wire_path;
+planary_mesh_matlab_format=triangulation(parameterized_mesh.faces',parameterized_mesh.uv');
+curved_mesh_matlab_format=triangulation(parameterized_mesh.faces',parameterized_mesh.v);
+cross_section_points=input.cross_sectional_points;
+save_mesh=input.save_stl_flag;
+output_directory=input.output_directory;
+conductor_conductivity=input.specific_conductivity_conductor;
 
 convolutional_vector_length=1; %for smothering the curverture along the track
 
@@ -237,9 +252,14 @@ end
 
 %Save the mesh as an .stl file
 if save_mesh
-stlwrite(layout_surface_mesh,strcat(output_directory,'\sweeped_layout.stl'),'text') 
-stlwrite(curved_mesh_matlab_format,strcat(output_directory,'\surface_layout.stl'),'text') ;
+stlwrite(layout_surface_mesh,strcat(output_directory,'\sweeped_layout_part',num2str(part_ind),'.stl'),'text') 
+stlwrite(curved_mesh_matlab_format,strcat(output_directory,'\surface_part',num2str(part_ind),'.stl'),'text') 
 end
+
+%Assign outputs
+coil_parts(part_ind).layout_surface_mesh=layout_surface_mesh;
+coil_parts(part_ind).ohmian_resistance=ohmian_resistance;
+
 
 % figure;
 % hold on;
@@ -253,7 +273,7 @@ end
 % zlabel('z');
 % hold off;
 
-
+end
 
 
 end
