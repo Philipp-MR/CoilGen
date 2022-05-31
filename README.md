@@ -50,7 +50,7 @@ The project requires MATLAB and optionally FastHenry2 for calculation of the coi
 <!-- CONTACT -->
 ## Contact
 
-Philipp Amrein
+Philipp Amrein, philipp.amrein@uniklinik-freiburg.de
 
 Project Link: [https://github.com/Philipp-MR/CoilGen]
 
