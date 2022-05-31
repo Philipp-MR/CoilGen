@@ -29,7 +29,7 @@ Check the documentation to get started
 The project requires MATLAB and optionally FastHenry2 for calculation of the coil inductance.  The MATLAB version should not be older than 2020A.
 
 
-### Exemplary Images
+### Algorithm overview
 
 ![plot](./Documentation/flow_chart_algorithm_revised.png)
 
