@@ -88,8 +88,12 @@ wire_path.v(:,find(point_inds_to_delete))=[];
 %calculate the normal vectors along the wire track
 surface_normal_alonge_wire_path.v=zeros(3,size(wire_path.v,2));
 for point_ind=1:size(wire_path.v,2)
-node_ind_normals_target = pointLocation(planary_mesh_matlab_format,wire_path.uv(1,point_ind),wire_path.uv(2,point_ind)); 
+node_ind_normals_target = pointLocation(planary_mesh_matlab_format,wire_path.uv(1,point_ind),wire_path.uv(2,point_ind));
+if isnan(node_ind_normals_target) %make excepetions for strange output of pointLocation
+surface_normal_alonge_wire_path.v(:,point_ind)=surface_normal_alonge_wire_path.v(:,point_ind-1);
+else
 surface_normal_alonge_wire_path.v(:,point_ind)=parameterized_mesh.fn(node_ind_normals_target,:)';
+end
 end
 % smooth the normals that there are no sharp twists
 conv_vec=[0:convolutional_vector_length convolutional_vector_length-1:-1:0]./convolutional_vector_length;

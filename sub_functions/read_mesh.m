@@ -5,18 +5,32 @@ function [coil_mesh,target_mesh,shielded_mesh]=read_mesh(input)
 %Read the input mesh
 if strcmp(input.sf_source_file,'none')
 
-%Read the coil mesh surface
 
-if ispc
-coil_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.coil_mesh_file));
-else
-coil_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.coil_mesh_file));
-end
-coil_mesh=create_unique_noded_mesh(coil_mesh);
+    if ~strcmp(input.coil_mesh_file,'none')
+    %Read the coil mesh surface
+    if ispc
+    coil_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.coil_mesh_file));
+    else
+    coil_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.coil_mesh_file));
+    end
+    coil_mesh=create_unique_noded_mesh(coil_mesh);
+    %Change to format convenction used here
+    coil_mesh.vertices=coil_mesh.vertices'; 
+    coil_mesh.faces=coil_mesh.faces'; 
+    
+    else
+    %no external mesh is specified by stl file; create default cylndrical mesh
+    
+    coil_mesh=build_cylinder_mesh(input.cylinder_mesh_parameter_list(1),input.cylinder_mesh_parameter_list(2),input.cylinder_mesh_parameter_list(3),input.cylinder_mesh_parameter_list(4),...
+                                                            input.cylinder_mesh_parameter_list(5),input.cylinder_mesh_parameter_list(6),input.cylinder_mesh_parameter_list(7),input.cylinder_mesh_parameter_list(8));
 
-%Change to format convenction used here
-coil_mesh.vertices=coil_mesh.vertices'; 
-coil_mesh.faces=coil_mesh.faces'; 
+    coil_mesh=create_unique_noded_mesh(coil_mesh);
+
+    coil_mesh.vertices=coil_mesh.vertices'; 
+    coil_mesh.faces=coil_mesh.faces'; 
+
+    end
+
 
 
 else
@@ -74,6 +88,12 @@ end
 function unique_noded_mesh=create_unique_noded_mesh(non_unique_mesh)
 faces=non_unique_mesh.faces;
 verts=non_unique_mesh.vertices;
+if size(faces,2)~=3
+faces=faces';
+end
+if size(verts,2)~=3
+verts=verts';
+end
 %Remove double nodes
 [unique_verts,~,unique_inds] = unique(verts, 'rows','stable');
 unique_assignments= [[1:numel(unique_inds)]' unique_inds];

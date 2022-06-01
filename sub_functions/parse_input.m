@@ -8,9 +8,9 @@ function [input_parser,input] = parse_input(varargin)
 
 input_parser = inputParser; %create parser object
 %Add the mesh file that represents the boundary of the target geometry
-addRequired(input_parser,'coil_mesh_file');
+addParameter(input_parser,'coil_mesh_file','none',@ischar);
 %Add the spatial function that defines the field
-addRequired(input_parser,'field_shape_function',@ischar);
+addParameter(input_parser,'field_shape_function','x',@ischar);
 %offset factor for contour levels
 addParameter(input_parser,'pot_offset_factor',1/2,@isnumeric);
 %file of the target surface mesh, which will define the target field
@@ -60,25 +60,9 @@ addParameter(input_parser,'min_allowed_angle_within_coil_track',0.0001,@isnumeri
 %minimum relative percentage for which points will be deleted which contribute to segments which is extremly short
 addParameter(input_parser,'tiny_segment_length_percentage',0,@isnumeric);
 %number of refinement iterations of the mesh together with the stream function
-addParameter(input_parser,'iteration_num_stream_func_refinement',0,@isnumeric);
+addParameter(input_parser,'iteration_num_mesh_refinement',0,@isnumeric);
 %The direction (vector) along the interconnections will be aligned
 addParameter(input_parser,'b_0_direction',[0;0;1],@isnumeric);
-%In case of pcb layout, specify the track width
-addParameter(input_parser,'track_width_factor',0.5,@isnumeric);
-%cross_section_width of the conductor (for the inductance calculation) in meter
-addParameter(input_parser,'conductor_cross_section_width',0.002,@isnumeric);
-%cross_section_width of the conductor (for the inductance calculation) in meter
-addParameter(input_parser,'conductor_cross_section_height',0.002,@isnumeric);
-%conducter conductiviy
-addParameter(input_parser,'specific_conductivity_conductor',0.018*10^(-6),@isnumeric);
-% thickness of the sheet current density of within the stream function representation
-addParameter(input_parser,'conductor_thickness',0.005,@isnumeric); 
-%2D edge points for direct defintion of the cross section of the conductor
-%build circular cut shapes
-circular_resolution=10;
-init_cross_sectional_points=[sin(0:(2*pi)/(circular_resolution-1):2*pi); cos(0:(2*pi)/(circular_resolution-1):2*pi)];
-init_cross_sectional_points=init_cross_sectional_points.*repmat(0.005,[2 1]);
-addParameter(input_parser,'cross_sectional_points',init_cross_sectional_points,@isnumeric);
 %directory of the .stl  geometry files
 if ispc
 addParameter(input_parser,'geometry_source_path',strcat(pwd,'\','Geometry_Data'),@ischar);
@@ -117,7 +101,26 @@ addParameter(input_parser,'gauss_order',2,@isnumeric);
 addParameter(input_parser,'set_roi_into_mesh_center',0,@logical);
 % %Tikonov regularization factor for the SF optimization
 addParameter(input_parser,'tikonov_reg_factor',1,@isnumeric);
-
+%In case of pcb layout, specify the track width
+addParameter(input_parser,'track_width_factor',0.5,@isnumeric);
+%cross_section_width of the conductor (for the inductance calculation) in meter
+addParameter(input_parser,'conductor_cross_section_width',0.002,@isnumeric);
+%cross_section_width of the conductor (for the inductance calculation) in meter
+addParameter(input_parser,'conductor_cross_section_height',0.002,@isnumeric);
+%conducter conductiviy
+addParameter(input_parser,'specific_conductivity_conductor',0.018*10^(-6),@isnumeric);
+% thickness of the sheet current density of within the stream function representation
+addParameter(input_parser,'conductor_thickness',0.005,@isnumeric); 
+%2D edge points for direct defintion of the cross section of the conductor
+%build circular cut shapes
+circular_resolution=10;
+init_cross_sectional_points=[sin(0:(2*pi)/(circular_resolution-1):2*pi); cos(0:(2*pi)/(circular_resolution-1):2*pi)];
+init_cross_sectional_points=init_cross_sectional_points.*repmat(0.00125,[2 1]);
+addParameter(input_parser,'cross_sectional_points',init_cross_sectional_points,@isnumeric);
+%specify the paramters for the generation of the (default) cylindrical mesh
+% => cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,
+% num_longitudinal_divisions, rotation_vector_x, rotation_vector_y, rotation_vector_z, rotation_angle [radian]
+addParameter(input_parser,'cylinder_mesh_parameter_list',[0.8 0.3 20 20 1 0 0 0],@isnumeric);
 
 %Parse the input arguments
 parse(input_parser,varargin{1}{:});

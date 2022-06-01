@@ -2,7 +2,7 @@ function coil_parts=refine_mesh(coil_parts,input)
 %increase the resoltion of the mesh and interpolate the stream function
 
 
-iteration_num_stream_func_refinement=input.iteration_num_stream_func_refinement;
+iteration_num_mesh_refinement=input.iteration_num_mesh_refinement;
 sf_source_file=input.sf_source_file;
 
 if strcmp(sf_source_file,'none')
@@ -14,7 +14,7 @@ subdivided_mesh=coil_parts(part_ind).coil_mesh;
 subdivided_mesh.faces=subdivided_mesh.faces';
 subdivided_mesh.vertices=subdivided_mesh.vertices';
 
-for num_subdivision_sf=1:iteration_num_stream_func_refinement
+for num_subdivision_sf=1:iteration_num_mesh_refinement
 
     
 
