@@ -30,10 +30,12 @@ tri_2_vert_inds_1=tri_1_vert_inds_1;
 tri_2_vert_inds_2=tri_1_vert_inds_3;
 tri_2_vert_inds_3=[1:((num_arch_segments)*(num_cylinder_rings))]+num_arch_segments;
 
-faces_1=[tri_1_vert_inds_1; tri_1_vert_inds_2; tri_1_vert_inds_3];
-faces_2=[tri_2_vert_inds_1; tri_2_vert_inds_2; tri_2_vert_inds_3];
+faces_1=[tri_1_vert_inds_2; tri_1_vert_inds_1; tri_1_vert_inds_3];
+faces_2=[tri_2_vert_inds_2; tri_2_vert_inds_1; tri_2_vert_inds_3];
 
 tri_mesh=triangulation([faces_1';faces_2'],vertices');
+
+stlwrite(tri_mesh,cd+"\test.stl",'text') 
 
 figure; 
 hold on;
