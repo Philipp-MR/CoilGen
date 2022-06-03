@@ -54,6 +54,12 @@ reduced_sf=pinv(reduced_sensitivity_matrix'*reduced_sensitivity_matrix+tik_reg_m
 
 else
 
+%for initialization, calculate the tikkonov solution; then do a iteriative optimization
+
+tik_reg_mat=tikonov_reg_factor*reduced_res_matrix;
+reduced_sf=pinv(reduced_sensitivity_matrix'*reduced_sensitivity_matrix+tik_reg_mat'*tik_reg_mat)*reduced_sensitivity_matrix'*target_field_single';
+
+
 %find the constrained solution
 stream_func_max=max(reduced_sf)*2;
 lb=ones(size(reduced_sf)).*(-1).*stream_func_max;

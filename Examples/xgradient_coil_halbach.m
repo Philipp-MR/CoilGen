@@ -28,7 +28,7 @@ end
     'surface_is_cylinder_flag',true, ...
     'coil_mesh_file','none', ... 
     'target_region_radius',0.1,...  % in meter
-    'levels',50, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
+    'levels',30, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.25, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'interconnection_cut_width',0.035, ... % the width for the interconnections are interconnected; in meter
     'normal_shift_length',0.01, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
