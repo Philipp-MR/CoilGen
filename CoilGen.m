@@ -117,10 +117,10 @@ toc;
 %Process contours
 tic;
 disp('Process contours:');
-coil_parts= process_raw_loops(coil_parts,input);
+coil_parts= process_raw_loops(coil_parts,input,target_field);
 toc;
 
-if ~input.skip_postprocessing 
+if ~input.skip_postprocessing
 
 
 %Find the minimal distance between the contour lines

@@ -2,6 +2,7 @@ function coil_parts= create_sweep_along_surface(coil_parts,input)
 %create a volumetric coil body by surface sweep, @Philipp Amrein, Uniklinik
 %Freiburg 2022
 
+convolutional_vector_length=1; %for smothering the curverture along the track
 
 for part_ind=1:numel(coil_parts)
 
@@ -15,8 +16,6 @@ cross_section_points=input.cross_sectional_points;
 save_mesh=input.save_stl_flag;
 output_directory=input.output_directory;
 conductor_conductivity=input.specific_conductivity_conductor;
-
-convolutional_vector_length=1; %for smothering the curverture along the track
 
 %center the cross section around the [0,0] origin that roation will be
 %later valid
@@ -256,9 +255,11 @@ end
 
 %Save the mesh as an .stl file
 if save_mesh
-stlwrite(layout_surface_mesh,strcat(output_directory,'\sweeped_layout_part',num2str(part_ind),'.stl'),'text') 
-stlwrite(curved_mesh_matlab_format,strcat(output_directory,'\surface_part',num2str(part_ind),'.stl'),'text') 
+stlwrite(layout_surface_mesh,strcat(output_directory,'\sweeped_layout_part',num2str(part_ind),'_',input.field_shape_function,'.stl'),'text');
+stlwrite(curved_mesh_matlab_format,strcat(output_directory,'\surface_part',num2str(part_ind),'_',input.field_shape_function,'.stl'),'text');
 end
+
+
 
 %Assign outputs
 coil_parts(part_ind).layout_surface_mesh=layout_surface_mesh;
