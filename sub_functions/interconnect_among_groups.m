@@ -152,8 +152,8 @@ coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut2=cut_shape_2;
 % end
 
 %Open both groups
-opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1);
-opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2);
+opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,cut_shape_2);
+opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,cut_shape_1);
 
 
 %fuse both groups

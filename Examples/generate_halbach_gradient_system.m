@@ -79,7 +79,7 @@ close all;
 
 coil_name='Coil';
 
-coils_to_plot=coil_y;
+coils_to_plot=coil_z;
 
 if ispc
 addpath(strcat(pwd,'\','plotting'));

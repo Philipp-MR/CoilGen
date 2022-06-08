@@ -1,4 +1,4 @@
-function opened_group=open_group(group_to_open,cut_shape)
+function opened_group=open_group(group_to_open,cut_shape,second_group_cut_shape)
 %open the groups with the cut rectangle and interconnect them
 
 
@@ -12,7 +12,7 @@ end
 
 %find the group indice most near to the center of the cut_shape
 cut_center=mean(cut_shape,2);
-[near_dist,nearest_to_cut_center_inds]=find_min_loop_point_distance(cut_center,raw_group);
+[near_dist,nearest_to_cut_center_inds]=find_min_loop_point_distance(mean(second_group_cut_shape,2),raw_group);
 
 
 %calculate the intersection points with the respective group segments

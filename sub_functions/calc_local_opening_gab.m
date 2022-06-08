@@ -4,10 +4,13 @@ function local_opening_gab=calc_local_opening_gab(loop,point_1,point_2,opening_g
 
 if ~isempty(point_2) %two points are specified
 
-uv_distance=vecnorm(loop.uv(:,point_1)-loop.uv(:,point_2));
-v_distane=vecnorm(loop.v(:,point_1)-loop.v(:,point_2));
+% uv_distance=vecnorm(loop.uv(:,point_1)-loop.uv(:,point_2));
+% v_distane=vecnorm(loop.v(:,point_1)-loop.v(:,point_2));
 
-local_opening_gab=opening_gab*uv_distance/v_distane;
+uv_distance=vecnorm(loop.uv(:,point_1)+(loop.uv(:,point_2)-loop.uv(:,point_1)./1000));
+v_distance=vecnorm(loop.v(:,point_1)+(loop.v(:,point_2)-loop.v(:,point_1)./1000));
+
+local_opening_gab=opening_gab*uv_distance/v_distance;
 
 else %only one point is specified, find the other to build the direction
 
@@ -18,10 +21,14 @@ min_ind_1=min_ind_2+2;
 if min_ind_1<0; min_ind_1=min_ind_1+size(loop.uv,2); end;
 if min_ind_1>size(loop.uv,2); min_ind_1=min_ind_1-size(loop.uv,2); end;
 
-uv_distance=vecnorm(loop.uv(:,min_ind_1)-loop.uv(:,min_ind_2));
-v_distane=vecnorm(loop.v(:,min_ind_1)-loop.v(:,min_ind_2));
+% uv_distance=vecnorm(loop.uv(:,min_ind_1)-loop.uv(:,min_ind_2));
+% v_distane=vecnorm(loop.v(:,min_ind_1)-loop.v(:,min_ind_2));
 
-local_opening_gab=opening_gab*uv_distance/v_distane;
+uv_distance=vecnorm(loop.uv(:,min_ind_1)+(loop.uv(:,min_ind_2)-loop.uv(:,min_ind_1)./1000));
+v_distance=vecnorm(loop.v(:,min_ind_1)+(loop.v(:,min_ind_2)-loop.v(:,min_ind_1)./1000));
+
+
+local_opening_gab=opening_gab*uv_distance/v_distance;
 
 
 end
