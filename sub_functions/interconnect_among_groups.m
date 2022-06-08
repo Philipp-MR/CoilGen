@@ -131,9 +131,30 @@ cut_shape_2=build_cut_circle(min_pos_group2{couple_group1,couple_group2},cut_wid
 coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut1=cut_shape_1;
 coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut2=cut_shape_2;
 
+% %check wether group1 is inside group2 to find out wether the outer turn or
+% %the inner turn should be opened
+% level_positions=coil_parts(part_ind).level_positions;
+% level_positions{cellfun(@isempty, level_positions)}=0;
+% level_positions=cell2mat(level_positions);
+% level_pos_group1=level_positions(arrayfun(@(x) ismember(groups_to_connect(couple_group1),coil_parts(part_ind).group_levels{x}),1:numel(coil_parts(part_ind).group_levels)));
+% level_pos_group2=level_positions(arrayfun(@(x) ismember(groups_to_connect(couple_group2),coil_parts(part_ind).group_levels{x}),1:numel(coil_parts(part_ind).group_levels)));
+% 
+% %Open both groups
+% if level_pos_group1<level_pos_group2
+% opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,coil_parts(part_ind).groups(groups_to_connect(couple_group1)),'inner');
+% opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,coil_parts(part_ind).groups(groups_to_connect(couple_group2)),'outer');
+% elseif level_pos_group1==level_pos_group2
+% opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,coil_parts(part_ind).groups(groups_to_connect(couple_group1)),'outer');
+% opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,coil_parts(part_ind).groups(groups_to_connect(couple_group2)),'outer');
+% elseif level_pos_group1>level_pos_group2   
+% opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,coil_parts(part_ind).groups(groups_to_connect(couple_group1)),'outer');
+% opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,coil_parts(part_ind).groups(groups_to_connect(couple_group2)),'inner');
+% end
+
 %Open both groups
 opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1);
 opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2);
+
 
 %fuse both groups
 %Check which fusing order is better:

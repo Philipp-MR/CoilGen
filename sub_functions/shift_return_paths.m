@@ -6,7 +6,7 @@ vertical_separation=input.normal_shift_length;
 %local variables
 vec_normal_local_smoothing_length=2;
 shift_length=2;
-smoothing_length=5;
+smoothing_length=3;
 up_sample_factor=1;
 input.smooth_factor=1;
 

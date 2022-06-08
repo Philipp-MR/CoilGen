@@ -1,32 +1,18 @@
 function opened_group=open_group(group_to_open,cut_shape)
 %open the groups with the cut rectangle and interconnect them
 
+
+%take the uv coordinates of the group
 raw_group=group_to_open.uv;
-
-
-%find the group indice most near to the center of the cut_shape
-%average point positions together with their neightbours
-
-
-
-
-cut_center=mean(cut_shape,2);
-
-folded_dists=   vecnorm(group_to_open.uv(:,circshift(1:size(group_to_open.uv,2),2))-cut_center)+...
-                        vecnorm(group_to_open.uv(:,circshift(1:size(group_to_open.uv,2),1))-cut_center)+...
-                        vecnorm(group_to_open.uv-cut_center)+...
-                        vecnorm(group_to_open.uv(:,circshift(1:size(group_to_open.uv,2),1))-cut_center)+...
-                        vecnorm(group_to_open.uv(:,circshift(1:size(group_to_open.uv,2),-2))-cut_center);
-
-[~,nearest_to_cut_center_inds]=min(folded_dists);
-
-
-
 
 %close the raw group
 if raw_group(1,1)~=raw_group(1,end)&raw_group(2,1)~=raw_group(2,end)
 raw_group=[raw_group raw_group(:,end)]; %close the raw group
 end
+
+%find the group indice most near to the center of the cut_shape
+cut_center=mean(cut_shape,2);
+[near_dist,nearest_to_cut_center_inds]=find_min_loop_point_distance(cut_center,raw_group);
 
 
 %calculate the intersection points with the respective group segments

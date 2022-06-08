@@ -30,11 +30,11 @@ try
     'levels',30, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.25, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'interconnection_cut_width',0.035, ... % the width for the interconnections are interconnected; in meter
-    'normal_shift_length',0.01, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
+    'normal_shift_length',0.005, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
     'skip_postprocessing',false,...
     'skip_inductance_calculation',false,...
     'save_stl_flag',true,...
-    'tikonov_reg_factor',100000); %Tikonov regularization factor for the SF optimization
+    'tikonov_reg_factor',5000); %Tikonov regularization factor for the SF optimization
 catch
 end
 
@@ -48,11 +48,11 @@ try
     'levels',30, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.25, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'interconnection_cut_width',0.035, ... % the width for the interconnections are interconnected; in meter
-    'normal_shift_length',0.01, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
+    'normal_shift_length',0.005, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
     'skip_postprocessing',false,...
     'skip_inductance_calculation',false,...
     'save_stl_flag',true,...
-    'tikonov_reg_factor',100000); %Tikonov regularization factor for the SF optimization
+    'tikonov_reg_factor',5000); %Tikonov regularization factor for the SF optimization
 catch
 end
 
@@ -66,11 +66,11 @@ try
     'levels',30, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.25, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'interconnection_cut_width',0.035, ... % the width for the interconnections are interconnected; in meter
-    'normal_shift_length',0.01, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
+    'normal_shift_length',0.005, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
     'skip_postprocessing',false,...
     'skip_inductance_calculation',false,...
     'save_stl_flag',true,...
-    'tikonov_reg_factor',100000); %Tikonov regularization factor for the SF optimization
+    'tikonov_reg_factor',5000); %Tikonov regularization factor for the SF optimization
 catch
 end
 
@@ -79,21 +79,23 @@ close all;
 
 coil_name='Coil';
 
+coils_to_plot=coil_y;
+
 if ispc
 addpath(strcat(pwd,'\','plotting'));
 else
 addpath(strcat(pwd,'/','plotting'));
 end
 %Chose a even leveled solution for plotting
-%solutions_to_plot=find(arrayfun(@(x) ~isempty(coil_layouts(x).out),1:numel(coil_layouts)));
-single_ind_to_plot= find_even_leveled_solution(coil_x);
-%plot_error_different_solutions(coil_layouts,single_ind_to_plot,coil_name);
-%plot_2D_contours_with_sf(coil_layouts,single_ind_to_plot,coil_name);
-plot_3D_sf(coil_x,single_ind_to_plot,coil_name);
-plot_groups_and_interconnections(coil_x,single_ind_to_plot,coil_name);
-%plot_coil_parameters(coil_layouts,coil_name);
-plot_coil_track_with_resulting_bfield(coil_x,single_ind_to_plot,coil_name);
-plot_various_error_metrics(coil_x,single_ind_to_plot,coil_name);
-plot_resulting_gradient(coil_x,single_ind_to_plot,coil_name);
+%solutions_to_plot=find(arrayfun(@(x) ~isempty(coils_to_plot),1:numel(coil_layouts)));
+single_ind_to_plot= find_even_leveled_solution(coils_to_plot);
+%plot_error_different_solutions(coils_to_plot,single_ind_to_plot,coil_name);
+%plot_2D_contours_with_sf(coils_to_plot,single_ind_to_plot,coil_name);
+plot_3D_sf(coils_to_plot,single_ind_to_plot,coil_name);
+plot_groups_and_interconnections(coils_to_plot,single_ind_to_plot,coil_name);
+%plot_coil_parameters(coils_to_plot,coil_name);
+plot_coil_track_with_resulting_bfield(coils_to_plot,single_ind_to_plot,coil_name);
+plot_various_error_metrics(coils_to_plot,single_ind_to_plot,coil_name);
+plot_resulting_gradient(coils_to_plot,single_ind_to_plot,coil_name);
 rmpath('plotting');
 
