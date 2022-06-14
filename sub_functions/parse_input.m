@@ -96,6 +96,10 @@ addParameter(input_parser,'group_interconnection_method','crossed',@ischar);
 addParameter(input_parser,'skip_postprocessing',false,@islogical);
 %Flag to skip inductance_calculation
 addParameter(input_parser,'skip_inductance_calculation',false,@islogical);
+%Flag to skip the shifting of return paths
+addParameter(input_parser,'skip_normal_shift',false,@islogical);
+%Flag to skip the generation of a volumentric (3D) coil body
+addParameter(input_parser,'skip_sweep',false,@islogical);
 %force_cut_selection
 addParameter(input_parser,'force_cut_selection',{},@iscell);
 %Gaus integration order

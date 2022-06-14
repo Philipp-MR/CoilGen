@@ -4,6 +4,8 @@ function coil_parts= create_sweep_along_surface(coil_parts,input)
 
 convolutional_vector_length=1; %for smothering the curverture along the track
 
+if ~input.skip_sweep
+
 for part_ind=1:numel(coil_parts)
 
 parameterized_mesh=coil_parts(part_ind).coil_mesh;
@@ -280,5 +282,6 @@ coil_parts(part_ind).ohmian_resistance=ohmian_resistance;
 
 end
 
+end
 
 end

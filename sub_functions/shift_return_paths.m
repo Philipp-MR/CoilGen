@@ -1,5 +1,8 @@
 function coil_parts= shift_return_paths(coil_parts,input)
     
+if ~input.skip_normal_shift
+
+
 vertical_separation=input.normal_shift_length;
 
 
@@ -182,6 +185,18 @@ coil_parts(part_ind).wire_path.uv=wire_path_out.uv;
 coil_parts(part_ind).wire_path.v=wire_path_out.v;
   
 end
+
+else %Do nothing
+
+coil_parts(numel(coil_parts)).shift_array=[];
+coil_parts(numel(coil_parts)).points_to_shift=[];
+for part_ind=1:numel(coil_parts)
+coil_parts(part_ind).shift_array=zeros(1,size(coil_parts(part_ind).wire_path.uv,2));
+coil_parts(part_ind).points_to_shift=zeros(1,size(coil_parts(part_ind).wire_path.uv,2));
+end
+
+end
+
 
 %%%%%  subfunctions  %%%%%%
 function points_in = equilze_point_distances(points_in,maximal_distance)
