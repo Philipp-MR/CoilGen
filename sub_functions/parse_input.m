@@ -100,6 +100,8 @@ addParameter(input_parser,'skip_inductance_calculation',false,@islogical);
 addParameter(input_parser,'skip_normal_shift',false,@islogical);
 %Flag to skip the generation of a volumentric (3D) coil body
 addParameter(input_parser,'skip_sweep',false,@islogical);
+%Flag to generate a rectangular pcb pattern to wrap around a cylinder
+addParameter(input_parser,'make_cylndrical_pcb',false,@islogical);
 %force_cut_selection
 addParameter(input_parser,'force_cut_selection',{},@iscell);
 %Gaus integration order

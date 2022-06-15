@@ -172,6 +172,11 @@ disp('Shift the return paths over the surface:');
 coil_parts = shift_return_paths(coil_parts,input);
 toc;
 
+%Create Cylindrical PCB Print
+tic;
+disp('Create PCB Print:');
+coil_parts = generate_cylindrical_pcb_print_(coil_parts,input);
+toc;
 
 %connect the groups and shift the return paths over the surface
 tic;

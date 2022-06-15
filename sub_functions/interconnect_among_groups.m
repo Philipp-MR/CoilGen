@@ -14,10 +14,12 @@ coil_parts(numel(coil_parts)).wire_path=[];
 
 for part_ind=1:numel(coil_parts)
 
+connected_group_buff=coil_parts(part_ind).connected_group;
+
 %gather all return points to dismiss them for search of the group cut points
 all_cut_points=[];
-for group_ind=1:numel(coil_parts(part_ind).connected_group)
-all_cut_points=[all_cut_points coil_parts(part_ind).connected_group(group_ind).return_path.uv];
+for group_ind=1:numel(connected_group_buff)
+all_cut_points=[all_cut_points connected_group_buff(group_ind).return_path.uv];
 end
 
 
@@ -63,10 +65,10 @@ for connect_ind=1:num_connections_to_do
 
 
 %get the tracks to connect
-grouptracks_to_connect=coil_parts(part_ind).connected_group(groups_to_connect);
+grouptracks_to_connect=connected_group_buff(groups_to_connect);
 
 %remove the return_path for the search of mutual group cuts
-grouptracks_to_connect_without_returns=coil_parts(part_ind).connected_group(groups_to_connect);
+grouptracks_to_connect_without_returns=connected_group_buff(groups_to_connect);
 for ind1=1:numel(groups_to_connect)
 for ind2=1:numel(groups_to_connect)
 if ind2<ind1
@@ -185,15 +187,15 @@ end
 %redundancy
 %do not select here the host level group!
 if is_enclosing(couple_group1)
-coil_parts(part_ind).connected_group(groups_to_connect(couple_group1));
-coil_parts(part_ind).connected_group(groups_to_connect(couple_group1)).uv=fused_group;
-[coil_parts(part_ind).connected_group(groups_to_connect(couple_group1)).v,coil_parts(part_ind).connected_group(groups_to_connect(couple_group1)).uv]=uv_to_xyz(fused_group,planary_mesh,curved_mesh);
+connected_group_buff(groups_to_connect(couple_group1));
+connected_group_buff(groups_to_connect(couple_group1)).uv=fused_group;
+[connected_group_buff(groups_to_connect(couple_group1)).v,connected_group_buff(groups_to_connect(couple_group1)).uv]=uv_to_xyz(fused_group,planary_mesh,curved_mesh);
 %upsampled_groups(groups_to_connect(couple_group2))=[];
 is_enclosing(couple_group2)=[];
 groups_to_connect(couple_group2)=[];
 else
-coil_parts(part_ind).connected_group(groups_to_connect(couple_group2)).uv=fused_group;
-[coil_parts(part_ind).connected_group(groups_to_connect(couple_group2)).v,coil_parts(part_ind).connected_group(groups_to_connect(couple_group2)).uv]=uv_to_xyz(fused_group,planary_mesh,curved_mesh);
+connected_group_buff(groups_to_connect(couple_group2)).uv=fused_group;
+[connected_group_buff(groups_to_connect(couple_group2)).v,connected_group_buff(groups_to_connect(couple_group2)).uv]=uv_to_xyz(fused_group,planary_mesh,curved_mesh);
 %upsampled_groups(groups_to_connect(couple_group1))=[];
 is_enclosing(couple_group1)=[];
 groups_to_connect(couple_group1)=[];
@@ -209,8 +211,8 @@ end
 end
 
 %Select the full track as the final return
-[~,is_final_ind]=max(arrayfun(@(x) size(coil_parts(part_ind).connected_group(x).v,2), 1:numel(coil_parts(part_ind).connected_group)));
-full_track=coil_parts(part_ind).connected_group(is_final_ind(1));
+[~,is_final_ind]=max(arrayfun(@(x) size(connected_group_buff(x).v,2), 1:numel(connected_group_buff)));
+full_track=connected_group_buff(is_final_ind(1));
 %Shift the open ends to the boundarie of the coil
 [~,min_ind]=max(vecnorm(full_track.uv-mean(full_track.uv,2)));
 full_track.v=circshift(full_track.v,(-1)*min_ind,2);

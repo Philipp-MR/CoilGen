@@ -10,11 +10,7 @@ for part_ind=1:numel(coil_parts)
 
 planary_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.uv');
 curved_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.v);
-
-coil_parts(numel(coil_parts)).connected_group(numel(coil_parts(part_ind).groups)).spiral_in_uv=[];
-coil_parts(numel(coil_parts)).connected_group(numel(coil_parts(part_ind).groups)).spiral_out_uv=[];
 coil_parts(numel(coil_parts)).connected_group(numel(coil_parts(part_ind).groups)).uv=[];
-coil_parts(numel(coil_parts)).connected_group(numel(coil_parts(part_ind).groups)).return_path_uv=[];
 
 %take the cut selection if it is given in the input
 switch numel(input.force_cut_selection)
@@ -80,9 +76,9 @@ coil_parts(part_ind).connected_group(group_ind).uv=[];
 coil_parts(part_ind).connected_group(group_ind).return_path.uv=[];
 for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
 coil_parts(part_ind).connected_group(group_ind).uv=[coil_parts(part_ind).connected_group(group_ind).uv coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv];
+coil_parts(part_ind).connected_group(group_ind).spiral_in.uv=[coil_parts(part_ind).connected_group(group_ind).spiral_in.uv coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv];
 coil_parts(part_ind).connected_group(group_ind).spiral_out.uv=[coil_parts(part_ind).connected_group(group_ind).spiral_out.uv coil_parts(part_ind).groups(group_ind).opened_loop(numel(coil_parts(part_ind).groups(group_ind).loops)+1-loop_ind).uv];
 end
-coil_parts(part_ind).connected_group(group_ind).spiral_in.uv=coil_parts(part_ind).connected_group(group_ind).spiral_in.uv;
 %add the return path
 for loop_ind=numel(coil_parts(part_ind).groups(group_ind).loops):-1:1
 coil_parts(part_ind).connected_group(group_ind).return_path.uv=[coil_parts(part_ind).connected_group(group_ind).return_path.uv mean(coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv(:,[1 end]),2)];
