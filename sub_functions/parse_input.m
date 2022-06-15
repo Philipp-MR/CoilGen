@@ -102,6 +102,8 @@ addParameter(input_parser,'skip_normal_shift',false,@islogical);
 addParameter(input_parser,'skip_sweep',false,@islogical);
 %Flag to generate a rectangular pcb pattern to wrap around a cylinder
 addParameter(input_parser,'make_cylndrical_pcb',false,@islogical);
+%Flag to generate a rectangular pcb pattern to wrap around a cylinder
+addParameter(input_parser,'pcb_interconnection_method','spiral_in_out',@ischar);
 %force_cut_selection
 addParameter(input_parser,'force_cut_selection',{},@iscell);
 %Gaus integration order
