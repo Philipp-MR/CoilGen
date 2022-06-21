@@ -3,6 +3,8 @@ function coil_parts= generate_cylindrical_pcb_print_(coil_parts,input)
 %Freiburg 2022
 
 angular_shrink_factor=1;
+pcb_track_width=0.005;
+
 
 if input.surface_is_cylinder_flag & input.make_cylndrical_pcb
 
@@ -52,32 +54,19 @@ cut_rectangle=[-pi*angular_shrink_factor pi*angular_shrink_factor pi*angular_shr
 cut_rectangle=[cut_rectangle cut_rectangle(:,1)];
 
 
-intersection_points(numel(wire_part)).cuts=[];
-intersection_points(numel(wire_part)).segment_ind=[];
-intersection_points(numel(wire_part)).uv=[];
-for wrap_ind=1:numel(wire_part)
-intersection_points(wrap_ind).cuts=find_segment_intersections(wire_part(wrap_ind).uv,cut_rectangle);
-end
-
-%find intersection points and change the struct format..
-for wrap_ind=1:numel(wire_part)
-if any(~isnan([intersection_points(wrap_ind).cuts(:).segment_inds]))
-intersection_points(wrap_ind).segment_ind=intersection_points(wrap_ind).cuts(~isnan([intersection_points(wrap_ind).cuts(:).segment_inds])).segment_inds;
-intersection_points(wrap_ind).uv=intersection_points(wrap_ind).cuts(~isnan([intersection_points(wrap_ind).cuts(:).segment_inds])).uv;
-end
-end
-intersection_points = rmfield(intersection_points,'cuts');
-
 %Add the cut points for a clean cut
 for wrap_ind=1:numel(wire_part)
+intersection_cut=find_segment_intersections(wire_part(wrap_ind).uv,cut_rectangle);
+is_real_cut_ind=find(~isnan([intersection_cut(:).segment_inds]));
+if ~isempty(is_real_cut_ind)
 wire_part_points=wire_part(wrap_ind).uv;
-uv_point=intersection_points(wrap_ind).uv;
-segment_ind=intersection_points(wrap_ind).segment_ind;
-if segment_ind~=1 | isempty(segment_ind)
-wire_part(wrap_ind).uv=[wire_part_points(:,1:segment_ind) uv_point wire_part_points(:,segment_ind+1:end-1)];
+uv_point=intersection_cut(is_real_cut_ind(1)).uv;
+cut_segment_ind=intersection_cut(is_real_cut_ind(1)).segment_inds;
+if cut_segment_ind~=1
+wire_part(wrap_ind).uv=[wire_part_points(:,1:cut_segment_ind) uv_point wire_part_points(:,cut_segment_ind+1:end-1)];
 end
 end
-
+end
 %add a clean cut also for the second open end of the wire_parts
 for wrap_ind=2:numel(wire_part)
 if wire_part(wrap_ind-1).uv(1,end)>0
@@ -86,6 +75,10 @@ else
 wire_part(wrap_ind).uv=[wire_part(wrap_ind-1).uv(:,end)+[2*pi 0]' wire_part(wrap_ind).uv];
 end
 end
+
+
+%Generate the track shapes for the indivial wire parts
+
 
 
 

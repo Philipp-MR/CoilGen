@@ -19,7 +19,6 @@ layer_1_tri(numel(coil_track)).v=[];
 layer_2_tri(numel(coil_track)).uv=[];
 layer_2_tri(numel(coil_track)).v=[];
 
-
 layer_1(numel(coil_track)).uv=[];
 layer_1(numel(coil_track)).v=[];
 layer_2(numel(coil_track)).uv=[];
