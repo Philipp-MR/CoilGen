@@ -20,7 +20,7 @@ end
 
 
 %% Run the algorithm
-try
+%try
     coil_x.out=CoilGen(...
     'field_shape_function','x',... % definition of the target field
     'cylinder_mesh_parameter_list',[0.4913 0.154 50 50 0 1 0 pi/2],... % cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,  num_longitudinal_divisions, rotation_vector: x,y,z, and  rotation_angle [radian]
@@ -36,8 +36,8 @@ try
     'skip_inductance_calculation',false,...
     'save_stl_flag',true,...
     'tikonov_reg_factor',5000); %Tikonov regularization factor for the SF optimization
-catch
-end
+% catch
+% end
 
 try
     coil_y.out=CoilGen(...
