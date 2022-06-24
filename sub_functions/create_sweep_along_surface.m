@@ -54,7 +54,7 @@ cross_section_radius=max(vecnorm(cross_section_points-cross_section_center));
 
 %Remove repeating entries
 wire_path.v(:,find(vecnorm(diff(wire_path.v,1,2))==0))=[]; 
-wire_path.uv(:,find(vecnorm(diff(wire_path.uv,1,2))==0))=[]; 
+wire_path.uv(:,find(vecnorm(diff(wire_path.v,1,2))==0))=[]; 
 
 %Open the track if its not already opened
 point_inds_to_delete=vecnorm(wire_path.v(:,end)-wire_path.v)<cross_section_radius/2;
