@@ -175,7 +175,7 @@ toc;
 %Create Cylindrical PCB Print
 tic;
 disp('Create PCB Print:');
-coil_parts = generate_cylindrical_pcb_print_(coil_parts,input);
+coil_parts = generate_cylindrical_pcb_print(coil_parts,input);
 toc;
 
 %connect the groups and shift the return paths over the surface
