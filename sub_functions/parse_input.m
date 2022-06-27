@@ -137,6 +137,12 @@ addParameter(input_parser,'cylinder_mesh_parameter_list',[0.8 0.3 20 20 1 0 0 0]
 % num_longitudinal_divisions, rotation_vector_x, rotation_vector_y,
 % rotation_vector_z, rotation_angle [radian], center_x [m], center_y [m], center_z [m]
 addParameter(input_parser,'planar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0],@isnumeric);
+%specify the paramters for the generation of the (default) biplanar mesh
+% => biplanar_height[in m], biplanar_radius[in m], num_lateral_divisions,
+% num_longitudinal_divisions, rotation_vector_x, rotation_vector_y,
+% rotation_vector_z, rotation_angle [radian], center_x [m], center_y [m], center_z [m]
+addParameter(input_parser,'biplanar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0 0.2],@isnumeric);
+
 
 %Parse the input arguments
 parse(input_parser,varargin{1}{:});

@@ -6,35 +6,52 @@ function [coil_mesh,target_mesh,shielded_mesh]=read_mesh(input)
 if strcmp(input.sf_source_file,'none')
 
 
-    if ~strcmp(input.coil_mesh_file,'none')
-    %Read the coil mesh surface
-    if ispc
-    coil_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.coil_mesh_file));
-    else
-    coil_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.coil_mesh_file));
-    end
-    coil_mesh=create_unique_noded_mesh(coil_mesh);
-    %Change to format convenction used here
-    coil_mesh.vertices=coil_mesh.vertices'; 
-    coil_mesh.faces=coil_mesh.faces'; 
-    
-    else
-    %no external mesh is specified by stl file; create default cylndrical mesh
-    
-    coil_mesh=build_cylinder_mesh(input.cylinder_mesh_parameter_list(1),input.cylinder_mesh_parameter_list(2),input.cylinder_mesh_parameter_list(3),input.cylinder_mesh_parameter_list(4),...
-                                                            input.cylinder_mesh_parameter_list(5),input.cylinder_mesh_parameter_list(6),input.cylinder_mesh_parameter_list(7),input.cylinder_mesh_parameter_list(8));
+if strcmp(input.coil_mesh_file(end-3:end),'.stl')
+%Load the stl file; read the coil mesh surface
+if ispc
+coil_mesh = stlread_local(strcat(input.geometry_source_path,'\',input.coil_mesh_file));
+else
+coil_mesh = stlread_local(strcat(input.geometry_source_path,'/',input.coil_mesh_file));
+end
+coil_mesh=create_unique_noded_mesh(coil_mesh);
+%Change to format convenction used here
+coil_mesh.vertices=coil_mesh.vertices'; 
+coil_mesh.faces=coil_mesh.faces'; 
 
-    coil_mesh=create_unique_noded_mesh(coil_mesh);
+elseif strcmp(input.coil_mesh_file,'create cylinder mesh')
+%no external mesh is specified by stl file; create default cylndrical mesh
+coil_mesh=build_cylinder_mesh(input.cylinder_mesh_parameter_list(1),input.cylinder_mesh_parameter_list(2),input.cylinder_mesh_parameter_list(3),input.cylinder_mesh_parameter_list(4),...
+                                                input.cylinder_mesh_parameter_list(5),input.cylinder_mesh_parameter_list(6),input.cylinder_mesh_parameter_list(7),input.cylinder_mesh_parameter_list(8));
+coil_mesh=create_unique_noded_mesh(coil_mesh);
+coil_mesh.vertices=coil_mesh.vertices'; 
+coil_mesh.faces=coil_mesh.faces'; 
 
-    coil_mesh.vertices=coil_mesh.vertices'; 
-    coil_mesh.faces=coil_mesh.faces'; 
 
-    end
+elseif strcmp(input.coil_mesh_file,'create planary mesh')
+%no external mesh is specified by stl file; create default planar mesh
+coil_mesh=build_planar_mesh(input.planar_mesh_parameter_list(1),input.planar_mesh_parameter_list(2),input.planar_mesh_parameter_list(3),input.planar_mesh_parameter_list(4),...
+                                                input.planar_mesh_parameter_list(5),input.planar_mesh_parameter_list(6),input.planar_mesh_parameter_list(7),input.planar_mesh_parameter_list(8),...
+                                                input.planar_mesh_parameter_list(9),input.planar_mesh_parameter_list(10),input.planar_mesh_parameter_list(11),input.planar_mesh_parameter_list(12));
+coil_mesh=create_unique_noded_mesh(coil_mesh);
+coil_mesh.vertices=coil_mesh.vertices'; 
+coil_mesh.faces=coil_mesh.faces'; 
+
+
+elseif strcmp(input.coil_mesh_file,'create bi-planary mesh')
+%no external mesh is specified by stl file; create default planar mesh
+coil_mesh=build_biplanar_mesh(input.planar_mesh_parameter_list(1),input.biplanar_mesh_parameter_list(2),input.biplanar_mesh_parameter_list(3),input.biplanar_mesh_parameter_list(4),...
+                                                input.biplanar_mesh_parameter_list(5),input.biplanar_mesh_parameter_list(6),input.biplanar_mesh_parameter_list(7),input.biplanar_mesh_parameter_list(8),...
+                                                input.biplanar_mesh_parameter_list(9),input.biplanar_mesh_parameter_list(10),input.biplanar_mesh_parameter_list(11),input.biplanar_mesh_parameter_list(12));
+coil_mesh=create_unique_noded_mesh(coil_mesh);
+coil_mesh.vertices=coil_mesh.vertices'; 
+coil_mesh.faces=coil_mesh.faces'; 
+
+end
 
 
 
 else
-    
+
 if ispc
 loaded_file=load(strcat(cd,'\',input.sf_source_file));
 else
