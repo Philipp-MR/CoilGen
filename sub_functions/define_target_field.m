@@ -73,8 +73,12 @@ target_z_coords=[-2:(1/(num_points_per_dim-1)):2].*input.target_region_radius;
 target_points=[target_grid_x(:) target_grid_y(:)  target_grid_z(:)]';
 %select the points that are inside a sphere 
 target_points(:,sqrt(target_points(1,:).^2+target_points(2,:).^2+target_points(3,:).^2)>input.target_region_radius)=[];
+all_verts=[];
+for part_ind=1:numel(coil_parts)
+all_verts=[all_verts coil_parts(part_ind).coil_mesh.vertices];
+end
 if input.set_roi_into_mesh_center==0
-target_points=target_points-mean(coil_parts.coil_mesh.vertices,2);
+target_points=target_points-mean(all_verts,2);
 end
 
 end

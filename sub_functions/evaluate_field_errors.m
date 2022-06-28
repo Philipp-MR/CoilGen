@@ -1,4 +1,4 @@
-function [coil_parts,combined_field_layout,combined_field_loops,combined_field_layout_per1Amp,combined_field_loops_per1Amp,field_error_vals,opt_current_layout]=evaluate_field_errors(coil_parts,target_field,sf_b_field)
+function [coil_parts,combined_field_layout,combined_field_loops,combined_field_layout_per1Amp,combined_field_loops_per1Amp,field_error_vals,opt_current_layout]=evaluate_field_errors(coil_parts,input,target_field,sf_b_field)
 %Calcaltue relative errors between the different input and
 %output fields
 
@@ -9,6 +9,7 @@ coil_parts(numel(coil_parts)).opt_current_layout=[];
 coil_parts(numel(coil_parts)).field_by_loops=[];
 coil_parts(numel(coil_parts)).field_by_layout=[];
 
+
 for part_ind=1:numel(coil_parts)
 %Calcuate the combined field of the unconnected contours
 coil_parts(part_ind).field_by_loops=zeros(3,size(target_field.b,2));
@@ -18,11 +19,17 @@ coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops+loop_fie
 end
 coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops.*coil_parts(part_ind).contour_step;
 %Calculate the field of connected, final layouts
+if ~input.skip_postprocessing
 coil_parts(part_ind).field_by_layout=biot_savart_calc_b(coil_parts(part_ind).wire_path.v,target_field);
 coil_parts(part_ind).field_by_layout=coil_parts(part_ind).field_by_layout.*coil_parts(part_ind).contour_step; %scaled with the current of the discretization
+else
+coil_parts(part_ind).field_by_layout=coil_parts(part_ind).field_by_loops;
+end
 % Find the ideal current strength for the connected layout to match the target field
 %coil_parts(part_ind).opt_current_layout=abs(mean(target_field.b(3,:)./coil_parts(part_ind).field_by_layout(3,:)));
 end
+
+
 
 
 %find the current polarity for the different coil parts regarding the
@@ -58,10 +65,12 @@ combined_field_loops=squeeze(combined_field_loops(best_dir_loops,:,:));
 
 
 %adjust the current direction for the layout (in case of wrong direction)
+if ~input.skip_postprocessing
 for part_ind=1:numel(coil_parts)
 if possible_polarities(best_dir_layout,part_ind)~=1
 coil_parts(part_ind).wire_path.v=fliplr(coil_parts(part_ind).wire_path.v);
 coil_parts(part_ind).wire_path.uv=fliplr(coil_parts(part_ind).wire_path.uv);
+end
 end
 end
 

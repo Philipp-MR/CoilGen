@@ -27,12 +27,14 @@ coil_parts(part_ind).contour_lines(loop_ind).uv=[coil_parts(part_ind).contour_li
 coil_parts(part_ind).contour_lines(loop_ind).v=[coil_parts(part_ind).contour_lines(loop_ind).v coil_parts(part_ind).contour_lines(loop_ind).v(:,1)]; %close the loops
 end
 end
-
-
 end
 
 
-
+%Calculate the combinded wire length for the unconnected loops
+coil_parts(numel(coil_parts)).combined_loop_length=0;
+for part_ind=1:numel(coil_parts)
+coil_parts(part_ind).combined_loop_length=sum(arrayfun(@(x) sum(vecnorm(coil_parts(part_ind).contour_lines(x).v(:,2:end)-coil_parts(part_ind).contour_lines(x).v(:,1:end-1))),1:numel(coil_parts(part_ind).contour_lines)));
+end
 
 function coil_parts=evaluate_loop_significance(coil_parts,target_field)
 %Calcaltue relative errors between the different input and

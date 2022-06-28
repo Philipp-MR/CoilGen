@@ -116,7 +116,7 @@ toc;
 
 %Process contours
 tic;
-disp('Process contours:');
+disp('Process contours: Evaluate loop significance');
 coil_parts= process_raw_loops(coil_parts,input,target_field);
 toc;
 
@@ -146,18 +146,6 @@ tic;
 disp('Interconnect the single groups:');
 coil_parts = interconnect_within_groups(coil_parts,input);
 toc;
-
-
-if ~strcmp(input.interconnection_method,'regular')
-
-
-tic;
-disp('Interconnect the differnt groups: (Spiral In/Out)');
-coil_parts = perform_spiral_in_out_intergroup_connection(coil_parts,input);
-toc;
-
-    
-else % do the spiral in-out double layer interconnection method
     
 
 %interconnect the groups to a single wire path
@@ -184,8 +172,6 @@ disp('Generate volumetric coil body:');
 coil_parts = create_sweep_along_surface(coil_parts,input);
 toc;
 
-    
-end
 
 %Calculate the inductance with fast henry
 tic;
@@ -193,10 +179,13 @@ disp('Calculate the inductance with fast henry:');
 coil_parts = calculate_inductance_by_coil_layout(coil_parts,input); % output in ohm,Henry,m,m²
 toc;
 
+end
+
+
 %Evaluate the result for the final wire track
 tic;
 disp('Evaluate the result for the final wire track:');
-[coil_parts,field_by_layout,field_by_unconnected_loops,field_layout_per1Amp,field_loops_per1Amp,field_error_vals,opt_current_layout] = evaluate_field_errors(coil_parts,target_field,sf_b_field);
+[coil_parts,field_by_layout,field_by_unconnected_loops,field_layout_per1Amp,field_loops_per1Amp,field_error_vals,opt_current_layout] = evaluate_field_errors(coil_parts,input,target_field,sf_b_field);
 toc;
 
 %Calculate the resuting gradient field
@@ -206,17 +195,9 @@ layout_gradient = calculate_gradient(coil_parts,target_field,field_layout_per1Am
 toc;
 %layout_gradient=[];
 
-else
-    
-    
-%Evaluate the result only for the contours
-tic;
-disp('Evaluate the result for the contours:');
-[coil_parts,field_by_layout,field_by_unconnected_loops,field_layout_per1Amp,field_loops_per1Amp,field_error_vals,opt_current_layout,layout_gradient] = evaluate_loop_errors(coil_parts,target_field,sf_b_field);
-toc; 
-coil_parts(numel(coil_parts)).wire_path.uv=[];
-coil_parts(numel(coil_parts)).wire_path.v=[];
-end
+
+
+
 
 %Assign the outputs
 result_out.coil_parts=coil_parts;
