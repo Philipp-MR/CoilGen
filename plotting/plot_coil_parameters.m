@@ -1,14 +1,16 @@
 function  plot_coil_parameters(coil_layouts,plot_title)
 
 
-
-
-
 % Plot result parameters in one combined plot
 valid_layouts=find(arrayfun(@(x) ~isempty(coil_layouts(x).out),1:numel(coil_layouts))); 
 pot_levels=arrayfun(@(x) coil_layouts(x).out.num_levels,valid_layouts);
-coil_lengths=arrayfun(@(x) coil_layouts(x).out.coil_parts(1).coil_length,valid_layouts);
+if coil_layouts.out.input_data.skip_postprocessing
+coil_lengths=arrayfun(@(x) sum([coil_layouts(x).out.coil_parts(:).combined_loop_length]),valid_layouts);
+coil_inductances=arrayfun(@(x) 0,valid_layouts).*10^3;
+else
+coil_lengths=arrayfun(@(x) sum([coil_layouts(x).out.coil_parts(:).coil_length]),valid_layouts);
 coil_inductances=arrayfun(@(x) coil_layouts(x).out.coil_parts(1).coil_inductance,valid_layouts).*10^3;
+end
 coil_currents=arrayfun(@(x) coil_layouts(x).out.potential_step,valid_layouts);
 linecolors={'r' [0 .5 0] 'b'};
 line_styles={'-' '--' ':'};
