@@ -88,60 +88,70 @@ end
 
 %% Select certain parameter cases and plot results
 
-clear inds
+clear inds plot_parameter
 inds(1).match=find(para_ind_grid{1}==find(sampling_parameters.tikonov_values==sampling_parameters.tikonov_values));
 inds(end+1).match=find(para_ind_grid{2}==find(sampling_parameters.plate_distances==0.2));
 inds(end+1).match=find(para_ind_grid{3}==find(strcmp(sampling_parameters.field_shape_functions,'x')));
-% inds(end+1).match=find(para_ind_grid{4}==find(arrayfun(@(x) isequal(sampling_parameters.plate_alignements{x},[1 0 0 0]),1:numel(sampling_parameters.plate_alignements))));
+inds(end+1).match=find(para_ind_grid{4}==find(arrayfun(@(x) isequal(sampling_parameters.plate_alignements{x},[1 0 0 0]),1:numel(sampling_parameters.plate_alignements))));
 % inds(end+1).match=find(para_ind_grid{5}==find(sampling_parameters.plate_size==0.2));
 
-inds_out = intersect_x(inds);
+%find the case indices which match all the criteria
+inds_out=inds(1).match;
+if numel(inds)>1
+for array_ind=2:numel(inds)
+        inds_out= intersect(inds_out,inds(array_ind).match);
+end
+end
 
+%write the paramters for the matching cases
 if ~isempty(inds_out)
-
 plot_parameter.max_error=result_parameters.max_error(inds_out);
 plot_parameter.mean_error=result_parameters.mean_error(inds_out);
 plot_parameter.sensitivity=result_parameters.sensitivity(inds_out);
 plot_parameter.wire_length=result_parameters.wire_length(inds_out);
 plot_parameter.tikonov_value=sampling_parameters.tikonov_values(para_ind_grid{1}(inds_out));
-plot_parameter.plate_distances=sampling_parameters.plate_distances(para_ind_grid{1}(inds_out));
-plot_parameter.plate_size=sampling_parameters.plate_size(para_ind_grid{1}(inds_out));
-
-
+plot_parameter.plate_distances=sampling_parameters.plate_distances(para_ind_grid{2}(inds_out));
+plot_parameter.plate_size=sampling_parameters.plate_size(para_ind_grid{5}(inds_out));
 end
+
+
 
 %% Plot results
+
 close all;
 
-coil_name='Coil';
-coil_to_plot=coil_layouts(1).out;
 
-
-if ispc
-addpath(strcat(pwd,'\','plotting'));
-else
-addpath(strcat(pwd,'/','plotting'));
-end
-%Chose a even leveled solution for plotting
-solutions_to_plot=find(arrayfun(@(x) ~isempty(coil_layouts(x).out),1:numel(coil_layouts)));
-single_ind_to_plot= find_even_leveled_solution(coil_layouts);
-plot_error_different_solutions(coil_layouts,single_ind_to_plot,coil_name);
-plot_2D_contours_with_sf(coil_layouts,single_ind_to_plot,coil_name);
-plot_groups_and_interconnections(coil_layouts,single_ind_to_plot,coil_name);
-plot_coil_parameters(coil_layouts,coil_name);
-plot_coil_track_with_resulting_bfield(coil_layouts,single_ind_to_plot,coil_name);
-plot_various_error_metrics(coil_layouts,single_ind_to_plot,coil_name);
-plot_resulting_gradient(coil_layouts,single_ind_to_plot,coil_name);
-rmpath('plotting');
+figure;
+hold on;
+plot(plot_parameter.plate_size,plot_parameter.sensitivity);
+grid on;
+axis equal;
+xlabel('Plate Size [m]', 'Interpreter', 'none');
+ylabel('Sensitivity [mT\m\A]', 'Interpreter', 'none');
+hold off;
 
 
 
 
-function inds_out = intersect_x (inds_in)
-inds_out=inds_in(1).match;
-if numel(inds_in)>1
-for array_ind=2:numel(inds_in)
-        inds_out= intersect(inds_out,inds_in(array_ind).match);
-end
-end
-end
+% coil_name='Coil';
+% coil_to_plot=coil_layouts(1).out;
+% 
+% 
+% if ispc
+% addpath(strcat(pwd,'\','plotting'));
+% else
+% addpath(strcat(pwd,'/','plotting'));
+% end
+% %Chose a even leveled solution for plotting
+% solutions_to_plot=find(arrayfun(@(x) ~isempty(coil_layouts(x).out),1:numel(coil_layouts)));
+% single_ind_to_plot= find_even_leveled_solution(coil_layouts);
+% plot_error_different_solutions(coil_layouts,single_ind_to_plot,coil_name);
+% plot_2D_contours_with_sf(coil_layouts,single_ind_to_plot,coil_name);
+% plot_groups_and_interconnections(coil_layouts,single_ind_to_plot,coil_name);
+% plot_coil_parameters(coil_layouts,coil_name);
+% plot_coil_track_with_resulting_bfield(coil_layouts,single_ind_to_plot,coil_name);
+% plot_various_error_metrics(coil_layouts,single_ind_to_plot,coil_name);
+% plot_resulting_gradient(coil_layouts,single_ind_to_plot,coil_name);
+% rmpath('plotting');
+
+

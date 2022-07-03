@@ -297,9 +297,9 @@ mesh_boundary_points=[mesh_boundary_points mesh_boundary_points(:,1)].*1000;
 mesh_size=[max(unrolled_mesh_points(1,:)) min(unrolled_mesh_points(1,:)) max(unrolled_mesh_points(2,:)) min(unrolled_mesh_points(2,:))].*1000;
 
 if ispc
-filename_full=strcat(output_directory,'\',coil_name,'_',filename,'_part',num2str(part_num),'.svg');
+filename_full=strcat(output_directory,'\',coil_name,'_',filename,'_part',erase(num2str(part_num),{'.' '^' ','}),'.svg');
 else
-filename_full=strcat(output_directory,'/',coil_name,'_',filename,'_part',num2str(part_num),'.svg');
+filename_full=strcat(output_directory,'/',coil_name,'_',filename,'_part',erase(num2str(part_num),{'.' '^' ','}),'.svg');
 end
 
 % Create output SVG header

@@ -257,11 +257,15 @@ end
 
 %Save the mesh as an .stl file
 if save_mesh
-stlwrite(layout_surface_mesh,strcat(output_directory,'\sweeped_layout_part',num2str(part_ind),'_',input.field_shape_function,'.stl'),'text');
-stlwrite(curved_mesh_matlab_format,strcat(output_directory,'\surface_part',num2str(part_ind),'_',input.field_shape_function,'.stl'),'text');
+
+if ispc
+stlwrite(layout_surface_mesh,strcat(output_directory,'\sweeped_layout_part',num2str(part_ind),'_',erase(input.field_shape_function,{'*' '.' '^' ','}),'.stl'),'text');
+stlwrite(curved_mesh_matlab_format,strcat(output_directory,'\surface_part',num2str(part_ind),'_',erase(input.field_shape_function,{'*' '.' '^' ','}),'.stl'),'text');
+else
+stlwrite(layout_surface_mesh,strcat(output_directory,'/sweeped_layout_part',num2str(part_ind),'_',erase(input.field_shape_function,{'*' '.' '^' ','}),'.stl'),'text');
+stlwrite(curved_mesh_matlab_format,strcat(output_directory,'/surface_part',num2str(part_ind),'_',erase(input.field_shape_function,{'*' '.' '^' ','}),'.stl'),'text');
 end
-
-
+end
 
 %Assign outputs
 coil_parts(part_ind).layout_surface_mesh=layout_surface_mesh;
