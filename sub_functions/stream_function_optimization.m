@@ -122,12 +122,12 @@ end
 
 % %calculate the resulting current dentsity for the mesh faces
 for part_ind=1:numel(coil_parts)
-pot_diffs1=repmat(coil_parts(part_ind).stream_function(coil_parts.coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts.coil_mesh.faces(1,:)),[1 3])';
-pot_diffs2=repmat(coil_parts(part_ind).stream_function(coil_parts.coil_mesh.faces(2,:))-coil_parts(part_ind).stream_function(coil_parts.coil_mesh.faces(1,:)),[1 3])';
-pot_diffs3=repmat(coil_parts(part_ind).stream_function(coil_parts.coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts.coil_mesh.faces(2,:)),[1 3])';
-edge_vecs1=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts.coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts.coil_mesh.faces(1,:));
-edge_vecs2=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts.coil_mesh.faces(2,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts.coil_mesh.faces(1,:));
-edge_vecs3=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts.coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts.coil_mesh.faces(2,:));
+pot_diffs1=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(1,:)),[1 3])';
+pot_diffs2=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(2,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(1,:)),[1 3])';
+pot_diffs3=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(2,:)),[1 3])';
+edge_vecs1=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(1,:));
+edge_vecs2=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(2,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(1,:));
+edge_vecs3=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(2,:));
 %calculate the resulting current 
 coil_parts(part_ind).current_density=edge_vecs1.*pot_diffs1+edge_vecs2.*pot_diffs2+edge_vecs3.*pot_diffs3;
 end
