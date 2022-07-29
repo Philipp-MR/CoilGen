@@ -161,7 +161,7 @@ caxis([min(plot_colors).*0.9 max(plot_colors).*1.1]);
 xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
 end
 
-
+set(gcf,'color','w');
 
 end
 

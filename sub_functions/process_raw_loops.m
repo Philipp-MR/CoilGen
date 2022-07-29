@@ -2,6 +2,14 @@ function coil_parts= process_raw_loops(coil_parts,input,target_field)
 %take care of loops crossing boundaries or off boundary loops
 
 
+%Smooth the contours
+for part_ind=1:numel(coil_parts)
+for loop_num=1:numel(coil_parts(part_ind).contour_lines)
+coil_parts(part_ind).contour_lines(loop_num).uv= smooth_track_by_folding(coil_parts(part_ind).contour_lines(loop_num).uv,2);
+end
+end
+
+
 %Generate the curved coordinates
 for part_ind=1:numel(coil_parts)
 planary_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.uv');

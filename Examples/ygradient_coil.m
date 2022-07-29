@@ -42,8 +42,10 @@ end
     'interconnection_method','regular',...
     'skip_postprocessing',false,...
     'skip_inductance_calculation',false,...
+    'make_cylndrical_pcb',true,...
+    'conductor_cross_section_width',0.03,...
+    'cross_sectional_points',[sin(0:(2*pi)/(10-1):2*pi); cos(0:(2*pi)/(10-1):2*pi)].*repmat(0.01,[2 1]),...
     'tikonov_reg_factor',10); %Tikonov regularization factor for the SF optimization
-
 
 
 
@@ -63,10 +65,12 @@ single_ind_to_plot= find_even_leveled_solution(coil_layouts);
 plot_error_different_solutions(coil_layouts,single_ind_to_plot,coil_name);
 plot_2D_contours_with_sf(coil_layouts,single_ind_to_plot,coil_name);
 plot_3D_sf(coil_layouts,single_ind_to_plot,coil_name);
+plot_3D_current_density(coil_layouts,single_ind_to_plot,coil_name);
 plot_groups_and_interconnections(coil_layouts,single_ind_to_plot,coil_name);
 plot_coil_parameters(coil_layouts,coil_name);
 plot_coil_track_with_resulting_bfield(coil_layouts,single_ind_to_plot,coil_name);
 plot_various_error_metrics(coil_layouts,single_ind_to_plot,coil_name);
 plot_resulting_gradient(coil_layouts,single_ind_to_plot,coil_name);
+plot_pcb_layouts(coil_layouts,single_ind_to_plot,coil_name);
 rmpath('plotting');
 

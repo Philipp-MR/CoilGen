@@ -37,6 +37,7 @@ title( plot_title+": "+'Layout Bz [mT\\A]', 'interpreter', 'none');
 %axis equal tight;
 axis equal tight;
 view(45,45);
+set(gcf,'color','w');
 set(gca,'FontWeight','bold');
 %set(gca,'FontSize',15);
 hold off;

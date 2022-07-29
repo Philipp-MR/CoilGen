@@ -39,6 +39,9 @@ set(gca,'XColor', 'none','YColor','none');
 hold off;
 end
 
+set(gcf,'color','w');
+
+
 end
 
 

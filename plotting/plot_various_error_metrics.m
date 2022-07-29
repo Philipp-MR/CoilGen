@@ -150,7 +150,7 @@ xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
 hold off
 
 
-
+set(gcf,'color','w');
 
 
 end

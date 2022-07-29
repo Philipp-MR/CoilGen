@@ -42,6 +42,7 @@ scatter3(coil_layout(single_ind_to_plot).out.target_field.coords(1,:),...
 axis equal tight;
 caxis([min(coil_layout.out.combined_mesh.stream_function) max(coil_layout.out.combined_mesh.stream_function)]);
 xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
+set(gcf,'color','w');
 hold off;
 
 

@@ -35,6 +35,7 @@ set(gca,'XTick',[]);
 axis equal tight;
 caxis([min(coil_layout(single_ind_to_plot).out.combined_mesh.stream_function) max(coil_layout(single_ind_to_plot).out.combined_mesh.stream_function)]);
 set(gca,'XColor', 'none','YColor','none');
+set(gcf,'color','w');
 hold off;
 end
 

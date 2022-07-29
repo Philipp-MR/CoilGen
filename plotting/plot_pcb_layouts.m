@@ -23,5 +23,8 @@ end
 axis equal;
 hold off
 
+set(gcf,'color','w');
+
+
 end
 
