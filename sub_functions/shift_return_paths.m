@@ -3,16 +3,6 @@ function coil_parts= shift_return_paths(coil_parts,input)
 if ~input.skip_normal_shift
 
 
-vertical_separation=input.normal_shift_length;
-
-
-%local variables
-vec_normal_local_smoothing_length=2;
-shift_length=2;
-smoothing_length=3;
-up_sample_factor=1;
-input.smooth_factor=1;
-
 coil_parts(numel(coil_parts)).shift_array=[];
 coil_parts(numel(coil_parts)).points_to_shift=[];
 
@@ -44,14 +34,6 @@ wire_path_out.uv = smooth_track_by_folding(wire_path_out.uv ,input.smooth_factor
 end
 
 
-% wire_path_out = upsample_loop(wire_path_out,1);
-% %downsample the wire
-% %if size(wire_path_out.uv,2)>max_point_number+1
-% %[wire_buff,~,~] = interparc([0:1/max_point_number:1 1],wire_path_out.uv(1,:),wire_path_out.uv(2,:));
-% if up_sample_factor~=1
-% wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,up_sample_factor);
-% end
-
 %close the final track
 if all(wire_path_out.uv(:,end)==wire_path_out.uv(:,1))
 wire_path_out.uv=[wire_path_out.uv wire_path_out.uv(:,1)];
@@ -63,15 +45,8 @@ end
 %[wire_path_out.v,wire_path_out.uv]=uv_to_xyz(wire_path_out.uv,planary_mesh,curved_mesh);
 
 
-
-
-% % %convert the tracks to 3d
-% % [wire_path_out.uv,wire_path_out.v,~]=uv_to_xyz_loc(wire_path_out.uv,zeros(1,size(wire_path_out.uv,2)),planary_mesh,curved_mesh);
-
 %detect wire crossings
 %[cross_segments,~]=self_intersect_iterative(wire_path_out.uv);
-
-%detect wire crossings
 [cross_points,cross_segments] = InterX(wire_path_out.uv);
 
 % %Add the cross points to the wire track
@@ -157,15 +132,15 @@ end
 
 
 %shift the cross points along the normal to avoid wire intersection
-shift_array=conv(points_to_shift,[1:smoothing_length ones(1,shift_length).*smoothing_length (smoothing_length-1):-1:1]./smoothing_length,'same');
+shift_array=conv(points_to_shift,[1:input.normal_shift_smooth_factors(2) ones(1,input.normal_shift_smooth_factors(1)).*input.normal_shift_smooth_factors(2) (input.normal_shift_smooth_factors(2)-1):-1:1]./input.normal_shift_smooth_factors(2),'same');
 shift_array(shift_array>1)=1;
 %make sure that shifting the points does not lead to a intersection with
 %the surface (this might happen if the surface is has extensiv curved edges)
 for point_ind=1:size(wire_path_out.uv,2)
-if point_ind>vec_normal_local_smoothing_length && point_ind<(size(wire_path_out.uv,2)-vec_normal_local_smoothing_length)  
-shift_vec=mean(normal_vectors_wire_path(:,(point_ind-floor(vec_normal_local_smoothing_length/2)):(point_ind+floor(vec_normal_local_smoothing_length/2))),2).*shift_array(point_ind).*vertical_separation;
+if point_ind>input.normal_shift_smooth_factors(3) && point_ind<(size(wire_path_out.uv,2)-input.normal_shift_smooth_factors(3))  
+shift_vec=mean(normal_vectors_wire_path(:,(point_ind-floor(input.normal_shift_smooth_factors(3)/2)):(point_ind+floor(input.normal_shift_smooth_factors(3)/2))),2).*shift_array(point_ind).*input.normal_shift_length;
 else
-shift_vec=normal_vectors_wire_path(:,point_ind).*shift_array(point_ind).*vertical_separation;
+shift_vec=normal_vectors_wire_path(:,point_ind).*shift_array(point_ind).*input.normal_shift_length;
 end
 wire_path_out.v(:,point_ind)=wire_path_out.v(:,point_ind)+shift_vec;
 end

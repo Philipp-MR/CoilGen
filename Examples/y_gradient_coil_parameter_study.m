@@ -18,7 +18,7 @@ cd('../');
 end
 
 
-level_potentials=8:14;
+level_potentials=12:14;
 
 %% Run the algorithm
 

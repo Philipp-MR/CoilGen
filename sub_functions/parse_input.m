@@ -57,7 +57,7 @@ addParameter(input_parser,'min_loop_signifcance',1,@isnumeric);
 addParameter(input_parser,'area_perimeter_deletion_ratio',5,@isnumeric);
 %max allowed angle of the track of the contours
 addParameter(input_parser,'max_allowed_angle_within_coil_track',120,@isnumeric);
-%min allowed angle of the track of the contours; smaller angles will be
+%min allowed angle of the track of the contours; smaller angles will bef
 %converted to straight lines in order to reduce the number of points
 addParameter(input_parser,'min_allowed_angle_within_coil_track',0.0001,@isnumeric);
 %minimum relative percentage for which points will be deleted which contribute to segments which is extremly short
@@ -83,7 +83,7 @@ end
 %Flag if the track should be smoothed
 addParameter(input_parser,'smooth_flag',true,@islogical);
 %smoothing parameter
-addParameter(input_parser,'smooth_factor',3,@numeric);
+addParameter(input_parser,'smooth_factor',1,@numeric);
 %flag to save sweeped .stl
 addParameter(input_parser,'save_stl_flag',true,@islogical);
 %flag to plot results
@@ -92,12 +92,18 @@ addParameter(input_parser,'plot_flag',true,@islogical);
 addParameter(input_parser,'interconnection_method','regular',@ischar);
 %Group interconnection_method: 'straight' or 'crossed'
 addParameter(input_parser,'group_interconnection_method','crossed',@ischar);
+
+%Flag to skip calculation of minimal winding distance
+addParameter(input_parser,'skip_calculation_min_winding_distance',true,@islogical);
+
 %Flag to skip post processing
 addParameter(input_parser,'skip_postprocessing',false,@islogical);
 %Flag to skip inductance_calculation
 addParameter(input_parser,'skip_inductance_calculation',false,@islogical);
 %Flag to skip the shifting of return paths
 addParameter(input_parser,'skip_normal_shift',false,@islogical);
+%smoothing parameters regarding the normal shift
+addParameter(input_parser,'normal_shift_smooth_factors',[2 3 2],@numeric);
 %Flag to skip the generation of a volumentric (3D) coil body
 addParameter(input_parser,'skip_sweep',false,@islogical);
 %Flag to generate a rectangular pcb pattern to wrap around a cylinder
@@ -132,6 +138,14 @@ addParameter(input_parser,'cross_sectional_points',init_cross_sectional_points,@
 % => cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,
 % num_longitudinal_divisions, rotation_vector_x, rotation_vector_y, rotation_vector_z, rotation_angle [radian]
 addParameter(input_parser,'cylinder_mesh_parameter_list',[0.8 0.3 20 20 1 0 0 0],@isnumeric);
+%specify the paramters for the generation of the (default) planar mesh
+% => planar_height[in m], planar_radius[in m], num_lateral_divisions,
+% num_longitudinal_divisions, rotation_vector_x, rotation_vector_y,
+% rotation_vector_z, rotation_angle [radian], center_x [m], center_y [m], center_z [m]
+%specify the paramters for the generation of a double cone ("diabolo") shaped mesh
+% => cylinder_height[in m],inner_cylinder_height [in m], max_cylinder_radius[in m], min_cylinder_radius[in m], num_circular_divisions,
+% num_longitudinal_divisions, rotation_vector_x, rotation_vector_y, rotation_vector_z, rotation_angle [radian]
+addParameter(input_parser,'double_cone_mesh_parameter_list',[0.8 0.3  0.3 0.1 20 20 1 0 0 0],@isnumeric);
 %specify the paramters for the generation of the (default) planar mesh
 % => planar_height[in m], planar_radius[in m], num_lateral_divisions,
 % num_longitudinal_divisions, rotation_vector_x, rotation_vector_y,

@@ -4,7 +4,7 @@ function  plot_3D_current_density(coil_layout,single_ind_to_plot,plot_title)
 
 figure;
 hold on;
-title(plot_title+": "+'Stream function by optimization and target Bz', 'interpreter', 'none');
+title(plot_title+": "+'Current Density by optimization and target Bz', 'interpreter', 'none');
 view(3);
 colormap hot;
 

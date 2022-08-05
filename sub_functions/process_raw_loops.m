@@ -3,12 +3,14 @@ function coil_parts= process_raw_loops(coil_parts,input,target_field)
 
 
 %Smooth the contours
+
+if input.smooth_flag
 for part_ind=1:numel(coil_parts)
 for loop_num=1:numel(coil_parts(part_ind).contour_lines)
-coil_parts(part_ind).contour_lines(loop_num).uv= smooth_track_by_folding(coil_parts(part_ind).contour_lines(loop_num).uv,2);
+coil_parts(part_ind).contour_lines(loop_num).uv= smooth_track_by_folding(coil_parts(part_ind).contour_lines(loop_num).uv,1);
 end
 end
-
+end
 
 %Generate the curved coordinates
 for part_ind=1:numel(coil_parts)

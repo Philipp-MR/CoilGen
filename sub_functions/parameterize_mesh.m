@@ -5,6 +5,7 @@ function coil_parts=parameterize_mesh(coil_parts,input)
 %Schmidt  rms@dgp.toronto.edu" based on desbrun et al (2002), "Intrinsic Parameterizations of {Surface} Meshes",
 
 surface_is_cylinder=input.surface_is_cylinder_flag;
+circular_factor=input.circular_diameter_factor_cylinder_parameterization;
 
 
 for part_ind=1:numel(coil_parts)
@@ -57,9 +58,14 @@ point_coords=rotated_vectices;
 min_z_cylinder=min(point_coords(3,:));
 point_coords(3,:)=point_coords(3,:)+min_z_cylinder;
 phi_coord=atan2(point_coords(2,:),point_coords(1,:));
+% r_coord=(point_coords(1,:).^2+point_coords(2,:).^2).^(1/2);
+% u_coord=(r_coord - point_coords(3,:)).*sin(phi_coord);
+% v_coord=(r_coord - point_coords(3,:)).*cos(phi_coord);
 r_coord=(point_coords(1,:).^2+point_coords(2,:).^2).^(1/2);
-u_coord=(r_coord - point_coords(3,:)).*sin(phi_coord);
-v_coord=(r_coord - point_coords(3,:)).*cos(phi_coord);
+u_coord=( point_coords(3,:)-mean(r_coord)).*sin(phi_coord);
+v_coord=( point_coords(3,:)-mean(r_coord)).*cos(phi_coord);
+% u_coord=( point_coords(3,:).*circular_factor+r_coord*circular_factor).*sin(phi_coord);
+% v_coord=( point_coords(3,:).*circular_factor+r_coord*circular_factor).*cos(phi_coord);
 coil_parts(part_ind).coil_mesh.uv=[u_coord;v_coord];
 coil_parts(part_ind).coil_mesh.n=vertexNormal(triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.vertices'))';
 coil_parts(part_ind).coil_mesh.boundary=boundary_loop_nodes;

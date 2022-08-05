@@ -26,6 +26,14 @@ coil_mesh=create_unique_noded_mesh(coil_mesh);
 coil_mesh.vertices=coil_mesh.vertices'; 
 coil_mesh.faces=coil_mesh.faces'; 
 
+elseif strcmp(input.coil_mesh_file,'create double cone mesh')
+%no external mesh is specified by stl file; create default cylndrical mesh
+coil_mesh=build_double_cone_mesh(input.double_cone_mesh_parameter_list(1),input.double_cone_mesh_parameter_list(2),input.double_cone_mesh_parameter_list(3),input.double_cone_mesh_parameter_list(4),...
+                                                input.double_cone_mesh_parameter_list(5),input.double_cone_mesh_parameter_list(6),input.double_cone_mesh_parameter_list(7),input.double_cone_mesh_parameter_list(8),...
+                                                input.double_cone_mesh_parameter_list(9),input.double_cone_mesh_parameter_list(10));
+coil_mesh=create_unique_noded_mesh(coil_mesh);
+coil_mesh.vertices=coil_mesh.vertices'; 
+coil_mesh.faces=coil_mesh.faces'; 
 
 elseif strcmp(input.coil_mesh_file,'create planary mesh')
 %no external mesh is specified by stl file; create default planar mesh

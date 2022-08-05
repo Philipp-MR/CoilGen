@@ -4,7 +4,7 @@ function  plot_coil_parameters(coil_layouts,plot_title)
 % Plot result parameters in one combined plot
 valid_layouts=find(arrayfun(@(x) ~isempty(coil_layouts(x).out),1:numel(coil_layouts))); 
 pot_levels=arrayfun(@(x) coil_layouts(x).out.num_levels,valid_layouts);
-if coil_layouts.out.input_data.skip_postprocessing
+if coil_layouts(1).out.input_data.skip_postprocessing
 coil_lengths=arrayfun(@(x) sum([coil_layouts(x).out.coil_parts(:).combined_loop_length]),valid_layouts);
 coil_inductances=arrayfun(@(x) 0,valid_layouts).*10^3;
 else

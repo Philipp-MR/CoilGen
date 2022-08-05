@@ -38,7 +38,7 @@ min_loop_signifcance=3;
     'interconnection_cut_width',cut_width, ... % the width for the interconnections are interconnected; in meter
     'conductor_cross_section_width',pcb_width,... %width of the generated pcb tracks
     'normal_shift_length',normal_shift, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
-    'skip_postprocessing',true,...
+    'skip_postprocessing',false,...
     'make_cylndrical_pcb',true,...
     'skip_inductance_calculation',false,...
     'save_stl_flag',true,...
@@ -93,7 +93,7 @@ close all;
 
 coil_name='Coil';
 
-coils_to_plot=coil_z;
+coils_to_plot=coil_x;
 
 if ispc
 addpath(strcat(pwd,'\','plotting'));
@@ -106,7 +106,7 @@ single_ind_to_plot= find_even_leveled_solution(coils_to_plot);
 %plot_error_different_solutions(coils_to_plot,single_ind_to_plot,coil_name);
 %plot_2D_contours_with_sf(coils_to_plot,single_ind_to_plot,coil_name);
 %plot_3D_sf(coils_to_plot,single_ind_to_plot,coil_name);
-%plot_groups_and_interconnections(coils_to_plot,single_ind_to_plot,coil_name);
+plot_groups_and_interconnections(coils_to_plot,single_ind_to_plot,coil_name);
 %plot_coil_parameters(coils_to_plot,coil_name);
 plot_coil_track_with_resulting_bfield(coils_to_plot,single_ind_to_plot,coil_name);
 plot_various_error_metrics(coils_to_plot,single_ind_to_plot,coil_name);

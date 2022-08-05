@@ -26,7 +26,7 @@ ylabel("y[m]");
 zlabel("z[m]");
 %target_sf=coil_layout(single_ind_to_plot).out.target_field;
 %plot_vals_scatter=coil_layout(single_ind_to_plot).out.field_by_layout(3,:)./mean(abs(coil_layout(single_ind_to_plot).out.field_by_layout(3,:)));
-plot_vals_scatter=coil_layouts.out.field_layout_per1Amp(3,:).*1000;
+plot_vals_scatter=coil_layouts(single_ind_to_plot).out.field_layout_per1Amp(3,:).*1000;
 %plot_vals_scatter=coil_layout(single_ind_to_plot).out.field_by_layout(3,:)./max(abs(coil_layout(single_ind_to_plot).out.field_by_layout(3,:)));
 %field_by_layout=coil_layout(single_ind_to_plot).out.field_by_layout(3,:);
 %plot_vals_scatter=abs((field_by_layout-target_sf))./max(abs(target_sf)).*100;
