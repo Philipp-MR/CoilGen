@@ -14,16 +14,45 @@ else
 cd('../');
 end
 
-%% Run the algorithm
 
 
-%Define the different parameters, which will be varied
+%% Define the different parameters, which will be varied
+
+% sampling_parameters.tikonov_values=10.^(-5:0.1:5);
+% sampling_parameters.tikonov_values=sampling_parameters.tikonov_values(60);
+% sampling_parameters.plate_distances=0.1:0.05:0.5;
+% sampling_parameters.field_shape_functions={'x' 'y' 'z'};
+% sampling_parameters.plate_size=0.1:0.05:0.5;
+% sampling_parameters.plate_alignements={[1 0 0 0] [1 0 0 pi] [0 0 1 pi]};
+
 sampling_parameters.tikonov_values=10.^(-5:0.1:5);
 sampling_parameters.tikonov_values=sampling_parameters.tikonov_values(60);
-sampling_parameters.plate_distances=0.1:0.05:0.5;
+sampling_parameters.plate_distances=0.2;
 sampling_parameters.field_shape_functions={'x' 'y' 'z'};
-sampling_parameters.plate_alignements={[1 0 0 0] [1 0 0 pi] [0 0 1 pi]};
-sampling_parameters.plate_size=0.1:0.05:0.5;
+sampling_parameters.plate_size=0.4;
+
+%% Calculate different orientation for the gradient system
+sampling_resolution_radial=20; 
+sampling_resolution_z=10; 
+points_per_radia=ceil(sin((0:sampling_resolution_z)/(sampling_resolution_z)*pi/2)*sampling_resolution_radial+10^(-8));
+z_values=cos((0:sampling_resolution_z)./(sampling_resolution_z).*(pi/2));
+circum_points=cell(1,numel(points_per_radia));
+cut_circumferences=sin((0:sampling_resolution_z)/(sampling_resolution_z)*pi/2);
+bi_planar_alignment=[];
+for circum_ind=1:numel(points_per_radia)
+circum_points{circum_ind}=[ sin(0:2*pi/(points_per_radia(circum_ind)):(2*pi-2*pi/(points_per_radia(circum_ind)))).*cut_circumferences(circum_ind); ...
+                                            cos(0:2*pi/(points_per_radia(circum_ind)):(2*pi-2*pi/(points_per_radia(circum_ind)))).*cut_circumferences(circum_ind); ...
+                                            ones(1,points_per_radia(circum_ind)).*z_values(circum_ind)];
+bi_planar_alignment=[bi_planar_alignment circum_points{circum_ind}];
+end
+[bi_planar_alignment,~,~] = unique(bi_planar_alignment','rows');
+bi_planar_alignment=bi_planar_alignment';
+sampling_parameters.plate_alignements=cell(1,size(bi_planar_alignment,2));
+for align_ind=1:size(bi_planar_alignment,2)
+sampling_parameters.plate_alignements{align_ind}=[bi_planar_alignment(:,align_ind)'];
+end
+
+%% Build parameter sets of all possibel parameter combinations
 
 fieldnames=fieldnames(sampling_parameters);
 num_fields=numel(fieldnames);
@@ -42,20 +71,22 @@ result_parameters.mean_error=zeros(size(para_ind_grid{1}));
 result_parameters.max_error=zeros(size(para_ind_grid{1}));
 result_parameters.wire_length=zeros(size(para_ind_grid{1}));
 
+%% Run the algorithm for the different parameter sets
+
 for case_ind=1:total_number_of_cases
 
 %Select the case parameters
 tikonov_value=sampling_parameters.tikonov_values(para_ind_grid{1}(case_ind));
 plate_distance=sampling_parameters.plate_distances(para_ind_grid{2}(case_ind));
 field_shape_function=sampling_parameters.field_shape_functions{para_ind_grid{3}(case_ind)};
-plate_alignement=sampling_parameters.plate_alignements{para_ind_grid{4}(case_ind)};
-plate_size=sampling_parameters.plate_size(para_ind_grid{5}(case_ind));
+plate_size=sampling_parameters.plate_size(para_ind_grid{4}(case_ind));
+plate_alignement=sampling_parameters.plate_alignements{para_ind_grid{5}(case_ind)};
 
 try
     coil_layouts.out=CoilGen(...
     'field_shape_function',field_shape_function,... % definition of the target field
     'coil_mesh_file','create bi-planary mesh', ...
-    'biplanar_mesh_parameter_list',[plate_size plate_size 20 20 plate_alignement(1) plate_alignement(2) plate_alignement(3) plate_alignement(4) 0 0 0 plate_distance],... % cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,  num_longitudinal_divisions, rotation_vector: x,y,z, and  rotation_angle [radian]
+    'biplanar_mesh_parameter_list',[plate_size plate_size 20 20 plate_alignement(1) plate_alignement(2) plate_alignement(3) 0 0 0 plate_distance],... % cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,  num_longitudinal_divisions, rotation_vector: x,y,z, and  rotation_angle [radian]
     'min_loop_signifcance',3,...
     'target_region_radius',0.01,...  % in meter
     'use_only_target_mesh_verts',false, ...
@@ -68,6 +99,8 @@ try
     'level_set_method','primary',... %Specify one of the three ways the level sets are calculated: "primary","combined", or "independent"
     'skip_postprocessing',true,...
     'skip_inductance_calculation',false,...
+    'skip_sweep',true,...
+    'make_cylndrical_pcb',false,...
     'tikonov_reg_factor',tikonov_value); %Tikonov regularization factor for the SF optimization
 
 result_parameters.max_error(case_ind)=coil_layouts.out.error_vals.max_rel_error_layout_vs_target;
@@ -92,8 +125,8 @@ clear inds plot_parameter
 inds(1).match=find(para_ind_grid{1}==find(sampling_parameters.tikonov_values==sampling_parameters.tikonov_values));
 inds(end+1).match=find(para_ind_grid{2}==find(sampling_parameters.plate_distances==0.2));
 inds(end+1).match=find(para_ind_grid{3}==find(strcmp(sampling_parameters.field_shape_functions,'x')));
-inds(end+1).match=find(para_ind_grid{4}==find(arrayfun(@(x) isequal(sampling_parameters.plate_alignements{x},[1 0 0 0]),1:numel(sampling_parameters.plate_alignements))));
-% inds(end+1).match=find(para_ind_grid{5}==find(sampling_parameters.plate_size==0.2));
+%inds(end+1).match=find(para_ind_grid{4}==find(arrayfun(@(x) isequal(sampling_parameters.plate_alignements{x},[1 0 0 0]),1:numel(sampling_parameters.plate_alignements))));
+inds(end+1).match=find(para_ind_grid{5}==find(sampling_parameters.plate_size==0.2));
 
 %find the case indices which match all the criteria
 inds_out=inds(1).match;

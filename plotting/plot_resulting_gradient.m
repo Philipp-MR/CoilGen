@@ -8,7 +8,19 @@ coil_layouts(single_ind_to_plot).out.layout_gradient.local_gx(abs(coil_layouts(s
 coil_layouts(single_ind_to_plot).out.layout_gradient.local_gy(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gy)>5)=nan;
 coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz)>5)=nan;
 
-[stongest_gradient_val,stongest_gradient]=max([mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gx),'omitnan'),[mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gy),'omitnan'),[mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz),'omitnan')]]]);
+%[stongest_gradient_val,stongest_gradient]=max([mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gx),'omitnan'),[mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gy),'omitnan'),[mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz),'omitnan')]]]);
+[~,stongest_gradient]=max(abs([coil_layouts(single_ind_to_plot).out.layout_gradient.mean_local_gx/coil_layouts(single_ind_to_plot).out.layout_gradient.std_local_gx ...
+    coil_layouts(single_ind_to_plot).out.layout_gradient.mean_local_gy/coil_layouts(single_ind_to_plot).out.layout_gradient.std_local_gy ...
+    coil_layouts(single_ind_to_plot).out.layout_gradient.mean_local_gz/coil_layouts(single_ind_to_plot).out.layout_gradient.std_local_gz]));
+switch stongest_gradient
+    case 1
+stongest_gradient_val=coil_layouts(single_ind_to_plot).out.layout_gradient.mean_local_gx;
+    case 2
+stongest_gradient_val=coil_layouts(single_ind_to_plot).out.layout_gradient.mean_local_gy;
+    case 3
+stongest_gradient_val=coil_layouts(single_ind_to_plot).out.layout_gradient.mean_local_gz;
+end
+
 std_gradients=[std(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gx,'omitnan') std(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gy,'omitnan') std(coil_layouts(single_ind_to_plot).out.layout_gradient.local_gz,'omitnan')];
 plot_range=[stongest_gradient_val-std_plot_factor*std_gradients(stongest_gradient),stongest_gradient_val+std_plot_factor*std_gradients(stongest_gradient)];
 
