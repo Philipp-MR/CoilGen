@@ -12,6 +12,9 @@ vertices_z=repelem(z_positions(1:end-1),size(x_positions,2));
 
 vertices=[vertices_x; vertices_y; vertices_z];
 
+%Set the vertices in the center
+vertices=vertices-mean(vertices,2);
+
 tri_1_vert_inds_1=1:((num_circular_divisions)*(num_longitudinal_divisions));
 tri_1_vert_inds_2=tri_1_vert_inds_1+1;
 %take care of indice overflow at the end of the rings

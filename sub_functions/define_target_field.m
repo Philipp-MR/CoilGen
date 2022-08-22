@@ -77,7 +77,7 @@ all_verts=[];
 for part_ind=1:numel(coil_parts)
 all_verts=[all_verts coil_parts(part_ind).coil_mesh.vertices];
 end
-if input.set_roi_into_mesh_center==0
+if input.set_roi_into_mesh_center
 target_points=target_points-mean(all_verts,2);
 end
 

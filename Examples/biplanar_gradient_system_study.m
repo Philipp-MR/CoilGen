@@ -31,22 +31,22 @@ sampling_parameters.plate_distances=0.2;
 sampling_parameters.field_shape_functions={'x' 'y' 'z'};
 sampling_parameters.plate_size=0.4;
 
+
 %% Calculate different orientation for the gradient system
-sampling_resolution_radial=20; 
-sampling_resolution_z=10; 
-points_per_radia=ceil(sin((0:sampling_resolution_z)/(sampling_resolution_z)*pi/2)*sampling_resolution_radial+10^(-8));
-z_values=cos((0:sampling_resolution_z)./(sampling_resolution_z).*(pi/2));
-circum_points=cell(1,numel(points_per_radia));
-cut_circumferences=sin((0:sampling_resolution_z)/(sampling_resolution_z)*pi/2);
-bi_planar_alignment=[];
-for circum_ind=1:numel(points_per_radia)
-circum_points{circum_ind}=[ sin(0:2*pi/(points_per_radia(circum_ind)):(2*pi-2*pi/(points_per_radia(circum_ind)))).*cut_circumferences(circum_ind); ...
-                                            cos(0:2*pi/(points_per_radia(circum_ind)):(2*pi-2*pi/(points_per_radia(circum_ind)))).*cut_circumferences(circum_ind); ...
-                                            ones(1,points_per_radia(circum_ind)).*z_values(circum_ind)];
-bi_planar_alignment=[bi_planar_alignment circum_points{circum_ind}];
+azimuth_resol=20;
+polar_resol=40;
+z_val=sin((0:(1/(azimuth_resol-1)):1).*(pi/2));
+cut_radia=(1-(z_val).^2).^(1/2);
+lin_points_num=floor(cut_radia.*polar_resol);
+x_vals=[]; y_vals=[]; z_vals=[]; 
+for az_ind=1:azimuth_resol
+lin_incr=0:1/(lin_points_num(az_ind)-1):1;
+x_vals=[x_vals sin(lin_incr.*(2*pi)).*cut_radia(az_ind)];
+y_vals=[y_vals cos(lin_incr.*(2*pi)).*cut_radia(az_ind)];
+z_vals=[z_vals z_val(az_ind).*ones(size(lin_incr))];
 end
-[bi_planar_alignment,~,~] = unique(bi_planar_alignment','rows');
-bi_planar_alignment=bi_planar_alignment';
+[bi_planar_alignment,~,~] = unique([x_vals; y_vals; z_vals]','rows');
+bi_planar_alignment=[bi_planar_alignment; [0 0 1]]';
 sampling_parameters.plate_alignements=cell(1,size(bi_planar_alignment,2));
 for align_ind=1:size(bi_planar_alignment,2)
 sampling_parameters.plate_alignements{align_ind}=[bi_planar_alignment(:,align_ind)'];
