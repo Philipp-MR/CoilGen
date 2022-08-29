@@ -92,10 +92,8 @@ addParameter(input_parser,'plot_flag',true,@islogical);
 addParameter(input_parser,'interconnection_method','regular',@ischar);
 %Group interconnection_method: 'straight' or 'crossed'
 addParameter(input_parser,'group_interconnection_method','crossed',@ischar);
-
 %Flag to skip calculation of minimal winding distance
 addParameter(input_parser,'skip_calculation_min_winding_distance',true,@islogical);
-
 %Flag to skip post processing
 addParameter(input_parser,'skip_postprocessing',false,@islogical);
 %Flag to skip inductance_calculation

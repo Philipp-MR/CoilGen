@@ -40,6 +40,7 @@ figure('name',plot_title);
 tiledlayout('flow');
 for part_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts)
 nexttile;
+hold on;
 title(plot_title+": "+"SF Part"+num2str(part_ind), 'interpreter', 'none');
 patch('Faces',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces','Vertices',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.uv','FaceVertexCData',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).stream_function,'FaceColor','interp','edgealpha',0.0);
 for loop_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).contour_lines)
@@ -57,9 +58,6 @@ set(gcf,'color','w');
 hold off;
 end
 end
-
-
-
 
 
 end
