@@ -6,6 +6,22 @@ convolutional_vector_length=1; %for smothering the curverture along the track
 
 if ~input.skip_sweep
 
+%Define the cross section of the conductor
+if all(input.cross_sectional_points==[0 0 0])
+circular_resolution=10;
+cross_section_points=[sin(0:(2*pi)/(circular_resolution-1):2*pi); cos(0:(2*pi)/(circular_resolution-1):2*pi)];
+cross_section_points=cross_section_points.*repmat(input.conductor_thickness,[2 1]);
+else
+cross_section_points=input.cross_sectional_points;
+end
+%center the cross section around the [0,0] origin that roation will be
+%later valid
+cross_section_points=cross_section_points-mean(cross_section_points,2);
+%build a triangulation from the cross section
+cross_section_points=cross_section_points(:,1:end-1);
+
+
+
 for part_ind=1:numel(coil_parts)
 
 parameterized_mesh=coil_parts(part_ind).coil_mesh;
@@ -14,16 +30,9 @@ shift_array=coil_parts(part_ind).shift_array;
 wire_path=coil_parts(part_ind).wire_path;
 planary_mesh_matlab_format=triangulation(parameterized_mesh.faces',parameterized_mesh.uv');
 curved_mesh_matlab_format=triangulation(parameterized_mesh.faces',parameterized_mesh.v);
-cross_section_points=input.cross_sectional_points;
 save_mesh=input.save_stl_flag;
 output_directory=input.output_directory;
 conductor_conductivity=input.specific_conductivity_conductor;
-
-%center the cross section around the [0,0] origin that roation will be
-%later valid
-cross_section_points=cross_section_points-mean(cross_section_points,2);
-%build a triangulation from the cross section
-cross_section_points=cross_section_points(:,1:end-1);
 
 %build a 2d mesh of the cross section by the corner points
 num_cross_section_points=size(cross_section_points,2);

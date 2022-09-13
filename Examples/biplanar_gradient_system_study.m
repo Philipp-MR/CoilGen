@@ -18,22 +18,46 @@ end
 
 %% Define the different parameters, which will be varied
 
+
+target_region_radius=0.002;
+plate_mesh_resolution=30;
+
+sampling_parameters.tikonov_values=1000000;
+% sampling_parameters.plate_distances=[0.01 0.02 0.03 0.04 0.05:0.05:0.5];
+% sampling_parameters.plate_size=[0.01 0.02 0.03 0.04 0.05:0.05:0.5];
+% sampling_parameters.plate_distances=[0.02:0.005:0.1];
+% sampling_parameters.plate_size=[0.01:0.005:0.1];
+
+sampling_parameters.plate_distances=[0.02:0.01:0.1];
+sampling_parameters.plate_size=[0.01:0.01:0.1];
+
+
+sampling_parameters.field_shape_functions={'x'};
+sampling_parameters.plate_alignements={[0 0 1]};
+
 % sampling_parameters.tikonov_values=10.^(-5:0.1:5);
 % sampling_parameters.tikonov_values=sampling_parameters.tikonov_values(60);
-% sampling_parameters.plate_distances=0.1:0.05:0.5;
+% sampling_parameters.tikonov_values=10000;
+% sampling_parameters.plate_distances=0.03;
+% sampling_parameters.plate_size=0.05;
 % sampling_parameters.field_shape_functions={'x' 'y' 'z'};
-% sampling_parameters.plate_size=0.1:0.05:0.5;
-% sampling_parameters.plate_alignements={[1 0 0 0] [1 0 0 pi] [0 0 1 pi]};
+% sampling_parameters.plate_alignements=cell(1,2);
+% sampling_parameters.plate_alignements{1}=[-0.7485 -0.0000 0.6631];
+% sampling_parameters.plate_alignements{2}=[0 0 1];
 
-sampling_parameters.tikonov_values=10.^(-5:0.1:5);
-sampling_parameters.tikonov_values=sampling_parameters.tikonov_values(60);
-sampling_parameters.plate_distances=0.2;
-sampling_parameters.plate_size=0.4;
-sampling_parameters.field_shape_functions={'x' 'y' 'z'};
+
+
+% sampling_parameters.tikonov_values=100;
+% sampling_parameters.plate_distances=[0.1];
+% sampling_parameters.plate_size=[0.1];
+% sampling_parameters.field_shape_functions={'x'};
+% sampling_parameters.plate_alignements=[0 0 1];
+
+
 
 % %Calculate different orientation for the gradient system
-% azimuth_resol=20;
-% polar_resol=40;
+% azimuth_resol=30;
+% polar_resol=30;
 % z_val=sin((0:(1/(azimuth_resol-1)):1).*(pi/2));
 % cut_radia=(1-(z_val).^2).^(1/2);
 % lin_points_num=floor(cut_radia.*polar_resol);
@@ -53,30 +77,40 @@ sampling_parameters.field_shape_functions={'x' 'y' 'z'};
 
 
 
+% %% Calculate different orientation for the gradient system
+% azimuth_resol=30;
+% polar_resol=30;
+% z_val=sin((0:(1/(azimuth_resol-1)):1).*(pi/2));
+% cut_radia=(1-(z_val).^2).^(1/2);
+% lin_points_num=floor(cut_radia.*polar_resol);
+% x_vals=[]; y_vals=[]; z_vals=[]; 
+% for az_ind=1:azimuth_resol
+% lin_incr=0:1/(lin_points_num(az_ind)-1):1;
+% x_vals=[x_vals sin(lin_incr.*(2*pi)).*cut_radia(az_ind)];
+% y_vals=[y_vals cos(lin_incr.*(2*pi)).*cut_radia(az_ind)];
+% z_vals=[z_vals z_val(az_ind).*ones(size(lin_incr))];
+% end
+% [bi_planar_alignment,~,~] = unique([x_vals; y_vals; z_vals]','rows');
+% bi_planar_alignment=[[0 0 1]; bi_planar_alignment]';
+% sampling_parameters.plate_alignements=cell(1,size(bi_planar_alignment,2));
+% for align_ind=1:size(bi_planar_alignment,2)
+% sampling_parameters.plate_alignements{align_ind}=[bi_planar_alignment(:,align_ind)'];
+% end
 
-%% Calculate different orientation for the gradient system
-azimuth_resol=20;
-polar_resol=40;
-z_val=sin((0:(1/(azimuth_resol-1)):1).*(pi/2));
-cut_radia=(1-(z_val).^2).^(1/2);
-lin_points_num=floor(cut_radia.*polar_resol);
-x_vals=[]; y_vals=[]; z_vals=[]; 
-for az_ind=1:azimuth_resol
-lin_incr=0:1/(lin_points_num(az_ind)-1):1;
-x_vals=[x_vals sin(lin_incr.*(2*pi)).*cut_radia(az_ind)];
-y_vals=[y_vals cos(lin_incr.*(2*pi)).*cut_radia(az_ind)];
-z_vals=[z_vals z_val(az_ind).*ones(size(lin_incr))];
-end
-[bi_planar_alignment,~,~] = unique([x_vals; y_vals; z_vals]','rows');
-bi_planar_alignment=[bi_planar_alignment; [0 0 1]]';
-sampling_parameters.plate_alignements=cell(1,size(bi_planar_alignment,2));
-for align_ind=1:size(bi_planar_alignment,2)
-sampling_parameters.plate_alignements{align_ind}=[bi_planar_alignment(:,align_ind)'];
-end
 
-% sampling_parameters.plate_alignements=cell(1,2);
-% sampling_parameters.plate_alignements{1}=[-0.7485 -0.0000 0.6631];
-% sampling_parameters.plate_alignements{2}=[0 0 1];
+% line_resolution=50;
+% line_vals=[(-1):2/line_resolution:0 0:2/line_resolution:1];
+% x_vals=[zeros(1,numel(line_vals)) line_vals];
+% y_vals=[line_vals zeros(1,numel(line_vals))];
+% r_vals=x_vals.^2+y_vals.^2;
+% z_vals=(1-r_vals.^2).^(1/2);
+% [bi_planar_alignment,~,~] = unique([x_vals; y_vals; z_vals]','rows');
+% bi_planar_alignment=[[0 0 1]; bi_planar_alignment]';
+% sampling_parameters.plate_alignements=cell(1,size(bi_planar_alignment,2));
+% for align_ind=1:size(bi_planar_alignment,2)
+% sampling_parameters.plate_alignements{align_ind}=[bi_planar_alignment(:,align_ind)'];
+% end
+
 
 %% Build parameter sets of all possibel parameter combinations
 
@@ -103,6 +137,7 @@ result_parameters.wire_length=zeros(size(para_ind_grid{1}));
 coil_layouts(total_number_of_cases).out=[];
 
 for case_ind=1:total_number_of_cases
+%for case_ind=1
 
 %Select the case parameters
 tikonov_value=sampling_parameters.tikonov_values(para_ind_grid{1}(case_ind));
@@ -111,16 +146,18 @@ plate_size=sampling_parameters.plate_size(para_ind_grid{3}(case_ind));
 field_shape_function=sampling_parameters.field_shape_functions{para_ind_grid{4}(case_ind)};
 plate_alignement=sampling_parameters.plate_alignements{para_ind_grid{5}(case_ind)};
 
-  try
+%field_shape_function= char("("+num2str(plate_alignement(1))+")"+".*x+"+"("+num2str(plate_alignement(2))+")"+".*y+"+"("+num2str(plate_alignement(3))+").*z");
+
+  %try
     coil_layouts(case_ind).out=CoilGen(...
     'field_shape_function',field_shape_function,... % definition of the target field
     'coil_mesh_file','create bi-planary mesh', ...
-    'biplanar_mesh_parameter_list',[plate_size plate_size 20 20 plate_alignement(1) plate_alignement(2) plate_alignement(3) 0 0 0 plate_distance],... % cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,  num_longitudinal_divisions, rotation_vector: x,y,z, and  rotation_angle [radian]
-    'min_loop_signifcance',3,...
-    'target_region_radius',0.01,...  % in meter
+    'biplanar_mesh_parameter_list',[plate_size plate_size plate_mesh_resolution plate_mesh_resolution plate_alignement(1) plate_alignement(2) plate_alignement(3) 0 0 0 plate_distance],... % cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,  num_longitudinal_divisions, rotation_vector: x,y,z, and  rotation_angle [radian]
+    'min_loop_signifcance',1,...
+    'target_region_radius',target_region_radius,...  % in meter
     'use_only_target_mesh_verts',false, ...
     'sf_source_file','none', ...
-    'levels',10, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
+    'levels',14, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.5, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'surface_is_cylinder_flag',false, ...
     'interconnection_cut_width',0.005, ... % the width for the interconnections are interconnected; in meter
@@ -128,20 +165,36 @@ plate_alignement=sampling_parameters.plate_alignements{para_ind_grid{5}(case_ind
     'level_set_method','combined',... %Specify one of the three ways the level sets are calculated: "primary","combined", or "independent"
     'skip_postprocessing',true,...
     'skip_inductance_calculation',false,...
+    'skip_normal_shift',true,...
     'skip_sweep',true,...
     'make_cylndrical_pcb',false,...
     'tikonov_reg_factor',tikonov_value); %Tikonov regularization factor for the SF optimization
 
+% result_parameters.max_error(case_ind)=coil_layouts(case_ind).out.error_vals.max_rel_error_layout_vs_target;
+% result_parameters.mean_error(case_ind)=coil_layouts(case_ind).out.error_vals.mean_rel_error_layout_vs_target;
+
+switch field_shape_function
+    case 'x'
+result_parameters.sensitivity(case_ind)=coil_layouts(case_ind).out.layout_gradient.mean_gx_loops;
+    case 'y'
+result_parameters.sensitivity(case_ind)=coil_layouts(case_ind).out.layout_gradient.mean_gy_loops;
+    case 'z'
+result_parameters.sensitivity(case_ind)=coil_layouts(case_ind).out.layout_gradient.mean_gz_loops;
+end
+
+%[result_parameters.sensitivity(case_ind),~]=calc_gradient_along_vector(coil_layouts(case_ind).out.field_by_layout,coil_layouts(case_ind).out.target_field.coords,coil_layouts(case_ind).out.input_data.field_shape_function);
+result_parameters.wire_length(case_ind)=sum([coil_layouts(case_ind).out.coil_parts(:).combined_loop_length]);
 result_parameters.max_error(case_ind)=coil_layouts(case_ind).out.error_vals.max_rel_error_layout_vs_target;
 result_parameters.mean_error(case_ind)=coil_layouts(case_ind).out.error_vals.mean_rel_error_layout_vs_target;
-result_parameters.sensitivity(case_ind)=max([coil_layouts(case_ind).out.layout_gradient.mean_local_gx coil_layouts(case_ind).out.layout_gradient.mean_local_gy coil_layouts(case_ind).out.layout_gradient.mean_local_gz]);
-result_parameters.wire_length(case_ind)=sum([coil_layouts(case_ind).out.coil_parts(:).combined_loop_length]);
 
+
+if case_ind>1
 coil_layouts(case_ind).out=nan;
-
-catch
-
 end
+
+% catch
+% 
+% end
 
 
 end
@@ -176,18 +229,19 @@ end
 % end
 % 
 % 
-% % figure;
-% % hold on;
-% % plot(plot_parameter.plate_size,plot_parameter.sensitivity);
-% % grid on;
-% % axis equal;
-% % xlabel('Plate Size [m]', 'Interpreter', 'none');
-% % ylabel('Sensitivity [mT\m\A]', 'Interpreter', 'none');
-% % hold off;
+% figure;
+% hold on;
+% plot(plot_parameter.plate_size,plot_parameter.sensitivity);
+% grid on;
+% axis equal;
+% xlabel('Plate Size [m]', 'Interpreter', 'none');
+% ylabel('Sensitivity [mT\m\A]', 'Interpreter', 'none');
+% hold off;
 
 
 %% Plot results
 
+close all;
 
 coil_name='Coil';
 coil_to_plot=coil_layouts(1);

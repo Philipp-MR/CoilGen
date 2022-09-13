@@ -34,9 +34,12 @@ node_adjacency_mat = node_adjacency_mat | node_adjacency_mat';
 coil_parts(part_ind).node_adjacency_mat=node_adjacency_mat;
 
 %Calculate the matrix of spatial distances for the neighboring vertices
-nodal_neighbor_distances=vecnorm(repmat(coil_parts(part_ind).coil_mesh.vertices,[1 1 size(coil_parts(part_ind).coil_mesh.vertices,2)])...
-    -flip(repmat(coil_parts(part_ind).coil_mesh.vertices,[1 1 size(coil_parts(part_ind).coil_mesh.vertices,2)]),2),2,1);
-coil_parts(part_ind).nodal_neighbor_distances=squeeze(nodal_neighbor_distances).*node_adjacency_mat;
+
+
+nodal_neighbor_distances=((repmat(coil_parts(part_ind).coil_mesh.vertices(1,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1])+[repmat(coil_parts(part_ind).coil_mesh.vertices(1,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1])]').^2+...
+                                        (repmat(coil_parts(part_ind).coil_mesh.vertices(2,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1])+[repmat(coil_parts(part_ind).coil_mesh.vertices(2,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1])]').^2+...
+                                        (repmat(coil_parts(part_ind).coil_mesh.vertices(3,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1])+[repmat(coil_parts(part_ind).coil_mesh.vertices(3,:),[size(coil_parts(part_ind).coil_mesh.vertices,2) 1])]').^2).^(1/2);
+
     
 % % %%% Old non vectorized version
 % Calculate the resistance matrix Rmn

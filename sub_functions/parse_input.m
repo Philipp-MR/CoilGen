@@ -128,10 +128,7 @@ addParameter(input_parser,'specific_conductivity_conductor',0.018*10^(-6),@isnum
 addParameter(input_parser,'conductor_thickness',0.005,@isnumeric); 
 %2D edge points for direct defintion of the cross section of the conductor
 %build circular cut shapes
-circular_resolution=10;
-init_cross_sectional_points=[sin(0:(2*pi)/(circular_resolution-1):2*pi); cos(0:(2*pi)/(circular_resolution-1):2*pi)];
-init_cross_sectional_points=init_cross_sectional_points.*repmat(0.00125,[2 1]);
-addParameter(input_parser,'cross_sectional_points',init_cross_sectional_points,@isnumeric);
+addParameter(input_parser,'cross_sectional_points',[0 0 0],@isnumeric);
 %specify the paramters for the generation of the (default) cylindrical mesh
 % => cylinder_height[in m], cylinder_radius[in m], num_circular_divisions,
 % num_longitudinal_divisions, rotation_vector_x, rotation_vector_y, rotation_vector_z, rotation_angle [radian]
