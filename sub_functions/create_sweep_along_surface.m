@@ -7,7 +7,7 @@ convolutional_vector_length=1; %for smothering the curverture along the track
 if ~input.skip_sweep
 
 %Define the cross section of the conductor
-if all(input.cross_sectional_points==[0 0 0])
+if all(input.cross_sectional_points==0)
 circular_resolution=10;
 cross_section_points=[sin(0:(2*pi)/(circular_resolution-1):2*pi); cos(0:(2*pi)/(circular_resolution-1):2*pi)];
 cross_section_points=cross_section_points.*repmat(input.conductor_thickness,[2 1]);

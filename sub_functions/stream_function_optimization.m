@@ -67,14 +67,14 @@ ub=ones(size(reduced_sf)).*stream_func_max;
 cost_function = @(x) sum((reduced_sensitivity_matrix*x-target_field_single').^2)+tikonov_reg_factor*(x'*reduced_res_matrix*x);
 options = optimoptions('fmincon','Display','iter','Algorithm','interior-point');
 %options = optimoptions('fmincon');
-options.MaxIterations=100;
-options.MaxFunctionEvaluations=10^8;
-options.OptimalityTolerance = 1.000000e-8;
+% options.MaxIterations=500;
+% options.MaxFunctionEvaluations=10^8;
+% options.OptimalityTolerance = 1.000000e-8;
 
 % % %extended values
-% % options.MaxIterations=20000;
-% % options.MaxFunctionEvaluations=10^10;
-% % options.OptimalityTolerance = 1.000000e-10;
+options.MaxIterations=20000;
+options.MaxFunctionEvaluations=10^10;
+options.OptimalityTolerance = 1.000000e-10;
 
 
 reduced_sf = fmincon(cost_function,...

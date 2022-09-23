@@ -20,16 +20,16 @@ end
 
 
 target_region_radius=0.002;
-plate_mesh_resolution=30;
+plate_mesh_resolution=40;
 
-sampling_parameters.tikonov_values=1000000;
+sampling_parameters.tikonov_values=10000000;
 % sampling_parameters.plate_distances=[0.01 0.02 0.03 0.04 0.05:0.05:0.5];
 % sampling_parameters.plate_size=[0.01 0.02 0.03 0.04 0.05:0.05:0.5];
-% sampling_parameters.plate_distances=[0.02:0.005:0.1];
-% sampling_parameters.plate_size=[0.01:0.005:0.1];
+sampling_parameters.plate_distances=[0.01:0.005:0.1];
+sampling_parameters.plate_size=[0.01:0.005:0.1];
 
-sampling_parameters.plate_distances=[0.02:0.01:0.1];
-sampling_parameters.plate_size=[0.01:0.01:0.1];
+% sampling_parameters.plate_distances=[0.05:0.01:0.1];
+% sampling_parameters.plate_size=[0.05:0.01:0.1];
 
 
 sampling_parameters.field_shape_functions={'x'};

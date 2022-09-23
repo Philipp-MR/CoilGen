@@ -191,7 +191,7 @@ toc;
 %Calculate the resuting gradient field
 tic;
 disp('Calculate the resuting gradient field:');
-layout_gradient = calculate_gradient(coil_parts,target_field,field_layout_per1Amp,field_loops_per1Amp,combined_mesh);
+layout_gradient = calculate_gradient(coil_parts,target_field,input);
 toc;
 %layout_gradient=[];
 

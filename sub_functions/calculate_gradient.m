@@ -1,136 +1,137 @@
-function layout_gradient= calculate_gradient(coil_parts,target_field,combined_field_layout_per1Amp,combined_field_loops_per1Amp,combined_mesh)
+function layout_gradient= calculate_gradient(coil_parts,target_field,input)
 %CALCULATE_LOCAL_GRADIENT
 %calculate for each point the average of the local gradients to its neighbours
 
 
-mesh_diag_length=norm(combined_mesh.bounding_box(:,2)-combined_mesh.bounding_box(:,1));
+mesh_diag_length=norm([max(target_field.coords(1,:))-min(target_field.coords(1,:));max(target_field.coords(1,:))-min(target_field.coords(1,:));max(target_field.coords(1,:))-min(target_field.coords(1,:))]);
 
-
-layout_gradient.local_target_gx=zeros(1,size(target_field.b,2));
-layout_gradient.local_target_gy=zeros(1,size(target_field.b,2));
-layout_gradient.local_target_gz=zeros(1,size(target_field.b,2));
-layout_gradient.local_gx=zeros(1,size(target_field.b,2));
-layout_gradient.local_gy=zeros(1,size(target_field.b,2));
-layout_gradient.local_gz=zeros(1,size(target_field.b,2));
-layout_gradient.local_gx_loops=zeros(1,size(target_field.b,2));
-layout_gradient.local_gy_loops=zeros(1,size(target_field.b,2));
-layout_gradient.local_gz_loops=zeros(1,size(target_field.b,2));
-
-
-% %define the neighbourhood in terms of a delaunay triangulation;
-% target_Delaunay = delaunayTriangulation(target_field.coords(1,:)',target_field.coords(2,:)',target_field.coords(3,:)');
-% %target_neighbors=nearestNeighbor(target_Delaunay,target_Delaunay.Points');
-% target_neighbors=edges(target_Delaunay);
-% target_neighbors_dists=vecnorm(target_Delaunay.Points(target_neighbors(:,2),:)-target_Delaunay.Points(target_neighbors(:,1),:),2,2);
-% target_neighbors(target_neighbors_dists<mean(target_neighbors_dists))=[];
-
-full_neighbourhood_points=[];
-for target_group_ind=1:max(target_field.target_field_group_inds)
-is_member=find(target_field.target_field_group_inds==target_group_ind);
-%define the neighbourhood in terms of a delaunay triangulation;
-target_Delaunay = delaunayTriangulation(target_field.coords(1,is_member)',target_field.coords(2,is_member)',target_field.coords(3,is_member)');
-%target_neighbors=nearestNeighbor(target_Delaunay,target_Delaunay.Points');
-target_neighbors=edges(target_Delaunay);
-target_neighbors=[is_member(target_neighbors(:,1));is_member(target_neighbors(:,2))]';
-full_neighbourhood_points=[full_neighbourhood_points; target_neighbors];
+if strcmp(input.field_shape_function,'none')
+field_function='z';
+else
+field_function=input.field_shape_function;
 end
-%target_neighbors_dists=vecnorm(target_field.coords(:,full_neighbourhood_points(:,2))-target_field.coords(:,full_neighbourhood_points(:,1)),2,1);
-%target_neighbors(target_neighbors_dists<mean(target_neighbors_dists))=[];
+
+gradient_out=calc_gradient_along_vector(coil_parts,target_field.coords,field_function,mesh_diag_length/10000);
 
 
-for point_ind=1:size(target_field.coords,2)
-    neighbour_inds=full_neighbourhood_points(full_neighbourhood_points(:,1)==point_ind,2);
-    not_same_x=~(target_field.coords(1,point_ind)-target_field.coords(1,neighbour_inds)==0);
-    not_same_y=~(target_field.coords(2,point_ind)-target_field.coords(2,neighbour_inds)==0);
-    not_same_z=~(target_field.coords(3,point_ind)-target_field.coords(3,neighbour_inds)==0);
-    
-    denominator_x=(target_field.coords(1,neighbour_inds(not_same_x))-target_field.coords(1,point_ind));
-    denominator_y=(target_field.coords(2,neighbour_inds(not_same_y))-target_field.coords(2,point_ind));
-    denominator_z=(target_field.coords(3,neighbour_inds(not_same_z))-target_field.coords(3,point_ind));
-    
-    denominator_x(abs(denominator_x)<mesh_diag_length/100000)=nan; % ignore point pairs for which the xyz are very similar
-    denominator_y(abs(denominator_y)<mesh_diag_length/100000)=nan;
-    denominator_z(abs(denominator_z)<mesh_diag_length/100000)=nan;
-    
-	layout_gradient.local_target_gx(point_ind)=mean((target_field.b(3,neighbour_inds(not_same_x))-target_field.b(3,point_ind))./denominator_x);
-	layout_gradient.local_target_gy(point_ind)=mean((target_field.b(3,neighbour_inds(not_same_y))-target_field.b(3,point_ind))./denominator_y);
-	layout_gradient.local_target_gz(point_ind)=mean((target_field.b(3,neighbour_inds(not_same_z))-target_field.b(3,point_ind))./denominator_z);
-	layout_gradient.local_gx(point_ind)=mean((combined_field_layout_per1Amp(3,neighbour_inds(not_same_x))-combined_field_layout_per1Amp(3,point_ind))./denominator_x);
-	layout_gradient.local_gy(point_ind)=mean((combined_field_layout_per1Amp(3,neighbour_inds(not_same_y))-combined_field_layout_per1Amp(3,point_ind))./denominator_y);
-	layout_gradient.local_gz(point_ind)=mean((combined_field_layout_per1Amp(3,neighbour_inds(not_same_z))-combined_field_layout_per1Amp(3,point_ind))./denominator_z);
-    layout_gradient.local_gx_loops(point_ind)=mean((combined_field_loops_per1Amp(3,neighbour_inds(not_same_x))-combined_field_loops_per1Amp(3,point_ind))./denominator_x);
-    layout_gradient.local_gy_loops(point_ind)=mean((combined_field_loops_per1Amp(3,neighbour_inds(not_same_y))-combined_field_loops_per1Amp(3,point_ind))./denominator_y);
-    layout_gradient.local_gz_loops(point_ind)=mean((combined_field_loops_per1Amp(3,neighbour_inds(not_same_z))-combined_field_loops_per1Amp(3,point_ind))./denominator_z);
+layout_gradient.gradient_field=gradient_out;
+layout_gradient.mean_gradient=mean(gradient_out,'omitnan');
+layout_gradient.std_gradient=std(gradient_out,'omitnan');
+
+
+
+
+function gradient_out=calc_gradient_along_vector(coil_parts,field_coords,target_endcoding_function,delta_shift_length)
+%calculate the mean gradient in a given direction
+%and an angle
+%two versions of the target fields which are slightly shifted in their
+%coordiantes in the direction of the aimed gradient
+%the diffenerce of those fields allows than to obtain the local gradient
+%for each point
+%@Philipp Amrein 2022
+
+my_fun=str2func("@(x,y,z)"+target_endcoding_function);
+norm_dir_x=my_fun(1,0,0);
+norm_dir_y=my_fun(0,1,0);
+norm_dir_z=my_fun(0,0,1);
+target_direction=[0 0 1];
+gradient_direction=[norm_dir_x norm_dir_y norm_dir_z];
+gradient_direction=gradient_direction./norm(gradient_direction);
+if norm(cross(gradient_direction,target_direction))~=0
+rot_vector=cross(gradient_direction,target_direction)./norm(cross(gradient_direction,target_direction));
+rot_angle=asin(norm(cross(gradient_direction,target_direction))/(norm(target_direction)*norm(gradient_direction)));
+else
+rot_vector=[1 0 0];
+rot_angle = 0;
 end
-% %calculate gradient according the center system of the coordinate system
-layout_gradient.target_gx=target_field.b(3,:)./target_field.coords(1,:); %~dBz/dx
-layout_gradient.target_gy=target_field.b(3,:)./target_field.coords(2,:); %~dBz/dy
-layout_gradient.target_gz=target_field.b(3,:)./target_field.coords(3,:); %~dBz/dz
-layout_gradient.gx=combined_field_layout_per1Amp(3,:)./target_field.coords(1,:); %~dBz/dx
-layout_gradient.gy=combined_field_layout_per1Amp(3,:)./target_field.coords(2,:); %~dBz/dy
-layout_gradient.gz=combined_field_layout_per1Amp(3,:)./target_field.coords(3,:); %~dBz/dz
-layout_gradient.gx_loops=combined_field_loops_per1Amp(3,:)./target_field.coords(1,:); %~dBz/dx
-layout_gradient.gy_loops=combined_field_loops_per1Amp(3,:)./target_field.coords(2,:); %~dBz/dy
-layout_gradient.gz_loops=combined_field_loops_per1Amp(3,:)./target_field.coords(3,:); %~dBz/dz
-% Remove Inf values
-layout_gradient.gx(~isfinite(layout_gradient.gx))=nan;
-layout_gradient.gy(~isfinite(layout_gradient.gy))=nan;
-layout_gradient.gz(~isfinite(layout_gradient.gz))=nan;
-layout_gradient.gx_loops(~isfinite(layout_gradient.gx_loops))=nan;
-layout_gradient.gy_loops(~isfinite(layout_gradient.gy_loops))=nan;
-layout_gradient.gz_loops(~isfinite(layout_gradient.gz_loops))=nan;
-layout_gradient.local_gx_loops(~isfinite(layout_gradient.local_gx_loops))=nan;
-layout_gradient.local_gy_loops(~isfinite(layout_gradient.local_gy_loops))=nan;
-layout_gradient.local_gz_loops(~isfinite(layout_gradient.local_gz_loops))=nan;
-% go to the gradient unit mT/m/A
-layout_gradient.target_gx=layout_gradient.target_gx.*1000;
-layout_gradient.target_gy=layout_gradient.target_gy.*1000;
-layout_gradient.target_gz=layout_gradient.target_gz.*1000;
-layout_gradient.local_target_gx=layout_gradient.local_target_gx.*1000;
-layout_gradient.local_target_gy=layout_gradient.local_target_gy.*1000;
-layout_gradient.local_target_gz=layout_gradient.local_target_gz.*1000;
-layout_gradient.gx=layout_gradient.gx.*1000;
-layout_gradient.gy=layout_gradient.gy.*1000;
-layout_gradient.gz=layout_gradient.gz.*1000;
-layout_gradient.gx_loops=layout_gradient.gx_loops.*1000;
-layout_gradient.gy_loops=layout_gradient.gy_loops.*1000;
-layout_gradient.gz_loops=layout_gradient.gz_loops.*1000;
-layout_gradient.local_gx=layout_gradient.local_gx.*1000;
-layout_gradient.local_gy=layout_gradient.local_gy.*1000;
-layout_gradient.local_gz=layout_gradient.local_gz.*1000;
-layout_gradient.local_gx_loops=layout_gradient.local_gx_loops.*1000;
-layout_gradient.local_gy_loops=layout_gradient.local_gy_loops.*1000;
-layout_gradient.local_gz_loops=layout_gradient.local_gz_loops.*1000;
-%Calculate mean and standart deviation
-layout_gradient.mean_gx=mean(layout_gradient.gx,'omitnan');
-layout_gradient.mean_gy=mean(layout_gradient.gy,'omitnan');
-layout_gradient.mean_gz=mean(layout_gradient.gz,'omitnan');
-layout_gradient.mean_gx_loops=mean(layout_gradient.gx_loops,'omitnan');
-layout_gradient.mean_gy_loops=mean(layout_gradient.gy_loops,'omitnan');
-layout_gradient.mean_gz_loops=mean(layout_gradient.gz_loops,'omitnan');
-layout_gradient.std_gx=std(layout_gradient.gx,'omitnan');
-layout_gradient.std_gy=std(layout_gradient.gy,'omitnan');
-layout_gradient.std_gz=std(layout_gradient.gz,'omitnan');
-layout_gradient.std_gx_loops=std(layout_gradient.gx_loops,'omitnan');
-layout_gradient.std_gy_loops=std(layout_gradient.gy_loops,'omitnan');
-layout_gradient.std_gz_loops=std(layout_gradient.gz_loops,'omitnan');
-layout_gradient.mean_local_gx=mean(layout_gradient.local_gx,'omitnan');
-layout_gradient.mean_local_gy=mean(layout_gradient.local_gy,'omitnan');
-layout_gradient.mean_local_gz=mean(layout_gradient.local_gz,'omitnan');
-layout_gradient.mean_local_gx_loops=mean(layout_gradient.local_gx_loops,'omitnan');
-layout_gradient.mean_local_gy_loops=mean(layout_gradient.local_gy_loops,'omitnan');
-layout_gradient.mean_local_gz_loops=mean(layout_gradient.local_gz_loops,'omitnan');
-layout_gradient.std_local_gx=std(layout_gradient.local_gx,'omitnan');
-layout_gradient.std_local_gy=std(layout_gradient.local_gy,'omitnan');
-layout_gradient.std_local_gz=std(layout_gradient.local_gz,'omitnan');
-layout_gradient.std_local_gx_loops=std(layout_gradient.local_gx_loops,'omitnan');
-layout_gradient.std_local_gy_loops=std(layout_gradient.local_gy_loops,'omitnan');
-layout_gradient.std_local_gz_loops=std(layout_gradient.local_gz_loops,'omitnan');
+rot_mat_out= local_calc_3d_rotation_matrix(rot_vector',rot_angle);
+rotated_field_coords=rot_mat_out*(field_coords-mean(field_coords,2))+mean(field_coords,2);
+%rotated_field_coords=rot_mat_out*field_coords;
+delta_shift=[zeros(1,size(field_coords,2)); zeros(1,size(field_coords,2)); ones(1,size(field_coords,2))].*delta_shift_length;
+%create two target fields slightly shifted in gradient direction 
+target_fied_1=inv(rot_mat_out)*(rotated_field_coords-delta_shift);
+target_fied_2=inv(rot_mat_out)*(rotated_field_coords+delta_shift);
+for part_ind=1:numel(coil_parts)
+if isfield(coil_parts(part_ind),'wire_path')
+b1=local_biot_savart_calc_b(coil_parts(part_ind).wire_path.v,target_fied_1);
+b2=local_biot_savart_calc_b(coil_parts(part_ind).wire_path.v,target_fied_2);
+else %use the loops
+b1=zeros(size(target_fied_1));
+b2=zeros(size(target_fied_2));
+for loop_ind=1:numel(coil_parts(part_ind).contour_lines)
+b1=b1+local_biot_savart_calc_b(coil_parts(part_ind).contour_lines(loop_ind).v,target_fied_1);
+b2=b2+local_biot_savart_calc_b(coil_parts(part_ind).contour_lines(loop_ind).v,target_fied_2);
+end
+end
+gradient_out=(b2(3,:)-b1(3,:))./delta_shift_length;
+end
 
+end
+
+
+function rot_mat_out= local_calc_3d_rotation_matrix(rot_vec,rot_angle)
+%calculate the 3d rotation matrix around a rotation axis given by a vecor
+%and an angle
+%@Philipp Amrein 2022
+rot_vec=rot_vec./repmat(vecnorm(rot_vec),[3 1]); %normalize rot vector
+u_x=rot_vec(1);
+u_y=rot_vec(2);
+u_z=rot_vec(3);
+tmp1=sin(rot_angle);
+tmp2=cos(rot_angle);
+tmp3=(1-cos(rot_angle));
+rot_mat_out=zeros(3,3);
+rot_mat_out(1,1)=tmp2+u_x*u_x*tmp3;
+rot_mat_out(1,2)=u_x*u_y*tmp3-u_z*tmp1;
+rot_mat_out(1,3)=u_x*u_z*tmp3+u_y*tmp1;
+rot_mat_out(2,1)=u_y*u_x*tmp3+u_z*tmp1;
+rot_mat_out(2,2)=tmp2+u_y*u_y*tmp3;
+rot_mat_out(2,3)=u_y*u_z*tmp3-u_x*tmp1;
+rot_mat_out(3,1)=u_z*u_x*tmp3-u_y*tmp1;
+rot_mat_out(3,2)=u_z*u_y*tmp3+u_x*tmp1;
+rot_mat_out(3,3)=tmp2+u_z*u_z*tmp3;
+end
+
+function b_field=local_biot_savart_calc_b(wire_elements,target_coords)
+%Calculate b field with biot savarts law  by wire elements given as a sequence of coordinate points
+num_tp=size(target_coords,2);
+%to avoid memory problems splitt the curve into several parts
+track_part_length=1000;
+if size(wire_elements,2)>track_part_length
+track_part_inds=[1:track_part_length:size(wire_elements,2) size(wire_elements,2)];
+if track_part_inds(end-1)==track_part_inds(end)
+track_part_inds(end)=[];
+end
+for parts_ind=1:numel(track_part_inds)-1
+wire_part(parts_ind).coord=wire_elements(:,track_part_inds(parts_ind):track_part_inds(parts_ind+1));
+wire_part(parts_ind).seg_coords=(wire_part(parts_ind).coord(:,1:end-1)+wire_part(parts_ind).coord(:,2:end))./2;
+wire_part(parts_ind).currents=wire_part(parts_ind).coord(:,2:end)-wire_part(parts_ind).coord(:,1:end-1);
+%wire_part(part_ind).seg_length=wire_elements(:,track_part_inds(part_ind):track_part_inds(part_ind+1));
+end
+else
+wire_part.coord=wire_elements;
+wire_part.seg_coords=(wire_part.coord(:,1:end-1)+wire_part.coord(:,2:end))./2;
+wire_part.currents=wire_part.coord(:,2:end)-wire_part.coord(:,1:end-1);
+end
+%Calculate the magnetic field with Biot-Savarts law
+b_field=zeros(3,num_tp);
+for parts_ind=1:numel(wire_part)
+target_p=repmat(target_coords,[1 1 size(wire_part(parts_ind).seg_coords,2)]); % copies target point coordinates
+target_p=permute(target_p,[1 3 2]);
+cur_pos= repmat(wire_part(parts_ind).seg_coords(:,:),[1 1 num_tp]); % copies vector of current position
+cur_dir= repmat(wire_part(parts_ind).currents(:,:),[1 1 num_tp]); % copies vector of current direction
+R = target_p-cur_pos;  % distance from current path to each point
+%R(:,sqrt(dot(R,R,1))<min_distance_to_wire)=10^12; % if distance is to small the distance is blown up to ignore large values
+len_R=(1./vecnorm(R,2,1)).^3; % distance factor of biot savart law
+len_R=repmat(len_R,[3 1 1]);
+dB=10^(-7)*cross(cur_dir,R,1).*len_R;
+b_field(:,:)=b_field(:,:)+squeeze(sum(dB,2));
+end
+end
 
 %Another idea would be to select the unique x,y,z values of the point cloud
 %and build a meshgrid on it for which the gradient can then be regularly
-%calculated
+%calculated ...
 
 end
 
