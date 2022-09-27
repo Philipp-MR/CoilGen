@@ -72,7 +72,7 @@ options = optimoptions('fmincon','Display','iter','Algorithm','interior-point');
 % options.OptimalityTolerance = 1.000000e-8;
 
 % % %extended values
-options.MaxIterations=20000;
+options.MaxIterations=500;
 options.MaxFunctionEvaluations=10^10;
 options.OptimalityTolerance = 1.000000e-10;
 

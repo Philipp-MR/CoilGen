@@ -4,14 +4,21 @@ pos_data=coil_layouts(single_ind_to_plot).out.target_field.coords;
 
 dot_size=100;
 
+plot_limits=[0 coil_layouts(single_ind_to_plot).out.layout_gradient.mean_gradient_in_target_direction+coil_layouts(single_ind_to_plot).out.layout_gradient.std_gradient_in_target_direction*3];
+
 %Plot Histograms of the gradient
 figure('name',plot_title);
 tiledlayout('flow');
 nexttile;
 hold on
 axis equal tight;
+if ~strcmp(coil_layouts(single_ind_to_plot).out.input_data.field_shape_function,'none')
 title("G"+" "+coil_layouts(single_ind_to_plot).out.input_data.field_shape_function+"[mT/m/A]",'interpreter', 'none');
-plot_colors=coil_layouts(single_ind_to_plot).out.layout_gradient.gradient_field.*1000; % in mT\m\A
+else
+title("G in target direction [mT/m/A]",'interpreter', 'none');
+end
+
+plot_colors=coil_layouts(single_ind_to_plot).out.layout_gradient.gradient_in_target_direction; % in mT\m\A
 view(45,45);
 colorbar;
 colormap(parula);
@@ -25,13 +32,13 @@ plot3(coil_layouts(single_ind_to_plot).out.coil_parts(part_ind).contour_lines(lo
 end
 end
 end
-caxis([coil_layouts(single_ind_to_plot).out.layout_gradient.mean_gradient-coil_layouts(single_ind_to_plot).out.layout_gradient.std_gradient coil_layouts(single_ind_to_plot).out.layout_gradient.mean_gradient+coil_layouts(single_ind_to_plot).out.layout_gradient.std_gradient]*1000);
+caxis(plot_limits);
 xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
 %Plot also the target gradient defined by the field shape
 nexttile;
 hold on;
 title("Target Gradient", 'interpreter', 'none');
-histogram(coil_layouts(single_ind_to_plot).out.layout_gradient.gradient_field.*1000,'BinLimits',[0 10]);
+histogram(plot_colors,'BinLimits',plot_limits);
 %histogram(coil_layouts(single_ind_to_plot).out.layout_gradient.local_target_gx./coil_layouts.out.potential_step);
 xlabel('[mT/m/A]');
 hold off;
