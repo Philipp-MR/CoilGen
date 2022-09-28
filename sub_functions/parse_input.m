@@ -27,6 +27,11 @@ addParameter(input_parser,'sf_source_file','none',@ischar);
 addParameter(input_parser,'target_field_definition_file','none',@ischar);
 %Stream function optimization method; tikkonov, fmincon
 addParameter(input_parser,'sf_opt_method','tikkonov',@ischar);
+% %Tikonov regularization factor for the SF optimization
+addParameter(input_parser,'tikonov_reg_factor',1,@isnumeric);
+% %Parameter for the iterative optimization with fmincon: Number
+% iterations, number evalutations, Opti.Toleranze
+addParameter(input_parser,'fmincon_parameter',[500 10^10 1.000000e-10],@isnumeric);
 %Number of potential levels
 addParameter(input_parser,'levels',10,@isnumeric);
 %Specify one of the three ways the level sets are calculated:
@@ -114,8 +119,6 @@ addParameter(input_parser,'force_cut_selection',{},@iscell);
 addParameter(input_parser,'gauss_order',2,@isnumeric);
 % flag to set the roi into the geometric center of the mesh
 addParameter(input_parser,'set_roi_into_mesh_center',0,@logical);
-% %Tikonov regularization factor for the SF optimization
-addParameter(input_parser,'tikonov_reg_factor',1,@isnumeric);
 %In case of pcb layout, specify the track width
 addParameter(input_parser,'track_width_factor',0.5,@isnumeric);
 %cross_section_width of the conductor (for the inductance calculation) in meter
@@ -151,7 +154,7 @@ addParameter(input_parser,'planar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 
 % num_longitudinal_divisions,
 % target_normal_x,target_normal_y,target_normal_z, center_x [m], center_y
 % [m], center_z [m], plate distance [mm]
-addParameter(input_parser,'biplanar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0.2],@isnumeric);
+addParameter(input_parser,'biplanar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0.2],@isdouble);
 %Parse the input arguments
 parse(input_parser,varargin{1}{:});
 input=input_parser.Results;

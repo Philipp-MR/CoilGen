@@ -35,6 +35,7 @@ end
 
 
 %order the current element in circular arragnment (old)
+node_triangle_mat=false(num_nodes,size(coil_parts(part_ind).coil_mesh.faces,1));
 for node_ind=1:num_nodes
 %find the starting point in case for the boundary
 open_start=find(~arrayfun(@(x) any(one_ring_list{node_ind}(2,:)==x),one_ring_list{node_ind}(1,:)));
@@ -49,11 +50,12 @@ next_el=one_ring_list{node_ind}(2,cell_order(end));
 end
 one_ring_list{node_ind}=one_ring_list{node_ind}(:,cell_order);
 node_triangles{node_ind}=node_triangles{node_ind}(cell_order); % also update the order for the one_ring_list
+node_triangle_mat(node_ind,node_triangles{node_ind})=true;
 end
 
 coil_parts(part_ind).one_ring_list=one_ring_list;
 coil_parts(part_ind).node_triangles=node_triangles;
-
+coil_parts(part_ind).node_triangle_mat=node_triangle_mat;
 coil_parts(part_ind).coil_mesh.faces=coil_parts(part_ind).coil_mesh.faces';
 
 end
