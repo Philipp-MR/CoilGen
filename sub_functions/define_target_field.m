@@ -106,17 +106,15 @@ else
 is_supressed_point=false(1,size(target_points,2));
 end
 
-
 %Scale the fields to a targeted strength 
-target_strength=0.1; %in T/A
 max_field_point_ind=find(target_field(3,:)==max(target_field(3,:)));
 min_field_point_ind=find(target_field(3,:)==min(target_field(3,:)));
 max_target_distance=vecnorm(target_points(:,max_field_point_ind(1))-target_points(:,min_field_point_ind(1)));
 max_field_difference=max(target_field(3,:))-min(target_field(3,:));
 if abs(max_field_difference)>10^(-10)
-target_field=target_field./(max_field_difference/max_target_distance(1)).*target_strength;
+target_field=target_field./(max_field_difference/max_target_distance(1)).*input.target_gradient_strength;
 else
-target_field=target_field.*target_strength;
+target_field=target_field.*input.target_gradient_strength;
 end
 
 %Define weigthins from 0 to 1 that weights the significant of target points

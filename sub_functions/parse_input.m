@@ -11,6 +11,9 @@ input_parser = inputParser; %create parser object
 addParameter(input_parser,'coil_mesh_file','none',@ischar);
 %Add the spatial function that defines the field
 addParameter(input_parser,'field_shape_function','x',@ischar);
+%Define a targeted gradient strength in T/m; (will typically not be
+%reached..)
+addParameter(input_parser,'target_gradient_strength',1,@isnumeric);
 %offset factor for contour levels
 addParameter(input_parser,'pot_offset_factor',1/2,@isnumeric);
 %file of the target surface mesh, which will define the target field
