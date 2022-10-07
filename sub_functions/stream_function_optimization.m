@@ -4,11 +4,13 @@ tikonov_reg_factor=input.tikonov_reg_factor;
 
 %combine the matrices from the different mesh parts
 sensitivity_matrix=[];
+gradient_sensitivity_matrix=[];
 resistance_matrix=[];
 current_density_mat=[];
 for part_ind=1:numel(coil_parts)
 current_density_mat=cat(1,current_density_mat,coil_parts(part_ind).current_density_mat);
 sensitivity_matrix=cat(3,sensitivity_matrix,coil_parts(part_ind).sensitivity_matrix);
+gradient_sensitivity_matrix=cat(3,gradient_sensitivity_matrix,coil_parts(part_ind).sensitivity_matrix);
 resistance_matrix=blkdiag(resistance_matrix,coil_parts(part_ind).resistance_matrix);
 end
 
@@ -39,10 +41,12 @@ sensitivity_matrix_single=[ squeeze(sensitivity_matrix(3,:,:))];
 target_field_single=[ squeeze(target_field.b(3,:))];
 
 %Reduce the Resistance matrix for boundary nodes
-[reduced_res_matrix,boundary_nodes,is_not_boundary_node]= reduce_matrices_for_boundary_nodes(resistance_matrix,combined_mesh,set_zero_flag);
+[reduced_res_matrix,~,~]= reduce_matrices_for_boundary_nodes(resistance_matrix,combined_mesh,set_zero_flag);
 
 %Reduce the sensitivity matrix for boundary nodes
 [reduced_sensitivity_matrix,boundary_nodes,is_not_boundary_node]= reduce_matrices_for_boundary_nodes(sensitivity_matrix_single,combined_mesh,set_zero_flag);
+[reduced_gradient_sensitivity_matrix,~,~]= reduce_matrices_for_boundary_nodes(gradient_sensitivity_matrix,combined_mesh,set_zero_flag);
+
 
 %Reduce the current density matrix for boundary nodes
 [red_current_density_mat_u,~,~]= reduce_matrices_for_boundary_nodes(squeeze(current_density_mat(:,:,1))',combined_mesh,set_zero_flag);

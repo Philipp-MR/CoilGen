@@ -81,6 +81,13 @@ disp('Calculate the sensitivity matrix:');
 coil_parts=calculate_sensitivity_matrix(coil_parts,target_field,input);
 toc;
 
+% calculate the gradient sensitivity matrix Gn
+tic;
+disp('Calculate the gradient sensitivity matrix:');
+coil_parts=calculate_gradient_sensitivity_matrix(coil_parts,target_field,input);
+toc;
+
+
 % Calculate the resistance matrix Rmn
 tic;
 disp('Calculate the resistance matrix:');
