@@ -57,7 +57,7 @@ layout_gradient.mean_gradient_in_target_direction=layout_gradient.mean_gradient_
 layout_gradient.std_gradient_in_target_direction=layout_gradient.std_gradient_in_target_direction.*1000;
 
 
-function [dBxdxyz,DBydxyz,DBzdxyz]=direct_biot_savart_gradient_calc(wire_elements,target_coords)
+function [DBxdxyz,DBydxyz,DBzdxyz]=direct_biot_savart_gradient_calc(wire_elements,target_coords)
 %Calculate b field with biot savarts law  by wire elements given as a sequence of coordinate points
 num_tp=size(target_coords,2);
 %to avoid memory problems splitt the curve into several parts
@@ -79,7 +79,7 @@ wire_part.seg_coords=(wire_part.coord(:,1:end-1)+wire_part.coord(:,2:end))./2;
 wire_part.currents=wire_part.coord(:,2:end)-wire_part.coord(:,1:end-1);
 end
 %Calculate the magnetic field with Biot-Savarts law
-dBxdxyz=zeros(3,num_tp);
+DBxdxyz=zeros(3,num_tp);
 DBydxyz=zeros(3,num_tp);
 DBzdxyz=zeros(3,num_tp);
 for parts_ind=1:numel(wire_part)
@@ -111,28 +111,28 @@ phi_z=(d_l_x.*(y-l_y)-d_l_y.*(x-l_x));
 
 theta_factor=((E.*E).^(-1)).*(-1).*C;
 
-%gradient in x of bz compnent
+%gradient of bx compnent
 dBx_dx=theta_factor.*dEdx.*phi_x;
 %gradient in y of bz compnent
 dBx_dy=theta_factor.*dEdy.*phi_x+(E.^(-1)).*C.*(-1).*d_l_z;
 %gradient in z of bz compnent
 dBx_dz=theta_factor.*dEdz.*phi_x+(E.^(-1)).*C.*d_l_y;
 
-%gradient in x of bz compnent
+%gradient of by compnent
 dBy_dx=theta_factor.*dEdx.*phi_y+(E.^(-1)).*C.*d_l_z;
 %gradient in y of bz compnent
 dBy_dy=theta_factor.*dEdy.*phi_y;
 %gradient in z of bz compnent
 dBy_dz=theta_factor.*dEdz.*phi_y+(E.^(-1)).*C.*(-1).*d_l_x;
 
-%gradient in x of bz compnent
+%gradient of bz compnent
 dBz_dx=theta_factor.*dEdx.*phi_z+(E.^(-1)).*C.*(-1).*d_l_y;
 %gradient in y of bz compnent
 dBz_dy=theta_factor.*dEdy.*phi_z+(E.^(-1)).*C.*d_l_x;
 %gradient in z of bz compnent
 dBz_dz=theta_factor.*dEdz.*phi_z;
 
-dBxdxyz=dBxdxyz+[sum(dBx_dx,1); sum(dBx_dy,1); sum(dBx_dz,1)];
+DBxdxyz=DBxdxyz+[sum(dBx_dx,1); sum(dBx_dy,1); sum(dBx_dz,1)];
 DBydxyz=DBydxyz+[sum(dBy_dx,1); sum(dBy_dy,1); sum(dBy_dz,1)];
 DBzdxyz=DBzdxyz+[sum(dBz_dx,1); sum(dBz_dy,1); sum(dBz_dz,1)];
 end

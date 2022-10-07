@@ -77,8 +77,8 @@ options = optimoptions('fmincon','Display','iter','Algorithm','interior-point');
 options.MaxIterations=input.fmincon_parameter(1);
 options.MaxFunctionEvaluations=input.fmincon_parameter(2);
 options.OptimalityTolerance = input.fmincon_parameter(3);
-
-
+options.ConstraintTolerance = 10^(-12);
+options.StepTolerance = 10^(-12);
 
 reduced_sf = fmincon(cost_function,...
                                                 reduced_sf,...
