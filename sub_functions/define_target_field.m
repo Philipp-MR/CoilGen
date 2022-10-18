@@ -11,7 +11,6 @@ else
 load(cd+"/"+"target_fields"+"/"+input.target_field_definition_file,'target_field');
 end
 
-
 target_field_out.b=target_field.b;
 is_supressed_point=zeros(1,size(target_field_out.b,2));
 target_field_out.coords=target_field.coords;
@@ -41,7 +40,6 @@ z_size=target_mesh_z_bounds(2)-target_mesh_z_bounds(1);
 num_points_per_x_dim=input.target_region_resolution;
 num_points_per_y_dim=input.target_region_resolution;
 num_points_per_z_dim=input.target_region_resolution;
-
 
 target_x_coords=[target_mesh_x_bounds(1):(x_size/(num_points_per_x_dim-1)):target_mesh_x_bounds(2)];
 target_y_coords=[target_mesh_y_bounds(1):(y_size/(num_points_per_y_dim-1)):target_mesh_y_bounds(2)];
@@ -130,16 +128,56 @@ target_field_group_inds(is_supressed_point)=2;
 % target_field_weighting=target_field_weighting(perm_inds);
 % target_field_group_inds=target_field_group_inds(perm_inds);
 
+%Calcuate the gradients from the symbolic definition of the target field
+[target_dbzbx,target_dbzby,target_dbzbz]=symbolic_calucation_of_gradient(input,target_field);
+
 target_field_out.b=target_field;
 target_field_out.coords=target_points;
 target_field_out.weights=target_field_weighting;
 target_field_out.target_field_group_inds=target_field_group_inds;
-
+target_field_out.target_gradient_dbdxyz=[target_dbzbx; target_dbzby; target_dbzbz];
 
 
 
 end
 
+end
+
+function [target_dbzbx,target_dbzby,target_dbzbz]=symbolic_calucation_of_gradient(input,target_field)
+%Calcuate the gradients from the symbolic definition of the target field
+try
+syms x y z
+dbzdx_fun =  string(diff(str2sym(input.field_shape_function),x));
+dbzdy_fun  = string(diff(str2sym(input.field_shape_function),y));
+dbzdz_fun  = string(diff(str2sym(input.field_shape_function),z));
+%change the function handle for array-wise 
+dbzdx_fun=replace(dbzdx_fun,"/","./");
+dbzdx_fun=replace(dbzdx_fun,"^",".^");
+dbzdx_fun=replace(dbzdx_fun,"*",".*");
+dbzdy_fun=replace(dbzdy_fun,"/","./");
+dbzdy_fun=replace(dbzdy_fun,"^",".^");
+dbzdy_fun=replace(dbzdy_fun,"*",".*");
+dbzdz_fun=replace(dbzdz_fun,"/","./");
+dbzdz_fun=replace(dbzdz_fun,"^",".^");
+dbzdz_fun=replace(dbzdz_fun,"*",".*");
+dbzdx_fun=str2func("@(x,y,z)"+" "+dbzdx_fun);
+dbzdy_fun=str2func("@(x,y,z)"+" "+dbzdy_fun);
+dbzdz_fun=str2func("@(x,y,z)"+" "+dbzdz_fun);
+target_dbzbx=dbzdx_fun(target_field(1,:),target_field(2,:),target_field(3,:));
+target_dbzby=dbzdy_fun(target_field(1,:),target_field(2,:),target_field(3,:));
+target_dbzbz=dbzdz_fun(target_field(1,:),target_field(2,:),target_field(3,:));
+if numel(target_dbzbx)==1
+target_dbzbx=repelem(target_dbzbx,size(target_field,2));
+end
+if numel(target_dbzby)==1
+target_dbzby=repelem(target_dbzby,size(target_field,2));
+end
+if numel(target_dbzbz)==1
+target_dbzbz=repelem(target_dbzbz,size(target_field,2));
+end
+catch
+disp('Gradient Calcuation from Symbolic Target failed');
+end
 end
 
 
@@ -483,4 +521,3 @@ end
 end
 
 end
-

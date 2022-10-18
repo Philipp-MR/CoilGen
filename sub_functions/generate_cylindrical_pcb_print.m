@@ -18,7 +18,7 @@ for part_ind=1:numel(coil_parts)
 %Calucate the boundaries of the un-rolled cylinder
 rot_cylinder_vertices=rot_mat*coil_parts(part_ind).coil_mesh.vertices;
 phi_coords_mesh=atan2(rot_cylinder_vertices(2,:),rot_cylinder_vertices(1,:));
-unrolled_cylinder=[phi_coords_mesh.*cylinder_radius; rot_cylinder_vertices(3,:)];
+%unrolled_cylinder=[phi_coords_mesh.*cylinder_radius; rot_cylinder_vertices(3,:)];
 
 
 %Rotate the wire on the cylinder 
@@ -135,7 +135,7 @@ warning('on','all');
 
 end
 
-else                                                                                    % first windings; second layer return paths
+else       %Generate the pcb form the spiral in/out tracks
 
 
 upper_layer(numel(coil_parts)).group_layouts=[];
@@ -153,28 +153,36 @@ lower_layer(part_ind).group_layouts(numel(coil_parts(part_ind).connected_group))
 
 for group_ind=1:numel(coil_parts(part_ind).connected_group)
 
-for group_layer={'upper' 'lower'}
-
 track_spiral_in=coil_parts(part_ind).connected_group(group_ind).spiral_in.v;
 track_spiral_out=coil_parts(part_ind).connected_group(group_ind).spiral_out.v;
+aligned_wire_path_spiral_in=rot_mat*track_spiral_in;
+aligned_wire_path_spiral_out=rot_mat*track_spiral_out;
+
+%for each point calculate the phi angle
+phi_coord_spiral_in=atan2(aligned_wire_path_spiral_in(2,:),aligned_wire_path_spiral_in(1,:));
+phi_coord_spiral_out=atan2(aligned_wire_path_spiral_out(2,:),aligned_wire_path_spiral_out(1,:));
+layout_2d_spiral_in=[phi_coord_spiral_in; aligned_wire_path_spiral_in(3,:)];
+layout_2d_spiral_out=[phi_coord_spiral_out; aligned_wire_path_spiral_out(3,:)];
+
 %Add common points at the start and end of both in/out layers
-point_1=(track_spiral_in(:,1)+track_spiral_out(:,end))./2;
-point_2=(track_spiral_in(:,end)+track_spiral_out(:,1))./2;
-track_spiral_in=[track_spiral_in(:,1)+(point_1-track_spiral_in(:,1)).*1.01 point_1 track_spiral_in point_2 track_spiral_in(:,end)+(point_2-track_spiral_in(:,end)).*1.01];
-track_spiral_out=[track_spiral_out(:,1)+(point_2-track_spiral_out(:,1)).*1.01 point_2 track_spiral_out point_1 track_spiral_out(:,end)+(point_1-track_spiral_out(:,end)).*1.01];
+point_1=(layout_2d_spiral_in(:,1)+layout_2d_spiral_out(:,end))./2;
+point_2=(layout_2d_spiral_in(:,end)+layout_2d_spiral_out(:,1))./2;
+center_position=(layout_2d_spiral_in(:,1)+layout_2d_spiral_in(:,end)+layout_2d_spiral_out(:,1)+layout_2d_spiral_out(:,end))./4;
+%Shit those points a little to avoid overlapps with the interconnections
+point_1=point_1+(point_1-center_position).*(input.pcb_spiral_end_shift_factor/100);
+point_2=point_2+(point_2-center_position).*(input.pcb_spiral_end_shift_factor/100);
+layout_2d_spiral_in=[point_1 point_1 layout_2d_spiral_in(:,2:end-1) point_2 point_2];
+layout_2d_spiral_out=[point_2 point_2 layout_2d_spiral_out(:,2:end-1) point_1 point_1];
+
+for group_layer={'upper' 'lower'}
+
 
 if strcmp(group_layer,'upper')
 %Rotate the wire on the cylinder
-aligned_wire_path=rot_mat*track_spiral_in;
-%aligned_wire_path=(rot_mat*coil_parts(part_ind).connected_group(group_ind).spiral_in.v);
+layout_2d=layout_2d_spiral_in;
 else
-%aligned_wire_path=(rot_mat*coil_parts(part_ind).connected_group(group_ind).spiral_out.v);
-aligned_wire_path=rot_mat*track_spiral_out;
+layout_2d=layout_2d_spiral_out;
 end
-
-%for each point calculate the phi angle
-phi_coord=atan2(aligned_wire_path(2,:),aligned_wire_path(1,:));
-layout_2d=[phi_coord; aligned_wire_path(3,:)];
 
 %open the wire on the end of angular wrap-arround;
 %mark the segments of the wire which have angular wraparounds
@@ -191,10 +199,10 @@ layout_2d(:,negative_wrap+1)=layout_2d(:,negative_wrap+1)+[ones(1,numel(negative
 
 %Generate a cut border on the pi,-pi phase wrap
 cut_rectangle=[-pi pi pi -pi; ...
-                                        max(aligned_wire_path(3,:))+abs(max(aligned_wire_path(3,:))).*0.1 ...
-                                        max(aligned_wire_path(3,:))+abs(max(aligned_wire_path(3,:))).*0.1 ...
-                                        min(aligned_wire_path(3,:))-abs(max(aligned_wire_path(3,:))).*0.1 ...
-                                        min(aligned_wire_path(3,:))-abs(max(aligned_wire_path(3,:))).*0.1];
+                                        max(aligned_wire_path_spiral_in(3,:))+abs(max(aligned_wire_path_spiral_in(3,:))).*0.1 ...
+                                        max(aligned_wire_path_spiral_in(3,:))+abs(max(aligned_wire_path_spiral_in(3,:))).*0.1 ...
+                                        min(aligned_wire_path_spiral_in(3,:))-abs(max(aligned_wire_path_spiral_in(3,:))).*0.1 ...
+                                        min(aligned_wire_path_spiral_in(3,:))-abs(max(aligned_wire_path_spiral_in(3,:))).*0.1];
 cut_rectangle=[cut_rectangle cut_rectangle(:,1)];
 
 %Scale the geometrie to the cylinder radius
@@ -263,8 +271,10 @@ warning('on','all');
 %write the outputs
 if strcmp(group_layer,'upper')
 upper_layer(part_ind).group_layouts(group_ind).wire_parts=wire_part;
+%writetable(array2table(wire_part.track_shape','VariableNames',{'x','y'}),"upper_layer_part"+num2str(part_ind)+"_"+"group"+num2str(group_ind)+"_"+"wire_part"+num2str(wire_part_ind));
 else
 lower_layer(part_ind).group_layouts(group_ind).wire_parts=wire_part;
+%writetable(array2table(wire_part.track_shape','VariableNames',{'x','y'}),"lower_layer_part"+num2str(part_ind)+"_"+"group"+num2str(group_ind)+"_"+"wire_part"+num2str(wire_part_ind));
 end
 
 end
@@ -275,7 +285,7 @@ coil_parts(part_ind).pcb_tracks.upper_layer=upper_layer;
 coil_parts(part_ind).pcb_tracks.lower_layer=lower_layer;
 
 %Save the tracks as a vector file
-save_pcb_tracks_as_svg(coil_parts(part_ind).pcb_tracks,input.field_shape_function,'pcb_layout',part_ind,unrolled_cylinder,input.output_directory);
+%save_pcb_tracks_as_svg(coil_parts(part_ind).pcb_tracks,input.field_shape_function,'pcb_layout',part_ind,unrolled_cylinder,input.output_directory);
 
 end
 

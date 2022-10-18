@@ -34,7 +34,7 @@ addParameter(input_parser,'sf_opt_method','tikkonov',@ischar);
 addParameter(input_parser,'tikonov_reg_factor',1,@isnumeric);
 % %Parameter for the iterative optimization with fmincon: Number
 % iterations, number evalutations, Opti.Toleranze
-addParameter(input_parser,'fmincon_parameter',[500 10^10 1.000000e-10],@isnumeric);
+addParameter(input_parser,'fmincon_parameter',[500 10^10 1.000000e-10 1.000000e-10 1.000000e-10],@isnumeric);
 %Number of potential levels
 addParameter(input_parser,'levels',10,@isnumeric);
 %Specify one of the three ways the level sets are calculated:
@@ -116,6 +116,9 @@ addParameter(input_parser,'skip_sweep',false,@islogical);
 addParameter(input_parser,'make_cylndrical_pcb',false,@islogical);
 %Flag to generate a rectangular pcb pattern to wrap around a cylinder
 addParameter(input_parser,'pcb_interconnection_method','spiral_in_out',@ischar);
+%Factor of shifting the open ends of the spirals in order to avoid
+%overlapps; in percent
+addParameter(input_parser,'pcb_spiral_end_shift_factor',10,@isnumeric);
 %force_cut_selection
 addParameter(input_parser,'force_cut_selection',{},@iscell);
 %Gaus integration order
