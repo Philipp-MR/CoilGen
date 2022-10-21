@@ -1,5 +1,6 @@
 function sampled_points = equilize_point_distances_spline(unsampled_points,upsampling_factor)
 %Equilize the point the distances, keeping the same number of points
+unsampled_points=[unsampled_points(1,:) unsampled_points(1,end)+(unsampled_points(1,end)-unsampled_points(1,end-1));unsampled_points(2,:) unsampled_points(2,end)+(unsampled_points(2,end)-unsampled_points(2,end-1))];
 number_points=size(unsampled_points,2);
 t=0:(1/(number_points*upsampling_factor)):1;
 t = t(:);

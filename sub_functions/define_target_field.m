@@ -6,16 +6,26 @@ function [target_field_out,is_supressed_point]= define_target_field(coil_parts,t
 if ~strcmp(input.target_field_definition_file,'none')
 
 if ispc
-load(cd+"\"+"target_fields"+"\"+input.target_field_definition_file,'target_field');
+loaded_target_field=load(cd+"\"+"target_fields"+"\"+input.target_field_definition_file);
 else
-load(cd+"/"+"target_fields"+"/"+input.target_field_definition_file,'target_field');
+loaded_target_field=load(cd+"/"+"target_fields"+"/"+input.target_field_definition_file);
 end
-
-target_field_out.b=target_field.b;
+struct_name=fieldnames(loaded_target_field);
+loaded_target_field=getfield(loaded_target_field,struct_name{1});
+if isfield(loaded_target_field,input.target_field_definition_field_name)
+loaded_field=getfield(loaded_target_field,input.target_field_definition_field_name);
+if size(loaded_field,1)==1
+target_field_out.b=[zeros(size(loaded_field));zeros(size(loaded_field));loaded_field];
+else
+target_field_out.b=loaded_field;
+end
 is_supressed_point=zeros(1,size(target_field_out.b,2));
-target_field_out.coords=target_field.coords;
+target_field_out.coords=loaded_target_field.coords;
 target_field_out.weights=ones(size(target_field_out.b));
-target_field_out.target_field_group_inds=ones(1,size(target_field.b,2));
+target_field_out.target_field_group_inds=ones(1,size(target_field_out.b,2));
+else
+error("The target field with name"+" "+input.target_field_definition_file+" "+"does not exist, in the provided file");
+end
 
 
 else

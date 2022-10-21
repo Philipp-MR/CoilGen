@@ -40,9 +40,6 @@ sensitivity_matrix_single=[ squeeze(sensitivity_matrix(3,:,:))];
 % gradient_sensitivity_matrix=[ squeeze(gradient_sensitivity_matrix(3,:,:))];
 % end
 target_field_single=[ squeeze(target_field.b(3,:))];
-target_gradient_x=[ squeeze(target_field.target_gradient_dbdxyz(1,:))];
-target_gradient_y=[ squeeze(target_field.target_gradient_dbdxyz(2,:))];
-target_gradient_z=[ squeeze(target_field.target_gradient_dbdxyz(3,:))];
 %Reduce the Resistance matrix for boundary nodes
 [reduced_res_matrix,~,~]= reduce_matrices_for_boundary_nodes(resistance_matrix,combined_mesh,set_zero_flag);
 %Reduce the sensitivity matrix for boundary nodes
@@ -63,6 +60,9 @@ reduced_sf=pinv(reduced_sensitivity_matrix'*reduced_sensitivity_matrix+tik_reg_m
 else
 %for initialization, calculate the tikkonov solution; then do a iteriative optimization
 tik_reg_mat=tikonov_reg_factor*reduced_res_matrix;
+% target_gradient_x=[ squeeze(target_field.target_gradient_dbdxyz(1,:))];
+% target_gradient_y=[ squeeze(target_field.target_gradient_dbdxyz(2,:))];
+% target_gradient_z=[ squeeze(target_field.target_gradient_dbdxyz(3,:))];
 reduced_sf=pinv(reduced_sensitivity_matrix'*reduced_sensitivity_matrix+tik_reg_mat'*tik_reg_mat)*reduced_sensitivity_matrix'*target_field_single';
 %reduced_sf=zeros(size(reduced_res_matrix,1),1);
 %find the constrained solution
@@ -70,16 +70,17 @@ stream_func_max=max(reduced_sf)*2;
 lb=ones(size(reduced_sf)).*(-1).*stream_func_max;
 ub=ones(size(reduced_sf)).*stream_func_max;
 
-max_current=max(((red_current_density_mat_u*reduced_sf).^2+(red_current_density_mat_v*reduced_sf).^2+(red_current_density_mat_w*reduced_sf).^2).^(1/2));
+%max_current=max(((red_current_density_mat_u*reduced_sf).^2+(red_current_density_mat_v*reduced_sf).^2+(red_current_density_mat_w*reduced_sf).^2).^(1/2));
 
 
-%cost_function = @(x) sum((reduced_sensitivity_matrix*x-target_field_single').^2)+tikonov_reg_factor*(x'*reduced_res_matrix*x);
+cost_function = @(x) sum((reduced_sensitivity_matrix*x-target_field_single').^2)+tikonov_reg_factor*(x'*reduced_res_matrix*x);
 
-cost_function = @(x) sum((reduced_gradient_sensitivity_matrix_x*x-target_gradient_x').^2)+...
-                                    sum((reduced_gradient_sensitivity_matrix_y*x-target_gradient_y').^2)+...
-                                    sum((reduced_gradient_sensitivity_matrix_z*x-target_gradient_z').^2)+...
-    +(-1)*min((abs(reduced_gradient_sensitivity_matrix_x*x)))...
-    +tikonov_reg_factor*max(((red_current_density_mat_u*x).^2+(red_current_density_mat_v*x).^2+(red_current_density_mat_w*x).^2).^(1/2));
+
+% cost_function = @(x) sum((reduced_gradient_sensitivity_matrix_x*x-target_gradient_x').^2)+...
+%                                     sum((reduced_gradient_sensitivity_matrix_y*x-target_gradient_y').^2)+...
+%                                     sum((reduced_gradient_sensitivity_matrix_z*x-target_gradient_z').^2)+...
+%     +(-1)*min((abs(reduced_gradient_sensitivity_matrix_x*x)))...
+%     +tikonov_reg_factor*max(((red_current_density_mat_u*x).^2+(red_current_density_mat_v*x).^2+(red_current_density_mat_w*x).^2).^(1/2));
 
 
 % cost_function = @(x) (-1)*min((abs(reduced_gradient_sensitivity_matrix_x*x)))...

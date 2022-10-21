@@ -44,7 +44,6 @@ gradient_direction=gradient_direction./norm(gradient_direction);
 
 %Project the gradient direction to the full set of cartesian gradients
 layout_gradient.gradient_in_target_direction=((gradient_direction(1).*layout_gradient.dBzdxyz(1,:)).^2+(gradient_direction(2).*layout_gradient.dBzdxyz(2,:)).^2+(gradient_direction(3).*layout_gradient.dBzdxyz(3,:)).^2).^(1/2);
-
 layout_gradient.mean_gradient_in_target_direction=mean(layout_gradient.gradient_in_target_direction,'omitnan');
 layout_gradient.std_gradient_in_target_direction=std(layout_gradient.gradient_in_target_direction,'omitnan');
 

@@ -28,6 +28,8 @@ addParameter(input_parser,'use_only_target_mesh_verts',false,@islogical);
 addParameter(input_parser,'sf_source_file','none',@ischar);
 %target field file; pointwise definition
 addParameter(input_parser,'target_field_definition_file','none',@ischar);
+%target field file; fieldname definition
+addParameter(input_parser,'target_field_definition_field_name','none',@ischar);
 %Stream function optimization method; tikkonov, fmincon
 addParameter(input_parser,'sf_opt_method','tikkonov',@ischar);
 % %Tikonov regularization factor for the SF optimization
