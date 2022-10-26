@@ -4,7 +4,10 @@ pos_data=coil_layouts(single_ind_to_plot).out.target_field.coords;
 
 dot_size=100;
 
-plot_limits=[0 coil_layouts(single_ind_to_plot).out.layout_gradient.mean_gradient_in_target_direction+coil_layouts(single_ind_to_plot).out.layout_gradient.std_gradient_in_target_direction*3];
+channel_strengths=[mean(abs(coil_layouts.out.layout_gradient.dBzdxyz(1,:))) mean(abs(coil_layouts.out.layout_gradient.dBzdxyz(2,:))) mean(abs(coil_layouts.out.layout_gradient.dBzdxyz(3,:)))];
+[~,target_channel]=max(channel_strengths);
+
+
 
 %Plot Histograms of the gradient
 figure('name',plot_title);
@@ -12,13 +15,26 @@ tiledlayout('flow');
 nexttile;
 hold on
 axis equal tight;
-if ~strcmp(coil_layouts(single_ind_to_plot).out.input_data.field_shape_function,'none')
-title("G"+" "+coil_layouts(single_ind_to_plot).out.input_data.field_shape_function+"[mT/m/A]",'interpreter', 'none');
-else
-title("G in target direction [mT/m/A]",'interpreter', 'none');
+% if ~strcmp(coil_layouts(single_ind_to_plot).out.input_data.field_shape_function,'none')
+% title("G"+" "+coil_layouts(single_ind_to_plot).out.input_data.field_shape_function+"[mT/m/A]",'interpreter', 'none');
+% else
+% title("G in target direction [mT/m/A]",'interpreter', 'none');
+% end
+
+switch target_channel
+    case 1
+plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(1,:); % in mT\m\A
+title("Gx[mT/m/A]",'interpreter', 'none');
+    case 2
+plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(2,:); % in mT\m\A
+title("Gy[mT/m/A]",'interpreter', 'none');
+    case 3
+plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(3,:); % in mT\m\A
+title("Gz[mT/m/A]",'interpreter', 'none');
 end
 
-plot_colors=coil_layouts(single_ind_to_plot).out.layout_gradient.gradient_in_target_direction; % in mT\m\A
+plot_limits=[0 mean(plot_colors)+std(plot_colors)*3];
+
 view(45,45);
 colorbar;
 colormap(parula);

@@ -16,6 +16,7 @@ function result_out=CoilGen(varargin)
 
 
 
+
 %%% ALGORITHM %%%
 
 %Add the subunctions to the path
@@ -91,7 +92,7 @@ toc;
 % Calculate the resistance matrix Rmn
 tic;
 disp('Calculate the resistance matrix:');
-coil_parts=calculate_resistance_matrix(coil_parts,input);
+coil_parts=calculate_resistance_matrix(coil_parts,target_field,input);
 toc;
 
 %Optimize the stream function toward target field and further constraints
