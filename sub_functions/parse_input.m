@@ -8,6 +8,7 @@ function [input_parser,input] = parse_input(varargin)
 
 input_parser = inputParser; %create parser object
 %Add the mesh file that represents the boundary of the target geometry
+addParameter(input_parser,'temp',[],@isstruct);
 addParameter(input_parser,'coil_mesh_file','none',@ischar);
 %Add the spatial function that defines the field
 addParameter(input_parser,'field_shape_function','x',@ischar);

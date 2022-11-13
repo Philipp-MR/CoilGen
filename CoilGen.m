@@ -1,4 +1,4 @@
-function result_out=CoilGen(varargin)
+function [result_out,temp]=CoilGen(varargin)
 
 
 %%%% Create optimized coil finished coil layout 
@@ -32,6 +32,7 @@ disp('Parse inputs:');
 [input_parser,input] = parse_input(varargin);
 toc; 
 
+
 if strcmp(input.sf_source_file,'none')
 
 %Read the input mesh
@@ -64,16 +65,23 @@ disp('Define the target field:');
 [target_field,is_supressed_point] = define_target_field(coil_parts,target_mesh,secondary_target_mesh,input);
 toc; 
 
+%Evaluate the temp data; check wether precalculated values can be used from
+%previous iterations
+tic;
+disp('Evaluate the temp data:');
+input=temp_evaluation(input,target_field);
+toc;
+
 %find indices of mesh nodes for one ring basis functions
 tic;
 disp('Calculate mesh one ring:');
-coil_parts=calculate_one_ring_by_mesh(coil_parts);
+coil_parts=calculate_one_ring_by_mesh(coil_parts,input);
 toc;
 
 % create the basis funtion container which represents the current density
 tic;
 disp('Create the basis funtion container which represents the current density:');
-coil_parts=calculate_basis_functions(coil_parts);
+coil_parts=calculate_basis_functions(coil_parts,input);
 toc;
 
 % calculate the sensitivity matrix Cn
@@ -92,7 +100,7 @@ toc;
 % Calculate the resistance matrix Rmn
 tic;
 disp('Calculate the resistance matrix:');
-coil_parts=calculate_resistance_matrix(coil_parts,target_field,input);
+coil_parts=calculate_resistance_matrix(coil_parts,input);
 toc;
 
 %Optimize the stream function toward target field and further constraints
@@ -203,8 +211,11 @@ layout_gradient = calculate_gradient(coil_parts,target_field,input);
 toc;
 %layout_gradient=[];
 
+%Assign temporaty data for the next iteration
 
-
+temp.preoptimization_hash=input.preoptimization_hash;
+temp.optimized_hash=input.optimized_hash;
+temp.coil_parts=coil_parts;
 
 
 %Assign the outputs

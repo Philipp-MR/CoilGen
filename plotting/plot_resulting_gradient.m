@@ -1,4 +1,4 @@
-function  plot_resulting_gradient(coil_layouts,single_ind_to_plot,plot_title)
+function  std_gradient =plot_resulting_gradient(coil_layouts,single_ind_to_plot,plot_title)
 
 pos_data=coil_layouts(single_ind_to_plot).out.target_field.coords;
 
@@ -33,6 +33,7 @@ plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(3,:); % in mT\m\A
 title("Gz[mT/m/A]",'interpreter', 'none');
 end
 
+std_gradient=std(plot_colors);
 plot_limits=[0 mean(plot_colors)+std(plot_colors)*3];
 
 view(45,45);

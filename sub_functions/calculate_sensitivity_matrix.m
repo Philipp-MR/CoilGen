@@ -8,40 +8,10 @@ coil_parts(numel(coil_parts)).sensitivity_matrix=[];
 for part_ind=1:numel(coil_parts)
 
 
-%Check wether the matrix was already calcuated in a previous iteration
-hash_target = generate_DataHash(target_field);
-hash_ccs = generate_DataHash(input.coil_mesh_file);
-
-if isfile(strcat(input.output_directory,"\temp\hash_ccs_part"+num2str(part_ind)+".txt"))
-fileID = fopen(strcat(input.output_directory,"\temp\hash_ccs_part"+num2str(part_ind)+".txt"),'r');
-read_string=textscan(fileID,'%c');
-hash_ccs_temp=read_string{:}';
-fclose(fileID);
-else
-fileID = fopen(strcat(input.output_directory,"\temp\hash_ccs_part"+num2str(part_ind)+".txt"),'w');
-fprintf(fileID,'%c',hash_ccs);
-hash_ccs_temp=' ';
-fclose(fileID);
-end
-if isfile(strcat(input.output_directory,"\temp\hash_target_part"+num2str(part_ind)+".txt"))
-fileID = fopen(strcat(input.output_directory,"\temp\hash_target_part"+num2str(part_ind)+".txt"),'r');
-read_string=textscan(fileID,'%c');
-hash_target_temp=read_string{:}';
-fclose(fileID);
-else
-fileID = fopen(strcat(input.output_directory,"\temp\hash_target_part"+num2str(part_ind)+".txt"),'w');
-fprintf(fileID,'%c',hash_target);
-hash_target_temp=' ';
-fclose(fileID);
-end
-
-if ~(strcmp(hash_target,hash_target_temp)&strcmp(hash_ccs,hash_ccs_temp))| ~isfile(strcat(input.output_directory,'\temp\sensitivity_mat_temp_part',num2str(part_ind),'.mat'))
+if ~input.temp_evalution.use_preoptimization_temp
 
 target_points=target_field.coords;
 gauss_order=input.gauss_order;
-
-
-
 
 % calculate the weights and the test point for the gauss legendre
 % integration on each triangle is done by gauss legendre integration
@@ -66,8 +36,6 @@ dCy=zeros(1,num_target_points);
 dCz=zeros(1,num_target_points);
     
 for tri_ind=1:num_triangles_per_node(node_ind) % iterate of number of triangles of that node
-
-    
     
 % node_point=coil_parts(part_ind).coil_mesh.vertices(:,node_ind); 
 % point_b=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).basis_elements(node_ind).one_ring(tri_ind,1));
@@ -136,13 +104,10 @@ sensitivity_matrix(:,:,node_ind)=[dCx' dCy' dCz']'.*biot_savart_coeff;
 end
 
 coil_parts(part_ind).sensitivity_matrix=sensitivity_matrix;
-save(strcat(input.output_directory,'\temp\sensitivity_mat_temp_part',num2str(part_ind),'.mat'),'sensitivity_matrix')
 
 else
 
-load(strcat(input.output_directory,'\temp\sensitivity_mat_temp_part',num2str(part_ind),'.mat'),'sensitivity_matrix');
-coil_parts(part_ind).sensitivity_matrix=sensitivity_matrix;
-
+coil_parts(part_ind).sensitivity_matrix=input.temp.coil_parts(part_ind).sensitivity_matrix;
 
 end
 end

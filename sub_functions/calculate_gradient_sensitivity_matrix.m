@@ -11,35 +11,9 @@ coil_parts(numel(coil_parts)).gradient_sensitivity_matrix=[];
 
 for part_ind=1:numel(coil_parts)
 
-%Check wether the matrix was already calcuated in a previous iteration
-hash_target = generate_DataHash(target_field);
-hash_ccs = generate_DataHash(input.coil_mesh_file);
-
-if isfile(strcat(input.output_directory,"\temp\hash_ccs_part"+num2str(part_ind)+".txt"))
-fileID = fopen(strcat(input.output_directory,"\temp\hash_ccs_part"+num2str(part_ind)+".txt"),'r');
-read_string=textscan(fileID,'%c');
-hash_ccs_temp=read_string{:}';
-fclose(fileID);
-else
-fileID = fopen(strcat(input.output_directory,"\temp\hash_ccs_part"+num2str(part_ind)+".txt"),'w');
-fprintf(fileID,'%c',hash_ccs);
-hash_ccs_temp=' ';
-fclose(fileID);
-end
-if isfile(strcat(input.output_directory,"\temp\hash_target_part"+num2str(part_ind)+".txt"))
-fileID = fopen(strcat(input.output_directory,"\temp\hash_target_part"+num2str(part_ind)+".txt"),'r');
-read_string=textscan(fileID,'%c');
-hash_target_temp=read_string{:}';
-fclose(fileID);
-else
-fileID = fopen(strcat(input.output_directory,"\temp\hash_target_part"+num2str(part_ind)+".txt"),'w');
-fprintf(fileID,'%c',hash_target);
-hash_target_temp=' ';
-fclose(fileID);
-end
+if ~input.temp_evalution.use_preoptimization_temp
 
 
-if ~(strcmp(hash_target,hash_target_temp)&strcmp(hash_ccs,hash_ccs_temp)) | ~isfile(strcat(input.output_directory,'\temp\gradient_sensitivity_mat_temp_part',num2str(part_ind),'.mat'))
 
 % calculate the weights and the test point for the gauss legendre
 % integration on each triangle is done by gauss legendre integration
@@ -155,15 +129,14 @@ end
 
 coil_parts(part_ind).gradient_sensitivity_matrix=gradient_sensitivity_matrix;
 
-save(strcat(input.output_directory,'\temp\gradient_sensitivity_mat_temp_part',num2str(part_ind),'.mat'),'gradient_sensitivity_matrix');
-
-
 else
 
-load(strcat(input.output_directory,'\temp\gradient_sensitivity_mat_temp_part',num2str(part_ind),'.mat'),'gradient_sensitivity_matrix');
-coil_parts(part_ind).gradient_sensitivity_matrix=gradient_sensitivity_matrix;
+coil_parts(part_ind).gradient_sensitivity_matrix=input.temp.coil_parts(part_ind).gradient_sensitivity_matrix;
+
 
 end
 
 end
+
+
 end

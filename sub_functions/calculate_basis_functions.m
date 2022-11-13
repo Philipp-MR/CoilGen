@@ -1,4 +1,4 @@
-function coil_parts=calculate_basis_functions(coil_parts)
+function coil_parts=calculate_basis_functions(coil_parts,input)
 % create the basis funtion container which represents the current density 
 
 %Initialize the outputs
@@ -15,6 +15,7 @@ coil_parts(numel(coil_parts)).current_density_mat=[];
 
 for part_ind=1:numel(coil_parts)
 
+if ~input.temp_evalution.use_preoptimization_temp
 
 num_nodes=size(coil_parts(part_ind).coil_mesh.vertices,2);
 current_density_mat=zeros(num_nodes,size(coil_parts(part_ind).coil_mesh.faces,2),3);
@@ -73,6 +74,22 @@ coil_parts(part_ind).area_mat=area_mat;
 coil_parts(part_ind).face_normal_mat=face_normal_mat;
 coil_parts(part_ind).current_density_mat=current_density_mat;
 
+else
+
+coil_parts(part_ind).is_real_triangle_mat=input.temp.coil_parts(part_ind).is_real_triangle_mat;
+coil_parts(part_ind).triangle_corner_coord_mat=input.temp.coil_parts(part_ind).triangle_corner_coord_mat;
+coil_parts(part_ind).current_mat=input.temp.coil_parts(part_ind).current_mat;
+coil_parts(part_ind).area_mat=input.temp.coil_parts(part_ind).area_mat;
+coil_parts(part_ind).face_normal_mat=input.temp.coil_parts(part_ind).face_normal_mat;
+coil_parts(part_ind).current_density_mat=input.temp.coil_parts(part_ind).current_density_mat;
+
+
+end
+
+end
+
+end
+
 
 % % % %unify the current and triangle orientation
 % % % if dot(basis_elements(hhhh).face_normal(gggg,:),[1;0;0])<0
@@ -86,7 +103,3 @@ coil_parts(part_ind).current_density_mat=current_density_mat;
 % % % %calc the tangential current density of the triangle 
 % % % basis_elements(hhhh).current(gggg,:)=(point_b-point_c).*(1/norm(point_b-point_c)).*(1/dist_node_current_element).*(-1);
 % % % end
-
-end
-
-end

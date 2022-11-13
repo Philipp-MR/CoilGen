@@ -5,6 +5,10 @@ sensitivity_matrix=[];
 gradient_sensitivity_matrix=[];
 resistance_matrix=[];
 current_density_mat=[];
+
+if ~input.temp_evalution.use_optimized_temp
+
+
 for part_ind=1:numel(coil_parts)
 current_density_mat=cat(1,current_density_mat,coil_parts(part_ind).current_density_mat);
 sensitivity_matrix=cat(3,sensitivity_matrix,coil_parts(part_ind).sensitivity_matrix);
@@ -135,28 +139,16 @@ end
 coil_parts(part_ind).current_density=[coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,1); ...
     coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,2); ...
     coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,3)];
-% % %calculate the resulting current dentsity for the mesh faces (OLD)
-% for part_ind=1:numel(coil_parts)
-% pot_diffs1=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(1,:)),[1 3])';
-% pot_diffs2=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(2,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(1,:)),[1 3])';
-% pot_diffs3=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(2,:)),[1 3])';
-% edge_vecs1=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(1,:));
-% edge_vecs2=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(2,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(1,:));
-% edge_vecs3=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(2,:));
-% %calculate the resulting current 
-% coil_parts(part_ind).current_density=edge_vecs1.*pot_diffs1+edge_vecs2.*pot_diffs2+edge_vecs3.*pot_diffs3;
-% end
-% % %calculate the resulting current dentsity for the mesh nodes
-% for part_ind=1:numel(coil_parts)
-% coil_parts(part_ind).vertex_current_density=zeros(3,size(coil_parts(part_ind).coil_mesh.vertices,2));
-% for node_ind=1:size(coil_parts(part_ind).coil_mesh.vertices,2)
-% neigbour_nodes=coil_parts(part_ind).one_ring_list{3}(1,:);
-% pot_diffs=coil_parts(part_ind).stream_function(neigbour_nodes)'-coil_parts(part_ind).stream_function(node_ind)';
-% vec_diffs=coil_parts(part_ind).coil_mesh.vertices(:,neigbour_nodes)-coil_parts(part_ind).coil_mesh.vertices(:,node_ind);
-% %calculate the resulting current 
-% coil_parts(part_ind).vertex_current_density(:,node_ind)=sum(vec_diffs.*repmat(pot_diffs,[3 1]),2);
-% end
-% end
+
+else
+
+for part_ind=1:numel(coil_parts)
+coil_parts(part_ind).current_density=input.temp.coil_parts(part_ind).current_density;
+coil_parts(part_ind).stream_function=input.temp.coil_parts(part_ind).stream_function;
+end
+
+end
+
 end
 function [reduced_mat,boundary_nodes,is_not_boundary_node]= reduce_matrices_for_boundary_nodes(full_mat,coil_mesh,set_zero_flag)
 %Reduce the sensitivtity matrix in order to limit the degrees of freedom on
@@ -199,9 +191,7 @@ end
 %Reange the matrix to its reduced form
 boundary_nodes_first_inds=arrayfun(@(x) boundary_nodes{x}(1),1:numel(boundary_nodes));
 for dim_to_reduce_ind=find(dim_to_reduce)
-    
 prev_reduced_mat=reduced_mat;
-    
 Index1    = cell(1, ndims(full_mat));
 Index1(:) = {':'};
 Index1{dim_to_reduce_ind}=1:num_boundaries; %the first entries are the subsitutes for the boundaries
@@ -271,3 +261,26 @@ end
 % % % sf(is_not_boundary_node)=reduced_sf(numel(boundary_nodes)+1:end);
 % % % 
 % % % end
+
+% % %calculate the resulting current dentsity for the mesh faces (OLD)
+% for part_ind=1:numel(coil_parts)
+% pot_diffs1=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(1,:)),[1 3])';
+% pot_diffs2=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(2,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(1,:)),[1 3])';
+% pot_diffs3=repmat(coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).stream_function(coil_parts(part_ind).coil_mesh.faces(2,:)),[1 3])';
+% edge_vecs1=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(1,:));
+% edge_vecs2=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(2,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(1,:));
+% edge_vecs3=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(3,:))-coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).coil_mesh.faces(2,:));
+% %calculate the resulting current 
+% coil_parts(part_ind).current_density=edge_vecs1.*pot_diffs1+edge_vecs2.*pot_diffs2+edge_vecs3.*pot_diffs3;
+% end
+% % %calculate the resulting current dentsity for the mesh nodes
+% for part_ind=1:numel(coil_parts)
+% coil_parts(part_ind).vertex_current_density=zeros(3,size(coil_parts(part_ind).coil_mesh.vertices,2));
+% for node_ind=1:size(coil_parts(part_ind).coil_mesh.vertices,2)
+% neigbour_nodes=coil_parts(part_ind).one_ring_list{3}(1,:);
+% pot_diffs=coil_parts(part_ind).stream_function(neigbour_nodes)'-coil_parts(part_ind).stream_function(node_ind)';
+% vec_diffs=coil_parts(part_ind).coil_mesh.vertices(:,neigbour_nodes)-coil_parts(part_ind).coil_mesh.vertices(:,node_ind);
+% %calculate the resulting current 
+% coil_parts(part_ind).vertex_current_density(:,node_ind)=sum(vec_diffs.*repmat(pot_diffs,[3 1]),2);
+% end
+% end

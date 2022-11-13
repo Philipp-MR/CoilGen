@@ -1,4 +1,4 @@
-function coil_parts=calculate_one_ring_by_mesh(coil_parts)
+function coil_parts=calculate_one_ring_by_mesh(coil_parts,input)
 %@Philipp Amrein 2021
 
 
@@ -7,6 +7,8 @@ for part_ind=1:numel(coil_parts)
 
 coil_parts(part_ind).coil_mesh.faces=coil_parts(part_ind).coil_mesh.faces';
     
+if ~input.temp_evalution.use_preoptimization_temp
+
 num_nodes=size(coil_parts(part_ind).coil_mesh.vertices,2);
 node_triangles = vertexAttachments(triangulation(coil_parts(part_ind).coil_mesh.faces,coil_parts(part_ind).coil_mesh.vertices'));
 node_triangles_corners=cellfun(@(x) coil_parts(part_ind).coil_mesh.faces(x,:),node_triangles,'UniformOutput',0);
@@ -57,6 +59,15 @@ coil_parts(part_ind).one_ring_list=one_ring_list;
 coil_parts(part_ind).node_triangles=node_triangles;
 coil_parts(part_ind).node_triangle_mat=node_triangle_mat;
 coil_parts(part_ind).coil_mesh.faces=coil_parts(part_ind).coil_mesh.faces';
+
+else
+
+coil_parts(part_ind).one_ring_list=input.temp.coil_parts(part_ind).one_ring_list;
+coil_parts(part_ind).node_triangles=input.temp.coil_parts(part_ind).node_triangles;
+coil_parts(part_ind).node_triangle_mat=input.temp.coil_parts(part_ind).node_triangle_mat;
+coil_parts(part_ind).coil_mesh.faces=coil_parts(part_ind).coil_mesh.faces';
+
+end
 
 end
 
