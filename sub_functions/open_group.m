@@ -92,8 +92,8 @@ end
 % figure; 
 % plot(group_to_open.uv(1,:),group_to_open.uv(2,:),'b');
 % hold on; 
-% plot(opened_group(1,:),opened_group(2,:),'g');
-% plot(rectangle_cut(1,:),rectangle_cut(2,:),'r');
+% %plot(opened_group(1,:),opened_group(2,:),'g');
+% plot(cut_shape(1,:),cut_shape(2,:),'r');
 % hold off;
 
 end

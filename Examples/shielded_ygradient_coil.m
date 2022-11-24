@@ -65,5 +65,6 @@ plot_coil_parameters(coil_layouts,coil_name);
 plot_coil_track_with_resulting_bfield(coil_layouts,single_ind_to_plot,coil_name);
 plot_various_error_metrics(coil_layouts,single_ind_to_plot,coil_name);
 plot_resulting_gradient(coil_layouts,single_ind_to_plot,coil_name);
+plot_3D_current_density(coil_layouts,single_ind_to_plot,coil_name);
 rmpath('plotting');
 

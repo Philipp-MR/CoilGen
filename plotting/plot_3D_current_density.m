@@ -20,11 +20,11 @@ for part_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts)
     z_vals_2=coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.vertices(3,coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(2,:));
     z_vals_3=coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.vertices(3,coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(3,:));
 
-    normed_pot=vecnorm(coil_layout.out.coil_parts.current_density)';
+    normed_pot=vecnorm(coil_layout.out.coil_parts(part_ind).current_density)';
     normed_pot=normed_pot./max(abs(normed_pot));
-    normed_pot_1=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(1,:));
-    normed_pot_2=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(2,:));
-    normed_pot_3=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(3,:));
+%     normed_pot_1=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(1,:));
+%     normed_pot_2=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(2,:));
+%     normed_pot_3=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(3,:));
     fill3([x_vals_1' x_vals_2' x_vals_3']',[y_vals_1' y_vals_2' y_vals_3']',[z_vals_1' z_vals_2' z_vals_3']',normed_pot,'EdgeAlpha',0);
 
 %     %Plot also the mesh

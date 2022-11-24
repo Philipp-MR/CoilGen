@@ -1,4 +1,3 @@
-
 function [min_dist,near_points_a,min_ind_a,near_points_b,min_ind_b]=find_min_mutual_loop_distance(loop_a,loop_b,only_point_flag)
 %Calculate the mutal nearest positions and segment indices between two
 %loops 

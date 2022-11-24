@@ -163,7 +163,6 @@ disp('Interconnect the single groups:');
 coil_parts = interconnect_within_groups(coil_parts,input);
 toc;
     
-
 %interconnect the groups to a single wire path
 tic;
 disp('Interconnect the groups to a single wire path:');

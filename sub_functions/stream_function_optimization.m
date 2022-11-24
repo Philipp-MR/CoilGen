@@ -8,13 +8,21 @@ current_density_mat=[];
 
 if ~input.temp_evalution.use_optimized_temp
 
-
+%Concatinate the matrices over the different mesh parts
 for part_ind=1:numel(coil_parts)
-current_density_mat=cat(1,current_density_mat,coil_parts(part_ind).current_density_mat);
+if part_ind==1
+current_density_mat=coil_parts(part_ind).current_density_mat;
+else
+current_density_mat=cat(3 ...
+    ,blkdiag(squeeze(current_density_mat(:,:,1)),squeeze(coil_parts(part_ind).current_density_mat(:,:,1)))...
+    ,blkdiag(squeeze(current_density_mat(:,:,2)),squeeze(coil_parts(part_ind).current_density_mat(:,:,2)))...
+    ,blkdiag(squeeze(current_density_mat(:,:,3)),squeeze(coil_parts(part_ind).current_density_mat(:,:,3))));
+end
 sensitivity_matrix=cat(3,sensitivity_matrix,coil_parts(part_ind).sensitivity_matrix);
 gradient_sensitivity_matrix=cat(3,gradient_sensitivity_matrix,coil_parts(part_ind).sensitivity_matrix);
 resistance_matrix=blkdiag(resistance_matrix,coil_parts(part_ind).resistance_matrix);
 end
+
 %generate a combined mesh container
 combined_mesh.faces=coil_parts(1).coil_mesh.faces;
 combined_mesh.vertices=coil_parts(1).coil_mesh.vertices;
@@ -126,6 +134,14 @@ b_field_opt_sf=[squeeze(sensitivity_matrix(1,:,:))*opt_stream_func squeeze(sensi
 %Seperate the optimized stream function again onto the different mesh parts
 for part_ind=1:numel(coil_parts)
 coil_parts(part_ind).stream_function=opt_stream_func(combined_mesh.mesh_part_vertex_ind==part_ind);
+% coil_parts(part_ind).current_density=[coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,combined_mesh.mesh_part_vertex_ind==part_ind,1); ...
+%                                                         coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,combined_mesh.mesh_part_vertex_ind==part_ind,2); ...
+%                                                         coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,combined_mesh.mesh_part_vertex_ind==part_ind,3)];
+jx=coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,1);
+jy=coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,2);
+jz=coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,3);
+
+coil_parts(part_ind).current_density=[jx; jy; jz];
 end
 % %Quadratic programming
 % stream_func_max=3000;
@@ -136,9 +152,6 @@ end
 % options.MaxIterations = 2.000000e+04;
 % reduced_sf = quadprog(H,f,[],[],[],[],lb,ub,reduced_sf,options); %output of quadprog
 % % %calculate the resulting current dentsity for the mesh faces
-coil_parts(part_ind).current_density=[coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,1); ...
-    coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,2); ...
-    coil_parts(part_ind).stream_function'*coil_parts(part_ind).current_density_mat(:,:,3)];
 
 else
 

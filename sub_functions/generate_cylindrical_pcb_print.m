@@ -16,121 +16,47 @@ if ~strcmp(input.pcb_interconnection_method,'spiral_in_out') % first layer spira
 for part_ind=1:numel(coil_parts)
 
 %Calucate the boundaries of the un-rolled cylinder
-rot_cylinder_vertices=rot_mat*coil_parts(part_ind).coil_mesh.vertices;
-phi_coords_mesh=atan2(rot_cylinder_vertices(2,:),rot_cylinder_vertices(1,:));
+% rot_cylinder_vertices=rot_mat*coil_parts(part_ind).coil_mesh.vertices;
+% phi_coords_mesh=atan2(rot_cylinder_vertices(2,:),rot_cylinder_vertices(1,:));
 %unrolled_cylinder=[phi_coords_mesh.*cylinder_radius; rot_cylinder_vertices(3,:)];
 
 
 %Rotate the wire on the cylinder 
 aligned_wire_path=(rot_mat*coil_parts(part_ind).wire_path.v);
 
-%Split the complete wire track into non-overlapping parts
-lower_layer.segments_start_inds=find([0 diff(coil_parts.points_to_shift)]==1);
-lower_layer.segments_end_inds=[find([0 diff(coil_parts.points_to_shift)]==-1)]-1;
-points_to_shift_inv=(coil_parts.points_to_shift).*(-1)+1;
-upper_layer.segments_start_inds=find([1 diff(points_to_shift_inv)]==1);
-upper_layer.segments_end_inds=[find([1 diff(points_to_shift_inv)]==-1)]-1;
-if numel(upper_layer.segments_start_inds)~=numel(upper_layer.segments_end_inds)
-upper_layer.segments_end_inds=[upper_layer.segments_end_inds size(coil_parts.points_to_shift,2)];
-end
-if numel(lower_layer.segments_start_inds)~=numel(lower_layer.segments_end_inds)
-lower_layer.segments_end_inds=[lower_layer.segments_end_inds size(coil_parts.points_to_shift,2)];
-end
-
-%Create the seperated non-overlapping wire parts
-upper_layer.unwrapped_wire_part(numel(upper_layer.segments_start_inds)).inds=[];
-for seg_ind=1:numel(upper_layer.segments_start_inds)
-upper_layer.unwrapped_wire_part(seg_ind).inds=upper_layer.segments_start_inds(seg_ind):upper_layer.segments_end_inds(seg_ind);
-upper_layer.unwrapped_wire_part(seg_ind).v=aligned_wire_path(:,upper_layer.unwrapped_wire_part(seg_ind).inds);
-upper_layer.unwrapped_wire_part(seg_ind).unrolled_v=[atan2(upper_layer.unwrapped_wire_part(seg_ind).v(2,:),upper_layer.unwrapped_wire_part(seg_ind).v(1,:)); upper_layer.unwrapped_wire_part(seg_ind).v(3,:)];
-end
-lower_layer.unwrapped_wire_part(numel(lower_layer.segments_start_inds)).inds=[];
-for seg_ind=1:numel(lower_layer.segments_start_inds)
-lower_layer.unwrapped_wire_part(seg_ind).inds=lower_layer.segments_start_inds(seg_ind):lower_layer.segments_end_inds(seg_ind);
-lower_layer.unwrapped_wire_part(seg_ind).v=aligned_wire_path(:,lower_layer.unwrapped_wire_part(seg_ind).inds);
-lower_layer.unwrapped_wire_part(seg_ind).unrolled_v=[atan2(lower_layer.unwrapped_wire_part(seg_ind).v(2,:),lower_layer.unwrapped_wire_part(seg_ind).v(1,:)); lower_layer.unwrapped_wire_part(seg_ind).v(3,:)];
-end
-
 %for each point calculate the phi angle
 phi_coord=atan2(aligned_wire_path(2,:),aligned_wire_path(1,:));
-layout_2d=[phi_coord; aligned_wire_path(3,:)];
-
-%open the wire on the end of angular wrap-arround;
-%mark the segments of the wire which have angular wraparounds
-positive_wrap=find(diff(layout_2d(1,:))>1.75*pi);
-negative_wrap=find(diff(layout_2d(1,:))<(1.75*pi)*(-1));
-positive_wrap(positive_wrap==size(layout_2d,2))=[]; %take care of indice overflow problems
-negative_wrap(positive_wrap==size(layout_2d,2))=[];
-full_wrap_spart_inds=sort([1 size(layout_2d,2) positive_wrap+1 negative_wrap+1] );
-
-%Shift the following points after a phase wrap to the other side in order
-%to obtain the clean cuts
-layout_2d(:,positive_wrap+1)=layout_2d(:,positive_wrap+1)-[ones(1,numel(positive_wrap)).*2.*pi; zeros(1,numel(positive_wrap))];
-layout_2d(:,negative_wrap+1)=layout_2d(:,negative_wrap+1)+[ones(1,numel(negative_wrap)).*2.*pi;  zeros(1,numel(negative_wrap))];
-
-%Generate a cut border on the pi,-pi phase wrap
-cut_rectangle=[-pi pi pi -pi; ...
-                                        max(aligned_wire_path(3,:))+abs(max(aligned_wire_path(3,:))).*0.1 ...
-                                        max(aligned_wire_path(3,:))+abs(max(aligned_wire_path(3,:))).*0.1 ...
-                                        min(aligned_wire_path(3,:))-abs(max(aligned_wire_path(3,:))).*0.1 ...
-                                        min(aligned_wire_path(3,:))-abs(max(aligned_wire_path(3,:))).*0.1];
-cut_rectangle=[cut_rectangle cut_rectangle(:,1)];
-
-%Scale the geometrie to the cylinder radius
-layout_2d(1,:)=layout_2d(1,:).*cylinder_radius;
-cut_rectangle(1,:)=cut_rectangle(1,:).*cylinder_radius;
-
-%Generate the wire segmential parts between the wraps
-wire_part(numel(full_wrap_spart_inds)-1).uv=[];
-wire_part(numel(full_wrap_spart_inds)-1).ind1=[];
-wire_part(numel(full_wrap_spart_inds)-1).ind2=[];
-wire_part(numel(full_wrap_spart_inds)-1).track_shape=[];
-wire_part(numel(full_wrap_spart_inds)-1).polygon_track=[];
-
-for point_ind=1:numel(full_wrap_spart_inds)-1
-wire_part(point_ind).uv=layout_2d(:,full_wrap_spart_inds(point_ind)+1:full_wrap_spart_inds(point_ind+1));
-wire_part(point_ind).ind1=full_wrap_spart_inds(point_ind)+1;
-wire_part(point_ind).ind2=full_wrap_spart_inds(point_ind+1);
+layout_2d=[phi_coord.*cylinder_radius; aligned_wire_path(3,:)];
+if layout_2d(1,1)~=layout_2d(1,end)&layout_2d(2,1)~=layout_2d(2,end)
+layout_2d=[layout_2d layout_2d(:,1)];
 end
 
-%Add the cut points for a clean cut
-for wrap_ind=1:numel(wire_part)
-intersection_cut=find_segment_intersections(wire_part(wrap_ind).uv,cut_rectangle);
-is_real_cut_ind=find(~isnan([intersection_cut(:).segment_inds]));
-if ~isempty(is_real_cut_ind)
-wire_part_points=wire_part(wrap_ind).uv;
-uv_point=intersection_cut(is_real_cut_ind(1)).uv;
-cut_segment_ind=intersection_cut(is_real_cut_ind(1)).segment_inds;
-if cut_segment_ind~=1
-wire_part(wrap_ind).uv=[wire_part_points(:,1:cut_segment_ind) uv_point wire_part_points(:,cut_segment_ind+1:end-1)];
-end
-end
-end
-%add a clean cut also for the second open end of the wire_parts
-for wrap_ind=2:numel(wire_part)
-if wire_part(wrap_ind-1).uv(1,end)>0
-wire_part(wrap_ind).uv=[wire_part(wrap_ind-1).uv(:,end)-[2*pi*cylinder_radius 0]' wire_part(wrap_ind).uv];
-else
-wire_part(wrap_ind).uv=[wire_part(wrap_ind-1).uv(:,end)+[2*pi*cylinder_radius 0]' wire_part(wrap_ind).uv];
-end
-end
 
+segment_starts=sort([1 find(diff(coil_parts(part_ind).points_to_shift)==1) find(diff(coil_parts(part_ind).points_to_shift)==-1)+1]);
 
 
 %Generate the track shapes for the indivial wire parts
 warning('off','all');
-for wire_part_ind=1:numel(wire_part)
-smoothed_track=[wire_part(wire_part_ind).uv(:,1) smooth_track_by_folding(wire_part(wire_part_ind).uv(:,2:end-1),3) wire_part(wire_part_ind).uv(:,end)];
-long_vecs=smoothed_track(:,2:end)-smoothed_track(:,1:end-1);
+pcb_parts(numel(segment_starts)).track_shape=[];
+pcb_parts(numel(segment_starts)).polygon_track=[];
+for wire_part_ind=1:numel(pcb_parts)
+if wire_part_ind<numel(pcb_parts)
+wire_part_inds=segment_starts(wire_part_ind):segment_starts(wire_part_ind+1);
+else
+wire_part_inds=segment_starts(wire_part_ind):size(layout_2d,2);
+end
+segment_points=layout_2d(:,wire_part_inds);
+long_vecs=segment_points(:,2:end)-segment_points(:,1:end-1);
 long_vecs=[long_vecs long_vecs(:,end)];
 long_vecs=long_vecs./repmat(vecnorm(long_vecs),[2 1]);
 ortho_vecs=[long_vecs(2,:); long_vecs(1,:)*(-1)];
 ortho_vecs=ortho_vecs./repmat(vecnorm(ortho_vecs),[2 1]);
-wire_part(wire_part_ind).track_shape=[smoothed_track+ortho_vecs.*(pcb_track_width/2) fliplr(smoothed_track)-fliplr(ortho_vecs).*(pcb_track_width/2)];
-wire_part(wire_part_ind).track_shape=[wire_part(wire_part_ind).track_shape wire_part(wire_part_ind).track_shape(:,1)];
-wire_part(wire_part_ind).polygon_track=polyshape(wire_part(wire_part_ind).track_shape(1,:),wire_part(wire_part_ind).track_shape(2,:));
+pcb_parts(wire_part_ind).track_shape=[segment_points+ortho_vecs.*(pcb_track_width/2) fliplr(segment_points)-fliplr(ortho_vecs).*(pcb_track_width/2)];
+pcb_parts(wire_part_ind).track_shape=[pcb_parts(wire_part_ind).track_shape pcb_parts(wire_part_ind).track_shape(:,1)];
+pcb_parts(wire_part_ind).polygon_track=polyshape(pcb_parts(wire_part_ind).track_shape(1,:),pcb_parts(wire_part_ind).track_shape(2,:));
 end
 warning('on','all');
+coil_parts(part_ind).pcb_tracks.upper_layer.group_layouts.wire_parts=pcb_parts;
 
 
 end
@@ -211,69 +137,69 @@ cut_rectangle(1,:)=cut_rectangle(1,:).*cylinder_radius;
 
 
 %Generate the wire segmential parts between the wraps
-clear wire_part
-wire_part(numel(full_wrap_spart_inds)-1).uv=[];
-wire_part(numel(full_wrap_spart_inds)-1).ind1=[];
-wire_part(numel(full_wrap_spart_inds)-1).ind2=[];
-wire_part(numel(full_wrap_spart_inds)-1).track_shape=[];
-wire_part(numel(full_wrap_spart_inds)-1).polygon_track=[];
+clear pcb_parts
+pcb_parts(numel(full_wrap_spart_inds)-1).uv=[];
+pcb_parts(numel(full_wrap_spart_inds)-1).ind1=[];
+pcb_parts(numel(full_wrap_spart_inds)-1).ind2=[];
+pcb_parts(numel(full_wrap_spart_inds)-1).track_shape=[];
+pcb_parts(numel(full_wrap_spart_inds)-1).polygon_track=[];
 
 for point_ind=1:numel(full_wrap_spart_inds)-1
-wire_part(point_ind).uv=layout_2d(:,full_wrap_spart_inds(point_ind)+1:full_wrap_spart_inds(point_ind+1));
-wire_part(point_ind).ind1=full_wrap_spart_inds(point_ind)+1;
-wire_part(point_ind).ind2=full_wrap_spart_inds(point_ind+1);
+pcb_parts(point_ind).uv=layout_2d(:,full_wrap_spart_inds(point_ind)+1:full_wrap_spart_inds(point_ind+1));
+pcb_parts(point_ind).ind1=full_wrap_spart_inds(point_ind)+1;
+pcb_parts(point_ind).ind2=full_wrap_spart_inds(point_ind+1);
 end
 
 %Add the cut points for a clean cut
-for wrap_ind=1:numel(wire_part)
-intersection_cut=find_segment_intersections(wire_part(wrap_ind).uv,cut_rectangle);
+for wrap_ind=1:numel(pcb_parts)
+intersection_cut=find_segment_intersections(pcb_parts(wrap_ind).uv,cut_rectangle);
 is_real_cut_ind=find(~isnan([intersection_cut(:).segment_inds]));
 if ~isempty(is_real_cut_ind)
-wire_part_points=wire_part(wrap_ind).uv;
+wire_part_points=pcb_parts(wrap_ind).uv;
 uv_point=intersection_cut(is_real_cut_ind(1)).uv;
 cut_segment_ind=intersection_cut(is_real_cut_ind(1)).segment_inds;
 if cut_segment_ind~=1
-wire_part(wrap_ind).uv=[wire_part_points(:,1:cut_segment_ind) uv_point wire_part_points(:,cut_segment_ind+1:end-1)];
+pcb_parts(wrap_ind).uv=[wire_part_points(:,1:cut_segment_ind) uv_point wire_part_points(:,cut_segment_ind+1:end-1)];
 end
 end
 end
 %add a clean cut also for the second open end of the wire_parts
-for wrap_ind=2:numel(wire_part)
-if wire_part(wrap_ind-1).uv(1,end)>0
-wire_part(wrap_ind).uv=[wire_part(wrap_ind-1).uv(:,end)-[2*pi*cylinder_radius 0]' wire_part(wrap_ind).uv];
+for wrap_ind=2:numel(pcb_parts)
+if pcb_parts(wrap_ind-1).uv(1,end)>0
+pcb_parts(wrap_ind).uv=[pcb_parts(wrap_ind-1).uv(:,end)-[2*pi*cylinder_radius 0]' pcb_parts(wrap_ind).uv];
 else
-wire_part(wrap_ind).uv=[wire_part(wrap_ind-1).uv(:,end)+[2*pi*cylinder_radius 0]' wire_part(wrap_ind).uv];
+pcb_parts(wrap_ind).uv=[pcb_parts(wrap_ind-1).uv(:,end)+[2*pi*cylinder_radius 0]' pcb_parts(wrap_ind).uv];
 end
 end
 
-wire_part(arrayfun(@(x) size(wire_part(x).uv,2),1:numel(wire_part))<2)=[]; %delete fragments
+pcb_parts(arrayfun(@(x) size(pcb_parts(x).uv,2),1:numel(pcb_parts))<2)=[]; %delete fragments
 
 
 %Generate the track shapes for the indivial wire parts
 warning('off','all');
-for wire_part_ind=1:numel(wire_part)
-if size(wire_part(wire_part_ind).uv,2)>5
-smoothed_track=[wire_part(wire_part_ind).uv(:,1) smooth_track_by_folding(wire_part(wire_part_ind).uv(:,2:end-1),3) wire_part(wire_part_ind).uv(:,end)];
+for wire_part_ind=1:numel(pcb_parts)
+if size(pcb_parts(wire_part_ind).uv,2)>5
+smoothed_track=[pcb_parts(wire_part_ind).uv(:,1) smooth_track_by_folding(pcb_parts(wire_part_ind).uv(:,2:end-1),3) pcb_parts(wire_part_ind).uv(:,end)];
 else
-smoothed_track=wire_part(wire_part_ind).uv;
+smoothed_track=pcb_parts(wire_part_ind).uv;
 end
 long_vecs=smoothed_track(:,2:end)-smoothed_track(:,1:end-1);
 long_vecs=[long_vecs long_vecs(:,end)];
 long_vecs=long_vecs./repmat(vecnorm(long_vecs),[2 1]);
 ortho_vecs=[long_vecs(2,:); long_vecs(1,:)*(-1)];
 ortho_vecs=ortho_vecs./repmat(vecnorm(ortho_vecs),[2 1]);
-wire_part(wire_part_ind).track_shape=[smoothed_track+ortho_vecs.*(pcb_track_width/2) fliplr(smoothed_track)-fliplr(ortho_vecs).*(pcb_track_width/2)];
-wire_part(wire_part_ind).track_shape=[wire_part(wire_part_ind).track_shape wire_part(wire_part_ind).track_shape(:,1)];
-wire_part(wire_part_ind).polygon_track=polyshape(wire_part(wire_part_ind).track_shape(1,:),wire_part(wire_part_ind).track_shape(2,:));
+pcb_parts(wire_part_ind).track_shape=[smoothed_track+ortho_vecs.*(pcb_track_width/2) fliplr(smoothed_track)-fliplr(ortho_vecs).*(pcb_track_width/2)];
+pcb_parts(wire_part_ind).track_shape=[pcb_parts(wire_part_ind).track_shape pcb_parts(wire_part_ind).track_shape(:,1)];
+pcb_parts(wire_part_ind).polygon_track=polyshape(pcb_parts(wire_part_ind).track_shape(1,:),pcb_parts(wire_part_ind).track_shape(2,:));
 end
 warning('on','all');
 
 %write the outputs
 if strcmp(group_layer,'upper')
-upper_layer(part_ind).group_layouts(group_ind).wire_parts=wire_part;
+upper_layer(part_ind).group_layouts(group_ind).wire_parts=pcb_parts;
 %writetable(array2table(wire_part.track_shape','VariableNames',{'x','y'}),"upper_layer_part"+num2str(part_ind)+"_"+"group"+num2str(group_ind)+"_"+"wire_part"+num2str(wire_part_ind));
 else
-lower_layer(part_ind).group_layouts(group_ind).wire_parts=wire_part;
+lower_layer(part_ind).group_layouts(group_ind).wire_parts=pcb_parts;
 %writetable(array2table(wire_part.track_shape','VariableNames',{'x','y'}),"lower_layer_part"+num2str(part_ind)+"_"+"group"+num2str(group_ind)+"_"+"wire_part"+num2str(wire_part_ind));
 end
 
@@ -359,6 +285,52 @@ fprintf(fid,'"/>\n');
 fprintf(fid,'</svg>');
 
 
+end
+
+
+
+function [P,intersect_edge_inds] = InterX(L1,varargin)
+    if nargin == 1
+        L2 = L1;    hF = @lt;   %...Avoid the inclusion of common points
+    else
+        L2 = varargin{1}; hF = @le;
+    end
+       
+    %...Preliminary stuff
+    x1  = L1(1,:)';  x2 = L2(1,:);
+    y1  = L1(2,:)';  y2 = L2(2,:);
+    dx1 = diff(x1); dy1 = diff(y1);
+    dx2 = diff(x2); dy2 = diff(y2);
+    
+    %...Determine 'signed distances'   
+    S1 = dx1.*y1(1:end-1) - dy1.*x1(1:end-1);
+    S2 = dx2.*y2(1:end-1) - dy2.*x2(1:end-1);
+    
+    C1 = feval(hF,D(bsxfun(@times,dx1,y2)-bsxfun(@times,dy1,x2),S1),0);
+    C2 = feval(hF,D((bsxfun(@times,y1,dx2)-bsxfun(@times,x1,dy2))',S2'),0)';
+    %...Obtain the segments where an intersection is expected
+    [i,j] = find(C1 & C2); 
+    if isempty(i)
+        P = zeros(2,0);
+        intersect_edge_inds=[];
+        return; 
+    end
+    
+    %...Transpose and prepare for output
+    i=i'; dx2=dx2'; dy2=dy2'; S2 = S2';
+    L = dy2(j).*dx1(i) - dy1(i).*dx2(j);
+    i = i(L~=0); j=j(L~=0); L=L(L~=0);  %...Avoid divisions by 0
+    
+    intersect_edge_inds=unique(sort([i' j],2),'rows');
+    %intersect_edge_inds=[i' j];
+    
+    %...Solve system of eqs to get the common points
+    P = unique([dx2(j).*S1(i) - dx1(i).*S2(j), ...
+                dy2(j).*S1(i) - dy1(i).*S2(j)]./[L L],'rows')';
+            
+    function u = D(x,y)
+        u = bsxfun(@minus,x(:,1:end-1),y).*bsxfun(@minus,x(:,2:end),y);
+    end
 end
 
 

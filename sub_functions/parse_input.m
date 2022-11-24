@@ -94,7 +94,7 @@ end
 %Flag if the track should be smoothed
 addParameter(input_parser,'smooth_flag',true,@islogical);
 %smoothing parameter
-addParameter(input_parser,'smooth_factor',1,@numeric);
+addParameter(input_parser,'smooth_factor',1,@isnumeric);
 %flag to save sweeped .stl
 addParameter(input_parser,'save_stl_flag',true,@islogical);
 %flag to plot results

@@ -18,11 +18,9 @@ wire_path_out=coil_parts(part_ind).wire_path;
 % wire_path_out.uv = equilze_point_distances(wire_path_out.uv,mean_dist);
 
 % %delete superimposing points
-% points_to_delete=[1 vecnorm(curved_wire_path_out.uv(:,2:end)-curved_wire_path_out.uv(:,1:end-1)) 1]==0;
-% curved_wire_path_out.uv(:,points_to_delete)=[];
-% normal_vectors_wire_path_out.uv(:,points_to_delete)=[];
-% is_crosspoint(:,points_to_delete)=[];
-
+points_to_delete=[1 vecnorm(wire_path_out.v(:,2:end)-wire_path_out.v(:,1:end-1)) 1]==0;
+wire_path_out.uv(:,points_to_delete)=[];
+wire_path_out.v(:,points_to_delete)=[];
 
 % %re-equiize the point to point distance
 

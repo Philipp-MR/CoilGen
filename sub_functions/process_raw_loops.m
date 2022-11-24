@@ -1,13 +1,11 @@
 function coil_parts= process_raw_loops(coil_parts,input,target_field)
 %take care of loops crossing boundaries or off boundary loops
 
-
 %Smooth the contours
-
 if input.smooth_flag
 for part_ind=1:numel(coil_parts)
 for loop_num=1:numel(coil_parts(part_ind).contour_lines)
-coil_parts(part_ind).contour_lines(loop_num).uv= smooth_track_by_folding(coil_parts(part_ind).contour_lines(loop_num).uv,1);
+coil_parts(part_ind).contour_lines(loop_num).uv= smooth_track_by_folding(coil_parts(part_ind).contour_lines(loop_num).uv,input.smooth_factor);
 end
 end
 end

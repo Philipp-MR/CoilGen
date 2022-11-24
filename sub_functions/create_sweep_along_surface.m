@@ -6,6 +6,8 @@ convolutional_vector_length=1; %for smothering the curverture along the track
 
 if ~input.skip_sweep
 
+for part_ind=1:numel(coil_parts)
+
 %Define the cross section of the conductor
 if all(input.cross_sectional_points==0)
 circular_resolution=10;
@@ -19,10 +21,6 @@ end
 cross_section_points=cross_section_points-mean(cross_section_points,2);
 %build a triangulation from the cross section
 cross_section_points=cross_section_points(:,1:end-1);
-
-
-
-for part_ind=1:numel(coil_parts)
 
 parameterized_mesh=coil_parts(part_ind).coil_mesh;
 points_to_shift=coil_parts(part_ind).points_to_shift;
@@ -106,7 +104,7 @@ surface_normal_alonge_wire_path.v(:,point_ind)=parameterized_mesh.fn(node_ind_no
 end
 end
 % smooth the normals that there are no sharp twists
-conv_vec=[0:convolutional_vector_length convolutional_vector_length-1:-1:0]./convolutional_vector_length;
+% conv_vec=[0:convolutional_vector_length convolutional_vector_length-1:-1:0]./convolutional_vector_length;
 % surface_normal_alonge_wire_path.v = conv2(surface_normal_alonge_wire_path.v,conv_vec,'same');
 % surface_normal_alonge_wire_path.v=surface_normal_alonge_wire_path.v./repmat(vecnorm(surface_normal_alonge_wire_path.v),[3 1]); % normalize 
 

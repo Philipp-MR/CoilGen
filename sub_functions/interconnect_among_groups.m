@@ -78,18 +78,64 @@ end
 end
 end
 
-
-
 %select the return paths of those interconnected groups for later
 %groups_return_paths=return_paths(groups_to_connect);
-
-%find the mininmal distance positions between the groups
-%and the points with mininmal distance
 min_group_dists=zeros(numel(groups_to_connect),numel(groups_to_connect));
 min_group_inds1=zeros(numel(groups_to_connect),numel(groups_to_connect));
 min_group_inds2=zeros(numel(groups_to_connect),numel(groups_to_connect));
 min_pos_group1=cell(numel(groups_to_connect),numel(groups_to_connect));
 min_pos_group2=cell(numel(groups_to_connect),numel(groups_to_connect));
+grouptracks_to_connect_without_returns(numel(groups_to_connect)).unrolled_coords=[];
+
+if input.surface_is_cylinder_flag %in case of cylinder, find the cut points within the "unrolled domain" for getting rid of overlapps with the boardes of printed ciruit boards
+
+
+%Calculate the "unrolled" 2D coordinates for the cylinder
+for group_ind=1:numel(groups_to_connect)
+grouptracks_to_connect_without_returns(group_ind).unrolled_coords=[atan2(grouptracks_to_connect_without_returns(group_ind).v(2,:),grouptracks_to_connect_without_returns(group_ind).v(1,:)); grouptracks_to_connect_without_returns(group_ind).v(3,:)];
+end
+%Find the mutual nearest positions for the "unrolled" groups
+min_group_dists=zeros(numel(groups_to_connect),numel(groups_to_connect));
+min_group_inds=zeros(numel(groups_to_connect),numel(groups_to_connect));
+min_pos_group=cell(numel(groups_to_connect),numel(groups_to_connect));
+for group_ind_1=1:numel(groups_to_connect)
+for group_ind_2=1:numel(groups_to_connect)
+if group_ind_1~=group_ind_2
+group_a=grouptracks_to_connect_without_returns(group_ind_1).unrolled_coords;
+group_b=grouptracks_to_connect_without_returns(group_ind_2).unrolled_coords;
+near_ind=zeros(1,size(group_a,2));
+near_dist=zeros(1,size(group_a,2));
+for point_ind=1:size(group_a,2)
+[near_dist(point_ind),near_ind(point_ind)]=min(((group_b(1,:)-group_a(1,point_ind)).^2+(group_b(2,:)-group_a(2,point_ind)).^2).^(1/2));
+end
+[total_min_dist,total_min_ind]=min(near_dist);
+min_group_inds(group_ind_1,group_ind_2)=total_min_ind;
+min_pos_group{group_ind_1,group_ind_2}=grouptracks_to_connect_without_returns(group_ind_1).uv(:,total_min_ind);
+min_group_dists(group_ind_1,group_ind_2)=total_min_dist;
+else
+min_pos_group{group_ind_1,group_ind_2}=[nan; nan];
+min_group_dists(group_ind_1,group_ind_2)=inf;
+end
+end
+end
+min_pos_group1=cellfun(@(x,y) [x y], min_pos_group, min_pos_group', 'UniformOutput', false);
+min_pos_group2=cellfun(@(x,y) [x y], min_pos_group', min_pos_group, 'UniformOutput', false);
+%select the pair of groups with shortest respective distance
+min_dist_couple=min_group_dists==min(min_group_dists(:));
+min_dist_couple=find(min_dist_couple);
+[couple_group1,couple_group2]=ind2sub(size(min_group_dists),min_dist_couple(1));
+%build opening cutshapes for both groups
+cut_shape_1=build_cut_circle(min_pos_group1{couple_group1,couple_group2}(:,1),opening_gap);
+cut_shape_2=build_cut_circle(min_pos_group2{couple_group1,couple_group2}(:,1),opening_gap);
+coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut1=cut_shape_1;
+coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut2=cut_shape_2;
+%Open both groups
+opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,cut_shape_1);
+opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,cut_shape_2);
+
+else
+%find the mininmal distance positions between the groups
+%and the points with mininmal distance
 for ind1=1:numel(groups_to_connect)
 for ind2=1:numel(groups_to_connect)
 if ind2<ind1
@@ -133,6 +179,14 @@ cut_shape_2=build_cut_circle(min_pos_group2{couple_group1,couple_group2},cut_wid
 coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut1=cut_shape_1;
 coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut2=cut_shape_2;
 
+
+%Open both groups
+opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,cut_shape_2);
+opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,cut_shape_1);
+
+end
+
+
 % %check wether group1 is inside group2 to find out wether the outer turn or
 % %the inner turn should be opened
 % level_positions=coil_parts(part_ind).level_positions;
@@ -153,9 +207,6 @@ coil_parts(part_ind).opening_cuts_among_groups(connect_ind).cut2=cut_shape_2;
 % opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,coil_parts(part_ind).groups(groups_to_connect(couple_group2)),'inner');
 % end
 
-%Open both groups
-opend_group_1=open_group(grouptracks_to_connect(couple_group1),cut_shape_1,cut_shape_2);
-opend_group_2=open_group(grouptracks_to_connect(couple_group2),cut_shape_2,cut_shape_1);
 
 
 %fuse both groups

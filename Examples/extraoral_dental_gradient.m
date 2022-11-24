@@ -30,7 +30,7 @@ tik_factor=[1:10:100 150:50:500 600:100:1000 2000:1000:10000];
 %tik_factor=[1:10:100 150:50:500 600:100:1000 2000:1000:10000 20000:10000:50000];
 num_iteration=5000;
 fmincon_parameter=[num_iteration 10^10 1.000000e-14 10^(-18) 10^(-18)];
-num_levels=40;
+num_levels=30;
 optim_method='tikkonov';
 target_region_res=10;
 skip_postprocessing=true;
@@ -53,7 +53,7 @@ coil_r(numel(tik_factor)).out=[];
 coil_phi(numel(tik_factor)).out=[];
 
 for coil_ind=1:numel(coil_x)
-% try
+ try
     [coil_x(coil_ind).out,temp]=CoilGen(...
     'temp',temp,...
     'target_field_definition_file',target_field_definition_file,...
@@ -78,20 +78,22 @@ for coil_ind=1:numel(coil_x)
     'sf_opt_method',optim_method,...
     'fmincon_parameter',fmincon_parameter,...
     'tikonov_reg_factor',tik_factor(coil_ind)); %Tikonov regularization factor for the SF optimization
-% catch
-% end
+catch
+end
 coil_x(coil_ind).out.coil_parts.sensitivity_matrix=[];
 coil_x(coil_ind).out.coil_parts.gradient_sensitivity_matrix=[];
 coil_x(coil_ind).out.coil_parts.current_density_mat=[];
 coil_x(coil_ind).out.coil_parts.triangle_corner_coord_mat=[];
 coil_x(coil_ind).out.coil_parts.node_triangle_mat=[];
 coil_x(coil_ind).out.coil_parts.basis_elements=[];
+coil_x(coil_ind).out.input_data.temp=[];
 end
 
 
 for coil_ind=1:numel(coil_y)
 try
-    coil_y(coil_ind).out=CoilGen(...
+    [coil_y(coil_ind).out,temp]=CoilGen(...
+    'temp',temp,...
     'target_field_definition_file',target_field_definition_file,...
     'target_field_definition_field_name','lin_y',...
     'coil_mesh_file',coil_mesh_file, ... 
@@ -122,12 +124,14 @@ coil_y(coil_ind).out.coil_parts.current_density_mat=[];
 coil_y(coil_ind).out.coil_parts.triangle_corner_coord_mat=[];
 coil_y(coil_ind).out.coil_parts.node_triangle_mat=[];
 coil_y(coil_ind).out.coil_parts.basis_elements=[];
+coil_y(coil_ind).out.input_data.temp=[];
 end
 
 
 for coil_ind=1:numel(coil_z)
 try
-    coil_z(coil_ind).out=CoilGen(...
+    [coil_z(coil_ind).out,temp]=CoilGen(...
+    'temp',temp,...
     'target_field_definition_file',target_field_definition_file,...
     'target_field_definition_field_name','lin_z',...
     'coil_mesh_file',coil_mesh_file, ... 
@@ -158,12 +162,14 @@ coil_z(coil_ind).out.coil_parts.current_density_mat=[];
 coil_z(coil_ind).out.coil_parts.triangle_corner_coord_mat=[];
 coil_z(coil_ind).out.coil_parts.node_triangle_mat=[];
 coil_z(coil_ind).out.coil_parts.basis_elements=[];
+coil_z(coil_ind).out.input_data.temp=[];
 end
 
 
 for coil_ind=1:numel(coil_r)
-% try
-    coil_r(coil_ind).out=CoilGen(...
+try
+    [coil_r(coil_ind).out,temp]=CoilGen(...
+    'temp',temp,...
     'target_field_definition_file',target_field_definition_file,...
     'target_field_definition_field_name','r',...
     'coil_mesh_file',coil_mesh_file, ... 
@@ -186,22 +192,25 @@ for coil_ind=1:numel(coil_r)
     'sf_opt_method',optim_method,...
     'fmincon_parameter',fmincon_parameter,...
     'tikonov_reg_factor',tik_factor(coil_ind)); %Tikonov regularization factor for the SF optimization
-% catch
-% end
+catch
+end
 coil_r(coil_ind).out.coil_parts.sensitivity_matrix=[];
 coil_r(coil_ind).out.coil_parts.gradient_sensitivity_matrix=[];
 coil_r(coil_ind).out.coil_parts.current_density_mat=[];
 coil_r(coil_ind).out.coil_parts.triangle_corner_coord_mat=[];
 coil_r(coil_ind).out.coil_parts.node_triangle_mat=[];
 coil_r(coil_ind).out.coil_parts.basis_elements=[];
+coil_r(coil_ind).out.input_data.temp=[];
+
 end
 
 
 for coil_ind=1:numel(coil_phi)
 try
-    coil_phi(coil_ind).out=CoilGen(...
+    [coil_phi(coil_ind).out,temp]=CoilGen(...
+    'temp',temp,...
     'target_field_definition_file',target_field_definition_file,...
-    'target_field_definition_field_name','r',...
+    'target_field_definition_field_name','phi',...
     'coil_mesh_file',coil_mesh_file, ... 
     'min_loop_signifcance',min_loop_signifcance,...
     'iteration_num_mesh_refinement',iteration_num_mesh_refinement,...
@@ -230,6 +239,7 @@ coil_phi(coil_ind).out.coil_parts.current_density_mat=[];
 coil_phi(coil_ind).out.coil_parts.triangle_corner_coord_mat=[];
 coil_phi(coil_ind).out.coil_parts.node_triangle_mat=[];
 coil_phi(coil_ind).out.coil_parts.basis_elements=[];
+coil_phi(coil_ind).out.input_data.temp=[];
 end
 
 
@@ -262,18 +272,19 @@ grid on;
 hold off;
 
 
-% figure;
-% hold on;
-% title('Error^2/Senstivity');
-% plot(tik_vals,error_vals.*error_vals./sensitvity_vals);
-% axis([0 max(tik_vals) 0 max(error_vals.*error_vals./sensitvity_vals)])
-% grid on;
-% hold off;
+figure;
+hold on;
+title('Error^2/Senstivity');
+plot(tik_vals,error_vals.*error_vals./sensitvity_vals);
+axis([0 max(tik_vals) 0 max(error_vals.*error_vals./sensitvity_vals)])
+grid on;
+hold off;
 
 
-[~,min_ind]=min(error_vals);
-coil_to_plot=coil_to_plot(min_ind);
-%coil_to_plot=coil_to_plot(1);
+%[~,min_ind]=min(error_vals);
+[~,min_ind]=min(error_vals.*error_vals./sensitvity_vals);
+%coil_to_plot=coil_to_plot(min_ind);
+coil_to_plot=coil_to_plot(10);
 
 if ispc
 addpath(strcat(pwd,'\','plotting'));

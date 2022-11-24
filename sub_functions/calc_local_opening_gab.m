@@ -7,10 +7,11 @@ if ~isempty(point_2) %two points are specified
 % uv_distance=vecnorm(loop.uv(:,point_1)-loop.uv(:,point_2));
 % v_distane=vecnorm(loop.v(:,point_1)-loop.v(:,point_2));
 
-uv_distance=vecnorm(loop.uv(:,point_1)+(loop.uv(:,point_2)-loop.uv(:,point_1)./1000));
-v_distance=vecnorm(loop.v(:,point_1)+(loop.v(:,point_2)-loop.v(:,point_1)./1000));
+uv_distance=vecnorm(loop.uv(:,point_2)-loop.uv(:,point_1));
+v_distance=vecnorm(loop.v(:,point_2)-loop.v(:,point_1));
 
-local_opening_gab=opening_gab*uv_distance/v_distance;
+%local_opening_gab=opening_gab*uv_distance/v_distance;
+local_opening_gab=opening_gab;
 
 else %only one point is specified, find the other to build the direction
 
