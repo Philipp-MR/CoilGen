@@ -1,4 +1,4 @@
-function planar_mesh=build_planar_mesh(planar_height,planar_width,num_lateral_divisions,num_longitudinal_divisions,rotation_vector_x,rotation_vector_y,rotation_vector_z,rotation_angle,center_position)
+function planar_mesh=build_planar_mesh(planar_height,planar_width,num_lateral_divisions,num_longitudinal_divisions,rotation_vector_x,rotation_vector_y,rotation_vector_z,rotation_angle,center_position_x,center_position_y,center_position_z)
 %create a mono-planar regular mesh in any orientation
 % @Philipp Amrein, 2022, Uniklinik Freiburg
 
@@ -9,7 +9,7 @@ x=repmat(x_positions,[numel(y_positions) 1])';
 y=repmat(y_positions',[1 numel(x_positions)])';
 
 %define the vertic positions
-vertices=calc_3d_rotation_matrix_by_vector([rotation_vector_x rotation_vector_y rotation_vector_z]',rotation_angle)*[y(:)'; x(:)'; zeros(size(y(:)'))]+center_position;
+vertices=calc_3d_rotation_matrix_by_vector([rotation_vector_x rotation_vector_y rotation_vector_z]',rotation_angle)*[y(:)'; x(:)'; zeros(size(y(:)'))]+[center_position_x center_position_y center_position_z]';
 
 %define the mesh triangles
 tri_1_vert_inds_1=[repmat(1:(num_lateral_divisions),[num_longitudinal_divisions 1])+repmat([(1:num_longitudinal_divisions)-1]',[1 num_lateral_divisions])*(num_lateral_divisions+1)]';

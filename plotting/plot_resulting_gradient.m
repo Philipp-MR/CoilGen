@@ -4,10 +4,8 @@ pos_data=coil_layouts(single_ind_to_plot).out.target_field.coords;
 
 dot_size=100;
 
-channel_strengths=[mean(abs(coil_layouts.out.layout_gradient.dBzdxyz(1,:))) mean(abs(coil_layouts.out.layout_gradient.dBzdxyz(2,:))) mean(abs(coil_layouts.out.layout_gradient.dBzdxyz(3,:)))];
-[~,target_channel]=max(channel_strengths);
-
-
+channel_strengths=[mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.dBzdxyz(1,:))) mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.dBzdxyz(2,:))) mean(abs(coil_layouts(single_ind_to_plot).out.layout_gradient.dBzdxyz(3,:)))];
+%[~,target_channel]=max(channel_strengths);
 
 %Plot Histograms of the gradient
 figure('name',plot_title);
@@ -21,17 +19,19 @@ axis equal tight;
 % title("G in target direction [mT/m/A]",'interpreter', 'none');
 % end
 
-switch target_channel
-    case 1
-plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(1,:); % in mT\m\A
-title("Gx[mT/m/A]",'interpreter', 'none');
-    case 2
-plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(2,:); % in mT\m\A
-title("Gy[mT/m/A]",'interpreter', 'none');
-    case 3
-plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(3,:); % in mT\m\A
-title("Gz[mT/m/A]",'interpreter', 'none');
-end
+% switch target_channel
+%     case 1
+% plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(1,:); % in mT\m\A
+% title("Gx[mT/m/A]",'interpreter', 'none');
+%     case 2
+% plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(2,:); % in mT\m\A
+% title("Gy[mT/m/A]",'interpreter', 'none');
+%     case 3
+% plot_colors=coil_layouts.out.layout_gradient.dBzdxyz(3,:); % in mT\m\A
+% title("Gz[mT/m/A]",'interpreter', 'none');
+% end
+plot_colors=coil_layouts(single_ind_to_plot).out.layout_gradient.gradient_in_target_direction;
+title("G[mT/m/A]",'interpreter', 'none');
 
 std_gradient=std(plot_colors);
 plot_limits=[0 mean(plot_colors)+std(plot_colors)*3];
@@ -55,6 +55,16 @@ xlabel('x[m]'); ylabel('y[m]'); zlabel('z[m]');
 nexttile;
 hold on;
 title("Target Gradient", 'interpreter', 'none');
+histogram(plot_colors,'BinLimits',plot_limits);
+%histogram(coil_layouts(single_ind_to_plot).out.layout_gradient.local_target_gx./coil_layouts.out.potential_step);
+xlabel('[mT/m/A]');
+hold off;
+set(gcf,'color','w');
+nexttile;
+hold on;
+title("Bz, Layout [mT/A]", 'interpreter', 'none');
+plot_colors=coil_layouts(single_ind_to_plot).out.field_loops_per1Amp(3,:).*1000;
+plot_limits=[mean(plot_colors)-std(plot_colors)*3 mean(plot_colors)+std(plot_colors)*3];
 histogram(plot_colors,'BinLimits',plot_limits);
 %histogram(coil_layouts(single_ind_to_plot).out.layout_gradient.local_target_gx./coil_layouts.out.potential_step);
 xlabel('[mT/m/A]');

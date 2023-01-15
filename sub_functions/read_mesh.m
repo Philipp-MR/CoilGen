@@ -39,7 +39,17 @@ elseif strcmp(input.coil_mesh_file,'create planary mesh')
 %no external mesh is specified by stl file; create default planar mesh
 coil_mesh=build_planar_mesh(input.planar_mesh_parameter_list(1),input.planar_mesh_parameter_list(2),input.planar_mesh_parameter_list(3),input.planar_mesh_parameter_list(4),...
                                                 input.planar_mesh_parameter_list(5),input.planar_mesh_parameter_list(6),input.planar_mesh_parameter_list(7),input.planar_mesh_parameter_list(8),...
-                                                input.planar_mesh_parameter_list(9),input.planar_mesh_parameter_list(10),input.planar_mesh_parameter_list(11),input.planar_mesh_parameter_list(12));
+                                                input.planar_mesh_parameter_list(9),input.planar_mesh_parameter_list(10),input.planar_mesh_parameter_list(11));
+coil_mesh=create_unique_noded_mesh(coil_mesh);
+coil_mesh.vertices=coil_mesh.vertices'; 
+coil_mesh.faces=coil_mesh.faces'; 
+
+
+elseif strcmp(input.coil_mesh_file,'create circular mesh')
+%no external mesh is specified by stl file; create default planar mesh
+coil_mesh=build_circular_mesh(input.circular_mesh_parameter_list(1),input.circular_mesh_parameter_list(2),input.circular_mesh_parameter_list(3),input.circular_mesh_parameter_list(4),...
+                                                input.circular_mesh_parameter_list(5),input.circular_mesh_parameter_list(6),input.circular_mesh_parameter_list(7),input.circular_mesh_parameter_list(8),...
+                                                input.circular_mesh_parameter_list(9));
 coil_mesh=create_unique_noded_mesh(coil_mesh);
 coil_mesh.vertices=coil_mesh.vertices'; 
 coil_mesh.faces=coil_mesh.faces'; 

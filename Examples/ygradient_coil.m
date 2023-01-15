@@ -33,8 +33,8 @@ end
     'levels',20, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.25, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'surface_is_cylinder_flag',true, ...
-    'interconnection_cut_width',0.05, ... % the width for the interconnections are interconnected; in meter
-    'normal_shift_length',0.05, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
+    'interconnection_cut_width',0.1, ... % the width for the interconnections are interconnected; in meter
+    'normal_shift_length',0.025, ... % the length for which overlapping return paths will be shifted along the surface normals; in meter
     'iteration_num_mesh_refinement',1, ... % the number of refinements for the mesh;
     'set_roi_into_mesh_center',true, ...
     'force_cut_selection',{'high'},...

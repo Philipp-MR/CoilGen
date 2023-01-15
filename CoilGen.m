@@ -148,7 +148,7 @@ toc;
 %Group the contour loops in topological order
 tic;
 disp('Group the contour loops in topological order:');
-coil_parts=topological_loop_grouping(coil_parts);
+coil_parts=topological_loop_grouping(coil_parts,input);
 toc;
 
 %Calculate center locations of groups
@@ -208,14 +208,16 @@ tic;
 disp('Calculate the resuting gradient field:');
 layout_gradient = calculate_gradient(coil_parts,target_field,input);
 toc;
-%layout_gradient=[];
+
 
 %Assign temporaty data for the next iteration
-
+if  exist('temp')==1
 temp.preoptimization_hash=input.preoptimization_hash;
 temp.optimized_hash=input.optimized_hash;
 temp.coil_parts=coil_parts;
-
+else
+temp=[];
+end
 
 %Assign the outputs
 result_out.coil_parts=coil_parts;

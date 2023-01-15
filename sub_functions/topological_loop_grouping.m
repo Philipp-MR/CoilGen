@@ -1,4 +1,4 @@
-function coil_parts = topological_loop_grouping(coil_parts)
+function coil_parts = topological_loop_grouping(coil_parts,input)
 %Group the contour loops in topological order
 %check for all loop enclosements of other loops
 
@@ -165,6 +165,15 @@ end
 % coil_parts(part_ind).groups(iiii).loops(kkkk).current_orientation=coil_parts(part_ind).contour_lines(coil_parts(part_ind).loop_groups{iiii}(jjjj)).current_orientation;
 % end
 end
+
+
+% %Sort the groups wihtin their level accoring to theri average z-position
+% if input.sort_groups_along_z
+% avg_z_value=zeros(1,numel(coil_parts(part_ind).loop_groups))
+% for iiii=1:numel(coil_parts(part_ind).loop_groups)
+% 
+% end
+% end
 
 end
 

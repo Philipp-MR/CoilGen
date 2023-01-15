@@ -175,11 +175,11 @@ plate_alignement=sampling_parameters.plate_alignements{para_ind_grid{5}(case_ind
 
 switch field_shape_function
     case 'x'
-result_parameters.sensitivity(case_ind)=coil_layouts(case_ind).out.layout_gradient.mean_gx_loops;
+result_parameters.sensitivity(case_ind)=mean(coil_layouts(case_ind).out.layout_gradient.dBzdxyz(1,:));
     case 'y'
-result_parameters.sensitivity(case_ind)=coil_layouts(case_ind).out.layout_gradient.mean_gy_loops;
+result_parameters.sensitivity(case_ind)=mean(coil_layouts(case_ind).out.layout_gradient.dBzdxyz(2,:));
     case 'z'
-result_parameters.sensitivity(case_ind)=coil_layouts(case_ind).out.layout_gradient.mean_gz_loops;
+result_parameters.sensitivity(case_ind)=mean(coil_layouts(case_ind).out.layout_gradient.dBzdxyz(3,:));
 end
 
 %[result_parameters.sensitivity(case_ind),~]=calc_gradient_along_vector(coil_layouts(case_ind).out.field_by_layout,coil_layouts(case_ind).out.target_field.coords,coil_layouts(case_ind).out.input_data.field_shape_function);

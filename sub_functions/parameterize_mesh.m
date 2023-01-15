@@ -62,8 +62,14 @@ phi_coord=atan2(point_coords(2,:),point_coords(1,:));
 % u_coord=(r_coord - point_coords(3,:)).*sin(phi_coord);
 % v_coord=(r_coord - point_coords(3,:)).*cos(phi_coord);
 r_coord=(point_coords(1,:).^2+point_coords(2,:).^2).^(1/2);
-u_coord=( point_coords(3,:)-mean(r_coord)).*sin(phi_coord);
-v_coord=( point_coords(3,:)-mean(r_coord)).*cos(phi_coord);
+% u_coord=( point_coords(3,:)-mean(r_coord)).*sin(phi_coord);
+% v_coord=( point_coords(3,:)-mean(r_coord)).*cos(phi_coord);
+
+u_coord=( point_coords(3,:)-mean(r_coord)*circular_factor).*sin(phi_coord);
+v_coord=( point_coords(3,:)-mean(r_coord)*circular_factor).*cos(phi_coord);
+
+% u_coord=( point_coords(3,:)-mean(r_coord)).*sin(phi_coord).*circular_factor;
+% v_coord=( point_coords(3,:)-mean(r_coord)).*cos(phi_coord).*circular_factor;
 % u_coord=( point_coords(3,:).*circular_factor+r_coord*circular_factor).*sin(phi_coord);
 % v_coord=( point_coords(3,:).*circular_factor+r_coord*circular_factor).*cos(phi_coord);
 coil_parts(part_ind).coil_mesh.uv=[u_coord;v_coord];

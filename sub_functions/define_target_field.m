@@ -186,6 +186,9 @@ if numel(target_dbzbz)==1
 target_dbzbz=repelem(target_dbzbz,size(target_field,2));
 end
 catch
+target_dbzbx=zeros(size(target_field(3,:)));
+target_dbzby=zeros(size(target_field(3,:)));
+target_dbzbz=zeros(size(target_field(3,:)));
 disp('Gradient Calcuation from Symbolic Target failed');
 end
 end

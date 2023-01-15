@@ -124,6 +124,8 @@ addParameter(input_parser,'pcb_interconnection_method','spiral_in_out',@ischar);
 addParameter(input_parser,'pcb_spiral_end_shift_factor',10,@isnumeric);
 %force_cut_selection
 addParameter(input_parser,'force_cut_selection',{},@iscell);
+%Flag to sort the groups along the z coordinate
+addParameter(input_parser,'sort_groups_along_z',true,@islogical);
 %Gaus integration order
 addParameter(input_parser,'gauss_order',2,@isnumeric);
 % flag to set the roi into the geometric center of the mesh
@@ -158,12 +160,15 @@ addParameter(input_parser,'double_cone_mesh_parameter_list',[0.8 0.3  0.3 0.1 20
 % num_longitudinal_divisions, rotation_vector_x, rotation_vector_y,
 % rotation_vector_z, rotation_angle [radian], center_x [m], center_y [m], center_z [m]
 addParameter(input_parser,'planar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0],@isnumeric);
+%specify the paramters for the generation of the (default) circular mesh
+% => radius[in m], radial_divisions, rotation_vector_x, rotation_vector_y, rotation_vector_z, rotation_angle [radian], center_x [m], center_y[m], center_z [m], 
+addParameter(input_parser,'circular_mesh_parameter_list',[0.25 20 1 0 0 0 0 0 0],@isnumeric);
 %specify the paramters for the generation of the (default) biplanar mesh
 % => biplanar_height[in m], biplanar_radius[in m], num_lateral_divisions,
 % num_longitudinal_divisions,
 % target_normal_x,target_normal_y,target_normal_z, center_x [m], center_y
 % [m], center_z [m], plate distance [mm]
-addParameter(input_parser,'biplanar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0.2],@isdouble);
+addParameter(input_parser,'biplanar_mesh_parameter_list',[0.25 0.25 20 20 1 0 0 0 0 0 0.2],@isnumeric);
 %Parse the input arguments
 parse(input_parser,varargin{1}{:});
 input=input_parser.Results;

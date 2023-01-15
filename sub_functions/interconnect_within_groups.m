@@ -28,7 +28,7 @@ end
 
 
 %Generate cutshapes, open and interconnect the loops within each group
-cut_shape(numel(coil_parts(part_ind).groups)).group=[];
+cut_position(numel(coil_parts(part_ind).groups)).group=[];
 
 for group_ind=1:numel(coil_parts(part_ind).groups)
 
@@ -52,46 +52,58 @@ coil_parts(part_ind).groups(group_ind).opened_loop(numel(coil_parts(part_ind).gr
 coil_parts(part_ind).groups(group_ind).cutshape(numel(coil_parts(part_ind).groups(group_ind))).uv=[];
 
 %generate the cutshapes for all the loops within the group
-cut_shape(group_ind).group=generate_group_cutshapes(coil_parts(part_ind).groups(group_ind),coil_parts(part_ind).group_centers.v(:,group_ind),coil_parts(part_ind).coil_mesh,input.interconnection_cut_width,input.b_0_direction,cut_plane_definition,cut_height_ratio);
+cut_position(group_ind).group=find_group_cut_position(coil_parts(part_ind).groups(group_ind),coil_parts(part_ind).group_centers.v(:,group_ind),coil_parts(part_ind).coil_mesh,input.b_0_direction,cut_plane_definition);
 
 %choose either low or high cutshape
 for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
 switch force_cut_selection{group_ind}
     case 'high'
-cut_shape_points=cut_shape(group_ind).group(loop_ind).high_cutshape;
+cut_position_used=cut_position(group_ind).group(loop_ind).high_cut.v;
     case 'low'
-cut_shape_points=cut_shape(group_ind).group(loop_ind).low_cutshape;
+cut_position_used=cut_position(group_ind).group(loop_ind).low_cut.v;
     otherwise
-cut_shape_points=cut_shape(group_ind).group(loop_ind).high_cutshape;
-end
-coil_parts(part_ind).groups(group_ind).cutshape(loop_ind).uv=cut_shape_points;
-coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv=open_loop(coil_parts(part_ind).groups(group_ind).loops(loop_ind),cut_shape_points);
+cut_position_used=cut_position(group_ind).group(loop_ind).high_cut.v;
 end
 
-%build the interconnected group by adding the opened loops
+%Open the loop
+[opened_loop,coil_parts(part_ind).groups(group_ind).cutshape(loop_ind).uv,~]=open_loop_with_3d_sphere(coil_parts(part_ind).groups(group_ind).loops(loop_ind),cut_position_used,input.interconnection_cut_width);
+coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv=opened_loop.uv;
+coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).v=opened_loop.v;
 
+end
+
+%Build the interconnected group by adding the opened loops
 coil_parts(part_ind).connected_group(group_ind).spiral_in.uv=[];
+coil_parts(part_ind).connected_group(group_ind).spiral_in.v=[];
 coil_parts(part_ind).connected_group(group_ind).spiral_out.uv=[];
+coil_parts(part_ind).connected_group(group_ind).spiral_out.v=[];
 coil_parts(part_ind).connected_group(group_ind).uv=[];
+coil_parts(part_ind).connected_group(group_ind).v=[];
 coil_parts(part_ind).connected_group(group_ind).return_path.uv=[];
+coil_parts(part_ind).connected_group(group_ind).return_path.v=[];
 for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
 coil_parts(part_ind).connected_group(group_ind).uv=[coil_parts(part_ind).connected_group(group_ind).uv coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv];
+coil_parts(part_ind).connected_group(group_ind).v=[coil_parts(part_ind).connected_group(group_ind).v coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).v];
 coil_parts(part_ind).connected_group(group_ind).spiral_in.uv=[coil_parts(part_ind).connected_group(group_ind).spiral_in.uv coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv];
+coil_parts(part_ind).connected_group(group_ind).spiral_in.v=[coil_parts(part_ind).connected_group(group_ind).spiral_in.v coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).v];
 coil_parts(part_ind).connected_group(group_ind).spiral_out.uv=[coil_parts(part_ind).connected_group(group_ind).spiral_out.uv coil_parts(part_ind).groups(group_ind).opened_loop(numel(coil_parts(part_ind).groups(group_ind).loops)+1-loop_ind).uv];
+coil_parts(part_ind).connected_group(group_ind).spiral_out.v=[coil_parts(part_ind).connected_group(group_ind).spiral_out.v coil_parts(part_ind).groups(group_ind).opened_loop(numel(coil_parts(part_ind).groups(group_ind).loops)+1-loop_ind).v];
 end
-%add the return path
+%Add the return path
 for loop_ind=numel(coil_parts(part_ind).groups(group_ind).loops):-1:1
 coil_parts(part_ind).connected_group(group_ind).return_path.uv=[coil_parts(part_ind).connected_group(group_ind).return_path.uv mean(coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).uv(:,[1 end]),2)];
+coil_parts(part_ind).connected_group(group_ind).return_path.v=[coil_parts(part_ind).connected_group(group_ind).return_path.v mean(coil_parts(part_ind).groups(group_ind).opened_loop(loop_ind).v(:,[1 end]),2)];
 end
 coil_parts(part_ind).connected_group(group_ind).uv=[coil_parts(part_ind).connected_group(group_ind).uv coil_parts(part_ind).connected_group(group_ind).return_path.uv];
-
-%close the connected group
+coil_parts(part_ind).connected_group(group_ind).v=[coil_parts(part_ind).connected_group(group_ind).v coil_parts(part_ind).connected_group(group_ind).return_path.v];
+%Close the connected group
 coil_parts(part_ind).connected_group(group_ind).uv=[coil_parts(part_ind).connected_group(group_ind).uv coil_parts(part_ind).connected_group(group_ind).uv(:,1)];
+coil_parts(part_ind).connected_group(group_ind).v=[coil_parts(part_ind).connected_group(group_ind).v coil_parts(part_ind).connected_group(group_ind).v(:,1)];
 
-%transform to the curved domain
-[coil_parts(part_ind).connected_group(group_ind).v,~]=uv_to_xyz(coil_parts(part_ind).connected_group(group_ind).uv,planary_mesh,curved_mesh);
-[coil_parts(part_ind).connected_group(group_ind).spiral_in.v,~]=uv_to_xyz(coil_parts(part_ind).connected_group(group_ind).spiral_in.uv,planary_mesh,curved_mesh);
-[coil_parts(part_ind).connected_group(group_ind).spiral_out.v,~]=uv_to_xyz(coil_parts(part_ind).connected_group(group_ind).spiral_out.uv,planary_mesh,curved_mesh);
+% %Transform to the curved domain
+% [coil_parts(part_ind).connected_group(group_ind).v,~]=uv_to_xyz(coil_parts(part_ind).connected_group(group_ind).uv,planary_mesh,curved_mesh);
+% [coil_parts(part_ind).connected_group(group_ind).spiral_in.v,~]=uv_to_xyz(coil_parts(part_ind).connected_group(group_ind).spiral_in.uv,planary_mesh,curved_mesh);
+% [coil_parts(part_ind).connected_group(group_ind).spiral_out.v,~]=uv_to_xyz(coil_parts(part_ind).connected_group(group_ind).spiral_out.uv,planary_mesh,curved_mesh);
 
 end
 
