@@ -36,11 +36,18 @@ point_b=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).one_ring_
 point_c=coil_parts(part_ind).coil_mesh.vertices(:,coil_parts(part_ind).one_ring_list{node_ind}(2,tri_ind));
 coil_parts(part_ind).basis_elements(node_ind).one_ring=coil_parts(part_ind).one_ring_list{node_ind}';
 %calculate the area of the triangle
-coil_parts(part_ind).basis_elements(node_ind).area(tri_ind)=norm(cross(point_c-node_point,point_b-node_point))/2;
+% coil_parts(part_ind).basis_elements(node_ind).area(tri_ind)=norm(cross(point_c-node_point,point_b-node_point))/2;
+% use sqrt(dot()) instead of norm() because norm() does not have full precision
+temp = cross(point_c-node_point,point_b-node_point);
+coil_parts(part_ind).basis_elements(node_ind).area(tri_ind)=sqrt(dot(temp,temp))/2;
 % %Distance node to current element:  d = norm(cross(v1-v2,pt-v2)) / norm(v1-v2);         
 % dist_node_current_element=norm(cross(point_b-point_c,node_point-point_c))/norm(point_b-point_c);
 %face normal of the triangle
-coil_parts(part_ind).basis_elements(node_ind).face_normal(tri_ind,:)=cross(point_c-node_point,point_c-point_b)./norm(cross(point_c-node_point,point_c-point_b));
+% coil_parts(part_ind).basis_elements(node_ind).face_normal(tri_ind,:)=cross(point_c-node_point,point_c-point_b)./norm(cross(point_c-node_point,point_c-point_b));
+% use sqrt(dot()) instead of norm() because norm() does not have full precision
+temp = cross(point_c-node_point,point_c-point_b);
+temp_norm = sqrt(dot(temp, temp));
+coil_parts(part_ind).basis_elements(node_ind).face_normal(tri_ind,:) = temp/temp_norm;
 %Corner points ABC of the triangle
 coil_parts(part_ind).basis_elements(node_ind).triangle_points_ABC(tri_ind,:,:)= [node_point,point_b,point_c]; %1st ind: num triangle, 2nd ind: coords, 3th ind: corner ind
 %calc the tangential current density of the triangle
