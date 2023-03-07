@@ -30,6 +30,21 @@ end
 %Generate cutshapes, open and interconnect the loops within each group
 cut_position(numel(coil_parts(part_ind).groups)).group=[];
 
+%Sort the force cut selection wihtin their level accoring to theri average z-position
+avg_z_value=zeros(1,numel(coil_parts(part_ind).loop_groups));
+old_group_inds=1:numel(coil_parts(part_ind).groups);
+for group_ind=1:numel(coil_parts(part_ind).groups)
+all_points=[];
+for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
+all_points=[all_points coil_parts(part_ind).groups(group_ind).loops(loop_ind).v];
+end
+avg_z_value(group_ind)=sum(sum(all_points.*[0.05 0 1]',1))./size(all_points,2);
+end
+[~,new_group_inds]=sort(avg_z_value);
+
+
+
+
 for group_ind=1:numel(coil_parts(part_ind).groups)
 
 if numel(coil_parts(part_ind).groups(group_ind).loops)==1
@@ -55,6 +70,7 @@ coil_parts(part_ind).groups(group_ind).cutshape(numel(coil_parts(part_ind).group
 cut_position(group_ind).group=find_group_cut_position(coil_parts(part_ind).groups(group_ind),coil_parts(part_ind).group_centers.v(:,group_ind),coil_parts(part_ind).coil_mesh,input.b_0_direction,cut_plane_definition);
 
 %choose either low or high cutshape
+force_cut_selection=force_cut_selection(new_group_inds);
 for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
 switch force_cut_selection{group_ind}
     case 'high'

@@ -21,11 +21,16 @@ end
 
 
 %Remove loops that do no contribute enough to the target field
+% if input.min_loop_signifcance~=0
 coil_parts=evaluate_loop_significance(coil_parts,target_field);
 for part_ind=1:numel(coil_parts)
 loops_to_delete=coil_parts(part_ind).loop_signficance<input.min_loop_signifcance;
 coil_parts(part_ind).contour_lines(loops_to_delete)=[];
 end
+% else
+% coil_parts(part_ind).combined_loop_field=zeros(size(target_field.b));
+% coil_parts(part_ind).loop_signficance=ones(1,numel(coil_parts(part_ind).contour_lines));
+% end
 
 %Close the loops
 for part_ind=1:numel(coil_parts)

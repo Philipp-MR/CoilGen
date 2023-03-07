@@ -12,6 +12,13 @@ end
 loop_normal=mean(all_loop_normals,2);
 loop_normal=loop_normal./norm(loop_normal);
 
+%make sure the loop normal points outwards seen from the coordiante center
+if sum(loop_normal.*group_center)<0
+loop_normal=loop_normal.*(-1);
+end
+%loop_normal=loop_normal.*sign(group.loops(1).potential);
+
+
 
 % all_loops=[];
 % for contour_ind=1:numel(group.loops)

@@ -100,6 +100,10 @@ first_pair=[cut_sort_ind(1) cut_sort_ind(2)];
 %find the direction for which high and low cuts are seperated
 cut_direction=cut_position(loop_ind).cut_point.v(:,first_pair(2))-cut_position(loop_ind).cut_point.v(:,first_pair(1));
 cut_direction=cut_direction./vecnorm(cut_direction);
+if sum(b_0_direction.*cut_direction)<0
+    cut_direction=cut_direction.*(-1);
+end
+
 
 %project the coordinates of the cut pairs
 [~,min_ind]=min(sum(cut_position(loop_ind).cut_point.v(:,first_pair).*cut_direction,1));

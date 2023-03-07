@@ -1,7 +1,13 @@
 function [coil_parts,coil_mesh,secondary_target_mesh,combined_mesh,sf_b_field,target_field,is_supressed_point]=load_preoptimized_data(input)
 
 %load preoptimized data
-load(strcat('Pre_Optimized_Solutions\',input.sf_source_file))
+
+
+if ispc
+load(strcat('Pre_Optimized_Solutions\',input.sf_source_file));
+else
+load(strcat('Pre_Optimized_Solutions/',input.sf_source_file));
+end
 
 secondary_target_mesh=[];
 

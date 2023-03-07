@@ -124,8 +124,6 @@ addParameter(input_parser,'pcb_interconnection_method','spiral_in_out',@ischar);
 addParameter(input_parser,'pcb_spiral_end_shift_factor',10,@isnumeric);
 %force_cut_selection
 addParameter(input_parser,'force_cut_selection',{},@iscell);
-%Flag to sort the groups along the z coordinate
-addParameter(input_parser,'sort_groups_along_z',true,@islogical);
 %Gaus integration order
 addParameter(input_parser,'gauss_order',2,@isnumeric);
 % flag to set the roi into the geometric center of the mesh

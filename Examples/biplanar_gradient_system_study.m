@@ -19,21 +19,37 @@ end
 %% Define the different parameters, which will be varied
 
 
-target_region_radius=0.002;
-plate_mesh_resolution=40;
+% target_region_radius=0.002;
+% plate_mesh_resolution=40;
 
-sampling_parameters.tikonov_values=10000000;
+% sampling_parameters.tikonov_values=10000000;
 % sampling_parameters.plate_distances=[0.01 0.02 0.03 0.04 0.05:0.05:0.5];
 % sampling_parameters.plate_size=[0.01 0.02 0.03 0.04 0.05:0.05:0.5];
-sampling_parameters.plate_distances=[0.01:0.005:0.1];
-sampling_parameters.plate_size=[0.01:0.005:0.1];
+% sampling_parameters.plate_distances=[0.01:0.005:0.1];
+% sampling_parameters.plate_size=[0.01:0.005:0.1];
 
 % sampling_parameters.plate_distances=[0.05:0.01:0.1];
 % sampling_parameters.plate_size=[0.05:0.01:0.1];
 
+sampling_parameters.tikonov_values=10000;
+plate_mesh_resolution=40;
+target_region_radius=0.002;
+sampling_parameters.plate_distances=0.03;
+sampling_parameters.plate_size=0.05;
+sampling_parameters.field_shape_functions={'x' 'y' 'z'};
+%Calucate normal orientations along straignt cuts
+polar_vals=[0:5:90]./(180/pi);
+azimuth_vals=[ones(size(polar_vals)).*90 ones(size(polar_vals)).*45 ones(size(polar_vals)).*0]./(180/pi);
+polar_vals=[polar_vals polar_vals polar_vals];
+x_vals=[sin(polar_vals).*cos(azimuth_vals)];
+y_vals=[sin(polar_vals).*sin(azimuth_vals)];
+z_vals=[cos(polar_vals)];
+bi_planar_alignment=[x_vals; y_vals; z_vals]';
+sampling_parameters.plate_alignements=cell(1,size(bi_planar_alignment,1));
+for align_ind=1:size(bi_planar_alignment,1)
+sampling_parameters.plate_alignements{align_ind}= bi_planar_alignment(align_ind,:);
+end
 
-sampling_parameters.field_shape_functions={'x'};
-sampling_parameters.plate_alignements={[0 0 1]};
 
 % sampling_parameters.tikonov_values=10.^(-5:0.1:5);
 % sampling_parameters.tikonov_values=sampling_parameters.tikonov_values(60);
@@ -157,7 +173,7 @@ plate_alignement=sampling_parameters.plate_alignements{para_ind_grid{5}(case_ind
     'target_region_radius',target_region_radius,...  % in meter
     'use_only_target_mesh_verts',false, ...
     'sf_source_file','none', ...
-    'levels',14, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
+    'levels',10, ... % the number of potential steps that determines the later number of windings (Stream function discretization)
     'pot_offset_factor',0.5, ... % a potential offset value for the minimal and maximal contour potential ; must be between 0 and 1
     'surface_is_cylinder_flag',false, ...
     'interconnection_cut_width',0.005, ... % the width for the interconnections are interconnected; in meter

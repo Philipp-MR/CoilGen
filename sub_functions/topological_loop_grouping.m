@@ -169,12 +169,49 @@ end
 
 % %Sort the groups wihtin their level accoring to theri average z-position
 % if input.sort_groups_along_z
-% avg_z_value=zeros(1,numel(coil_parts(part_ind).loop_groups))
-% for iiii=1:numel(coil_parts(part_ind).loop_groups)
-% 
+% avg_z_value=zeros(1,numel(coil_parts(part_ind).loop_groups));
+% old_group_inds=1:numel(coil_parts(part_ind).groups);
+% for group_ind=1:numel(coil_parts(part_ind).groups)
+% all_points=[];
+% for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
+% all_points=[all_points coil_parts(part_ind).groups(group_ind).loops(loop_ind).v];
+% end
+% avg_z_value(group_ind)=sum(sum(all_points.*[0.05 0 1]',1))./size(all_points,2);
+% end
+% [~,new_group_inds]=sort(avg_z_value);
+% avg_z_value=avg_z_value(new_group_inds);
+% avg_z_value=avg_z_value-min(avg_z_value);
+% avg_z_value=avg_z_value./max(avg_z_value);
+% %Update the level container
+% for level_ind=1:numel(coil_parts(part_ind).group_levels)
+% coil_parts(part_ind).group_levels{level_ind}=new_group_inds(coil_parts(part_ind).group_levels{level_ind});
+% coil_parts(part_ind).level_positions{level_ind}=new_group_inds(coil_parts(part_ind).level_positions{level_ind});
+% end
+% %Upate the group structs
+% coil_parts(part_ind).loop_groups=coil_parts(part_ind).loop_groups(new_group_inds);
+% coil_parts(part_ind).groups=coil_parts(part_ind).groups(new_group_inds);
+
+% loop_groups_old=coil_parts(part_ind).loop_groups;
+% groups_old=coil_parts(part_ind).groups;
+% for group_ind=1:numel(coil_parts(part_ind).groups)
+% coil_parts(part_ind).loop_groups(group_ind)=loop_groups_old(new_group_inds(group_ind));
+% coil_parts(part_ind).groups(group_ind)=groups_old(new_group_inds(group_ind));
 % end
 % end
 
 end
+
+
+% figure;
+% color_map= cool(numel(coil_parts(part_ind).groups));
+% hold on;
+% for group_ind=1:numel(coil_parts(part_ind).groups)
+% for loop_ind=1:numel(coil_parts(part_ind).groups(group_ind).loops)
+% plot3(coil_parts.groups(group_ind).loops(loop_ind).v(1,:),coil_parts.groups(group_ind).loops(loop_ind).v(2,:),coil_parts.groups(group_ind).loops(loop_ind).v(3,:),'color',color_map(group_ind,:));
+% end
+% end
+% axis equal;
+% hold off;
+
 
 end
