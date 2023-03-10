@@ -44,7 +44,7 @@ vertices2=rot_mat*[y(:)'; x(:)'; z2(:)']+[center_position_x center_position_y ce
 faces_first_plane=[faces_1;faces_2];
 faces_second_plane=[faces_1;faces_2]+size(vertices1,2);
 % adjust the orientation of the second plane; to have symmetric normals
-faces_second_plane=[faces_second_plane(:,2) faces_second_plane(:,1) faces_second_plane(:,3)];
+%faces_second_plane=[faces_second_plane(:,2) faces_second_plane(:,1) faces_second_plane(:,3)];
 
 biplanar_mesh.faces=[faces_first_plane;faces_second_plane];
 biplanar_mesh.vertices=[vertices1'; vertices2'];
