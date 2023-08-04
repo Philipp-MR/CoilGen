@@ -123,7 +123,11 @@ nodes_target_triangle=curved_mesh(target_triangle_normal,:);
 node_normals_target_triangle=vertex_normal(nodes_target_triangle,:);
 normal_vectors_wire_path(:,point_ind)=mean(node_normals_target_triangle)';
 else
-normal_vectors_wire_path(:,point_ind)=normal_vectors_wire_path(:,point_ind-1);
+    if point_ind==1
+    normal_vectors_wire_path(:,point_ind)=normal_vectors_wire_path(:,point_ind+1);
+    else
+    normal_vectors_wire_path(:,point_ind)=normal_vectors_wire_path(:,point_ind-1);
+    end
 end
 end
 

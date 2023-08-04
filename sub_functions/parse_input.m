@@ -62,7 +62,7 @@ addParameter(input_parser,'normal_shift_length',0.001,@isnumeric);
 addParameter(input_parser,'min_point_loop_number',20,@isnumeric);
 %The minimal required field contribution (in percent) to the target field;
 %loops that contribute less than that can be deleted
-addParameter(input_parser,'min_loop_signifcance',1,@isnumeric);
+addParameter(input_parser,'min_loop_signifcance',0,@isnumeric);
 %additional loop removal criteria which relates to the perimeter to surface
 %ratio of the loop
 addParameter(input_parser,'area_perimeter_deletion_ratio',5,@isnumeric);
