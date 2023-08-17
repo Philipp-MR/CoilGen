@@ -127,7 +127,7 @@ addParameter(input_parser,'force_cut_selection',{},@iscell);
 %Gaus integration order
 addParameter(input_parser,'gauss_order',2,@isnumeric);
 % flag to set the roi into the geometric center of the mesh
-addParameter(input_parser,'set_roi_into_mesh_center',0,@logical);
+addParameter(input_parser,'set_roi_into_mesh_center',false,@logical);
 %In case of pcb layout, specify the track width
 addParameter(input_parser,'track_width_factor',0.5,@isnumeric);
 %cross_section_width of the conductor (for the inductance calculation) in meter

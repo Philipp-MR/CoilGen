@@ -24,7 +24,7 @@ for part_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts)
     normed_pot_1=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(1,:));
     normed_pot_2=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(2,:));
     normed_pot_3=normed_pot(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces(3,:));
-    fill3([x_vals_1' x_vals_2' x_vals_3']',[y_vals_1' y_vals_2' y_vals_3']',[z_vals_1' z_vals_2' z_vals_3']',[normed_pot_1 normed_pot_2 normed_pot_3]','EdgeAlpha',0);
+    fill3([x_vals_1' x_vals_2' x_vals_3']',[y_vals_1' y_vals_2' y_vals_3']',[z_vals_1' z_vals_2' z_vals_3']',[normed_pot_1 normed_pot_2 normed_pot_3]','EdgeAlpha',0,'FaceAlpha',0.5);
 
 %     %Plot also the mesh
 %     trisurf(triangulation(coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.faces',coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.vertices'),...
@@ -38,10 +38,10 @@ for part_ind=1:numel(coil_layout(single_ind_to_plot).out.coil_parts)
 %                 coil_layout(single_ind_to_plot).out.coil_parts(part_ind).coil_mesh.vertices(3,:),...
 %                 ones(1,num_verts)*10,repmat([0 0 0],[num_verts 1]),'filled');
 
-%     %Plot the Iso-Contour lines
-%     for loop_ind=1:numel(coil_layout.out.coil_parts(part_ind).contour_lines) 
-%     plot3(coil_layout.out.coil_parts(part_ind).contour_lines(loop_ind).v(1,:).*1.005,coil_layout.out.coil_parts(part_ind).contour_lines(loop_ind).v(2,:).*1.005,coil_layout.out.coil_parts(part_ind).contour_lines(loop_ind).v(3,:).*1.005,'linewidth',2,'color',[0 0.4470 0.7410]);
-%     end
+%Plot the Iso-Contour lines
+for loop_ind=1:numel(coil_layout.out.coil_parts(part_ind).contour_lines) 
+plot3(coil_layout.out.coil_parts(part_ind).contour_lines(loop_ind).v(1,:),coil_layout.out.coil_parts(part_ind).contour_lines(loop_ind).v(2,:),coil_layout.out.coil_parts(part_ind).contour_lines(loop_ind).v(3,:),'linewidth',2,'color',[0 0 0]);
+end
 
 
 end

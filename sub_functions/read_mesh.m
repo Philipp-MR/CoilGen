@@ -1,4 +1,3 @@
-
 function [coil_mesh,target_mesh,shielded_mesh]=read_mesh(input)
 
 
