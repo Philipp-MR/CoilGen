@@ -27,7 +27,7 @@ wire_path_out.v(:,points_to_delete)=[];
 
 if input.smooth_flag
 wire_path_out.uv = smooth_track_by_folding(wire_path_out.uv ,input.smooth_factor);
-%wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,input.smooth_factor);
+wire_path_out.uv = equilize_point_distances_spline(wire_path_out.uv,input.smooth_factor);
 [wire_path_out.v,wire_path_out.uv]=uv_to_xyz(wire_path_out.uv,planary_mesh,curved_mesh);
 end
 

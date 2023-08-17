@@ -2,7 +2,7 @@ function coil_parts= create_sweep_along_surface(coil_parts,input)
 %create a volumetric coil body by surface sweep, @Philipp Amrein, Uniklinik
 %Freiburg 2022
 
-convolutional_vector_length=1; %for smothering the curverture along the track
+convolutional_vector_length=input.smooth_factor  ; %for smothering the curverture along the track
 
 if ~input.skip_sweep
 
@@ -107,10 +107,10 @@ else
 surface_normal_alonge_wire_path.v(:,point_ind)=parameterized_mesh.fn(node_ind_normals_target,:)';
 end
 end
-% smooth the normals that there are no sharp twists
-% conv_vec=[0:convolutional_vector_length convolutional_vector_length-1:-1:0]./convolutional_vector_length;
-% surface_normal_alonge_wire_path.v = conv2(surface_normal_alonge_wire_path.v,conv_vec,'same');
-% surface_normal_alonge_wire_path.v=surface_normal_alonge_wire_path.v./repmat(vecnorm(surface_normal_alonge_wire_path.v),[3 1]); % normalize 
+%smooth the normals that there are no sharp twists
+conv_vec=[0:convolutional_vector_length convolutional_vector_length-1:-1:0]./convolutional_vector_length;
+surface_normal_alonge_wire_path.v = conv2(surface_normal_alonge_wire_path.v,conv_vec,'same');
+surface_normal_alonge_wire_path.v=surface_normal_alonge_wire_path.v./repmat(vecnorm(surface_normal_alonge_wire_path.v),[3 1]); % normalize 
 
 
 
@@ -137,8 +137,8 @@ path_directions(:,2:end-1)=(path_directions(:,1:end-2)+path_directions(:,3:end))
 path_directions=path_directions./repmat(vecnorm(path_directions),[3 1]); % normalize again
 
 %smooth the path that there are no sharp turns
-% path_directions = conv2(path_directions,conv_vec,'same');
-% path_directions=path_directions./repmat(vecnorm(path_directions),[3 1]); % normalize 
+path_directions = conv2(path_directions,conv_vec,'same');
+path_directions=path_directions./repmat(vecnorm(path_directions),[3 1]); % normalize 
 
 %%%%%sweeping of the surface along the path
 %defining the face normal of the start of the conductor
