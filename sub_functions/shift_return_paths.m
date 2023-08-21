@@ -14,8 +14,8 @@ wire_path_out=coil_parts(part_ind).wire_path;
 
 
 %equilze the point to point distances
-% mean_dist=mean(vecnorm(wire_path_out.uv(:,1:end-1)-wire_path_out.uv(:,2:end)));
-% wire_path_out.uv = equilze_point_distances(wire_path_out.uv,mean_dist);
+mean_dist=mean(vecnorm(wire_path_out.uv(:,1:end-1)-wire_path_out.uv(:,2:end)));
+wire_path_out.uv = equilze_point_distances(wire_path_out.uv,mean_dist);
 
 % %delete superimposing points
 points_to_delete=[1 vecnorm(wire_path_out.v(:,2:end)-wire_path_out.v(:,1:end-1)) 1]==0;
