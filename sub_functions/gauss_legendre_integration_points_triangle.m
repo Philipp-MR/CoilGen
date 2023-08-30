@@ -1,9 +1,6 @@
 function [u,v,ck] = gauss_legendre_integration_points_triangle(n)
 % This file aim at calculating the coordinates needed for a Gauss Legendre
-% integration method on a triangle and the associated weighting factors. From:
-% H. T. Rathod et al., Gauss Legendre quadrature over a triangle, J. Indian
-% Inst. Sci, 2004, vol 84, pages 183-188
-%
+% integration method on a triangle and the associated weighting factors
 % n : order of the foreseen integration
 % u,v : coordinate of the point
 % ck : weighting coefficients
