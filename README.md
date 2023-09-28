@@ -12,7 +12,7 @@ The user must specify a target field (e.g., bz(x,y,z)=y for a constant gradient 
 A full description is given in the following publication: https://onlinelibrary.wiley.com/doi/10.1002/mrm.29294
 
 ## pyCoilGen: A Python Implementation
-The author has collaborated to create **pyCoilGen**, a translation of the CoilGen Project to Python. The code is available on [GitHub](https://github.com/kev-m/pyCoilGen) and
+The author has supported the creation of **pyCoilGen**, a translation of this CoilGen Project to Python. The code is available on [GitHub](https://github.com/kev-m/pyCoilGen) and
 documentation is available on [ReadTheDocs](https://pycoilgen.readthedocs.io/).
 
 <!-- GETTING STARTED -->
