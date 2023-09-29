@@ -83,6 +83,22 @@ cut_position(loop_ind).cut_point.v(:,is_repeating_cutpoint)=[];
 cut_position(loop_ind).cut_point.uv(:,is_repeating_cutpoint)=[];
 cut_position(loop_ind).cut_point.segment_ind(is_repeating_cutpoint)=[];
 
+
+%Take care of the exception that the cut plane has not intersection with
+%the loop; In this case, apply alterative calcuation of cut_position by projection:
+if isempty(cut_position(loop_ind).cut_point.v)
+[~,max_ind]=max(loop_group.loops(loop_ind).v(1,:)*cut_plane_direction(1)+loop_group.loops(loop_ind).v(2,:)*cut_plane_direction(2)+loop_group.loops(loop_ind).v(3,:)*cut_plane_direction(3));
+[~,min_ind]=min(loop_group.loops(loop_ind).v(1,:)*cut_plane_direction(1)+loop_group.loops(loop_ind).v(2,:)*cut_plane_direction(2)+loop_group.loops(loop_ind).v(3,:)*cut_plane_direction(3));
+cut_position(loop_ind).cut_point.v=[loop_group.loops(loop_ind).v(:,min_ind) loop_group.loops(loop_ind).v(:,max_ind)];
+cut_position(loop_ind).cut_point.uv=[loop_group.loops(loop_ind).uv(:,min_ind) loop_group.loops(loop_ind).uv(:,max_ind)];
+if max_ind~=size(loop_group.loops(loop_ind).v,2)
+cut_position(loop_ind).cut_point.segment_ind=[min_ind max_ind-1];
+else
+cut_position(loop_ind).cut_point.segment_ind=[min_ind max_ind];
+end
+end
+
+
 %seperated in higher and lower cut points:
 %first: use the 2d representation of the loop 
 
