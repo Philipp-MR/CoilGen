@@ -113,6 +113,8 @@ addParameter(input_parser,'skip_inductance_calculation',false,@islogical);
 addParameter(input_parser,'skip_normal_shift',false,@islogical);
 %smoothing parameters regarding the normal shift
 addParameter(input_parser,'normal_shift_smooth_factors',[2 3 2],@isnumeric);
+%smoothing parameters regarding the normal vector during the surface sweep
+addParameter(input_parser,'normal_sweep_smooth_factor',5,@isnumeric);
 %Flag to skip the generation of a volumentric (3D) coil body
 addParameter(input_parser,'skip_sweep',false,@islogical);
 %Flag to generate a rectangular pcb pattern to wrap around a cylinder

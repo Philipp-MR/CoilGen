@@ -2,7 +2,7 @@ function coil_parts= create_sweep_along_surface(coil_parts,input)
 %create a volumetric coil body by surface sweep, @Philipp Amrein, Uniklinik
 %Freiburg 2022
 
-convolutional_vector_length=input.smooth_factor  ; %for smothering the curverture along the track
+convolutional_vector_length=input.normal_sweep_smooth_factor  ; %for smothering the curverture along the track
 
 if ~input.skip_sweep
 
