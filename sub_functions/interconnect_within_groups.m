@@ -10,7 +10,7 @@ for part_ind=1:numel(coil_parts)
 
 planary_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.uv');
 curved_mesh=triangulation(coil_parts(part_ind).coil_mesh.faces',coil_parts(part_ind).coil_mesh.v);
-coil_parts(numel(coil_parts)).connected_group(numel(coil_parts(part_ind).groups)).uv=[];
+coil_parts(part_ind).connected_group(numel(coil_parts(part_ind).groups)).uv=[];
 
 %take the cut selection if it is given in the input
 switch numel(input.force_cut_selection)
