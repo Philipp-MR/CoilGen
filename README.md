@@ -1,5 +1,6 @@
 <div id="top"></div>
 
+## **IMPORTANT BUG FIX REGARDING FIELD SCALE IN "plot_various_error_metrics" PLOT - PLEASE UPDATE!**
 
  <img src="./Documentation/CoilGen_Image.png" width="300">
 
