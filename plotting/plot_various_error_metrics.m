@@ -3,13 +3,22 @@ function  plot_various_error_metrics(coil_layouts,single_ind_to_plot,plot_title)
 
 
 dot_size=200;
-layout_c=coil_layouts(single_ind_to_plot).out.field_by_layout(3,:);
-sf_c=coil_layouts(single_ind_to_plot).out.b_field_opt_sf(3,:);
-loops_c=coil_layouts(single_ind_to_plot).out.field_by_unconnected_loops(3,:);
-target_c=coil_layouts(single_ind_to_plot).out.target_field.b(3,:);
-loops_c_1A=coil_layouts(single_ind_to_plot).out.field_loops_per1Amp(3,:);
-layout_c_1A=coil_layouts(single_ind_to_plot).out.field_layout_per1Amp(3,:);
+layout_c=coil_layouts(single_ind_to_plot).out.field_layout_per1Amp(3,:).*1000;
+sf_c=coil_layouts(single_ind_to_plot).out.b_field_opt_sf_1A(3,:).*1000;
+loops_c=coil_layouts(single_ind_to_plot).out.field_loops_per1Amp(3,:).*1000;
+target_c=coil_layouts(single_ind_to_plot).out.target_field_1A.b(3,:).*1000;
+target_c = target_c./max(abs(target_c))*max(abs(sf_c)); %scale the target field to the 1A of SF field amplitude for better comparisson
+% loops_c_1A=coil_layouts(single_ind_to_plot).out.field_loops_per1Amp(3,:);
+% layout_c_1A=coil_layouts(single_ind_to_plot).out.field_layout_per1Amp(3,:);
 pos_data=coil_layouts(single_ind_to_plot).out.target_field.coords;
+
+% Calculate the different error metrics
+rel_error_sf_target = abs(sf_c-target_c)./max(abs(target_c))*100; %Plot relativ error between target and stream function field
+rel_error_layout_target = abs(layout_c-target_c)./max(abs(target_c))*100; %Plot relativ error between layout and target
+rel_error_layout_sf = abs(layout_c-sf_c)./max(abs(sf_c))*100; %relativ error between layout and sf field
+rel_error_loops_target = abs(loops_c-target_c)./max(abs(target_c))*100; %relativ error between target and unconnected contours
+rel_error_loops_layout = abs(loops_c-layout_c)./max(abs(layout_c))*100; %Field difference unconnected contours and final layout
+
 
 %Plot the target field in detail together with various error metrics
 
@@ -78,7 +87,7 @@ nexttile;
 hold on
 axis equal tight;
 title('Relative SF error, [%]', 'interpreter', 'none');
-plot_colors=abs(sf_c-target_c)./max(abs(target_c))*100;
+plot_colors=rel_error_sf_target;
 view(45,45);
 colorbar;
 colormap(parula);
@@ -93,7 +102,7 @@ nexttile;
 hold on
 axis equal tight;
 title('Relative error layout vs. target, [%]', 'interpreter', 'none');
-plot_colors=abs(layout_c-target_c)./max(abs(target_c))*100;
+plot_colors=rel_error_layout_target;
 view(45,45);
 colorbar;
 colormap(parula);
@@ -108,7 +117,7 @@ nexttile;
 hold on
 axis equal tight;
 title('Relative error layout vs. sf field, [%]', 'interpreter', 'none');
-plot_colors=abs(layout_c-sf_c)./max(abs(sf_c))*100;
+plot_colors=rel_error_layout_sf;
 view(45,45);
 colorbar;
 colormap(parula);
@@ -124,7 +133,7 @@ nexttile;
 hold on
 axis equal tight;
 title('Relative error unconnected contours vs. target, [%]', 'interpreter', 'none');
-plot_colors=abs(loops_c-target_c)./max(abs(target_c))*100;
+plot_colors=rel_error_loops_target;
 view(45,45);
 colorbar;
 colormap(parula);
@@ -139,7 +148,7 @@ nexttile;
 hold on
 axis equal tight;
 title('Field difference between unconnected contours and final layout, [%]', 'interpreter', 'none');
-plot_colors=abs(loops_c-layout_c)./max(abs(target_c))*100;
+plot_colors=rel_error_loops_layout;
 view(45,45);
 colorbar;
 colormap(parula);

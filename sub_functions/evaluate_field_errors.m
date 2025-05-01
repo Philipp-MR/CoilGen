@@ -1,4 +1,4 @@
-function [coil_parts,combined_field_layout,combined_field_loops,combined_field_layout_per1Amp,combined_field_loops_per1Amp,field_error_vals,opt_current_layout]=evaluate_field_errors(coil_parts,input,target_field,sf_b_field)
+function [coil_parts,combined_field_layout,combined_field_loops,combined_field_layout_per1Amp,combined_field_loops_per1Amp,field_error_vals,opt_current_layout, sf_b_field_1A, target_field_1A]=evaluate_field_errors(coil_parts,input,target_field,sf_b_field)
 %Calcaltue relative errors between the different input and
 %output fields
 
@@ -17,11 +17,11 @@ for loop_ind=1:numel(coil_parts(part_ind).contour_lines)
 loop_field=biot_savart_calc_b(coil_parts(part_ind).contour_lines(loop_ind).v,target_field);
 coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops+loop_field;
 end
-coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops.*coil_parts(part_ind).contour_step;
+%coil_parts(part_ind).field_by_loops=coil_parts(part_ind).field_by_loops.*coil_parts(part_ind).contour_step;
 %Calculate the field of connected, final layouts
 if ~input.skip_postprocessing
 coil_parts(part_ind).field_by_layout=biot_savart_calc_b(coil_parts(part_ind).wire_path.v,target_field);
-coil_parts(part_ind).field_by_layout=coil_parts(part_ind).field_by_layout.*coil_parts(part_ind).contour_step; %scaled with the current of the discretization
+%coil_parts(part_ind).field_by_layout=coil_parts(part_ind).field_by_layout.*coil_parts(part_ind).contour_step; %scaled with the current of the discretization
 else
 coil_parts(part_ind).field_by_layout=coil_parts(part_ind).field_by_loops;
 end
@@ -29,8 +29,10 @@ end
 %coil_parts(part_ind).opt_current_layout=abs(mean(target_field.b(3,:)./coil_parts(part_ind).field_by_layout(3,:)));
 end
 
-
-
+%Scale the SF field to 1A
+sf_b_field_1A = sf_b_field./coil_parts(1).contour_step;
+target_field_1A = target_field;
+target_field_1A.b = target_field_1A.b./coil_parts(1).contour_step;
 
 %find the current polarity for the different coil parts regarding the
 %target field
@@ -53,8 +55,8 @@ end
 %Project the combined field onto the target field
 % pol_projections_layout(pol_ind)=sum(sum(squeeze(combined_field_layout(pol_ind,:,:)).*target_field.b,1));
 % pol_projections_loops(pol_ind)=sum(sum(squeeze(combined_field_loops(pol_ind,:,:)).*target_field.b,1));
-pol_projections_layout(pol_ind)=sum(vecnorm(squeeze(combined_field_layout(pol_ind,:,:))-target_field.b));
-pol_projections_loops(pol_ind)=sum(vecnorm(squeeze(combined_field_loops(pol_ind,:,:))-target_field.b));
+pol_projections_layout(pol_ind)=sum(vecnorm(squeeze(combined_field_layout(pol_ind,:,:))-sf_b_field_1A));
+pol_projections_loops(pol_ind)=sum(vecnorm(squeeze(combined_field_loops(pol_ind,:,:))-sf_b_field_1A));
 end
 
 %Chose the best combination
@@ -85,8 +87,8 @@ end
 end
 
 %Only look at the z-component
-target_z=target_field.b(3,:);
-sf_z=sf_b_field(3,:); %field of stream function
+target_z=target_field_1A.b(3,:);
+sf_z=sf_b_field_1A(3,:); %field of stream function
 layout_z=combined_field_layout(3,:);
 loop_z=combined_field_loops(3,:);
 field_error_vals.max_rel_error_layout_vs_target=max(abs((layout_z-target_z)./max(abs(target_z))),[],'all').*100;
@@ -102,8 +104,10 @@ field_error_vals.mean_rel_error_unconnected_contours_vs_stream_function_field=me
 combined_field_layout_per1Amp=zeros(size(combined_field_layout));
 combined_field_loops_per1Amp=zeros(size(combined_field_layout));
 for part_ind=1:numel(coil_parts)
-combined_field_layout_per1Amp=combined_field_layout_per1Amp+coil_parts(part_ind).field_by_layout./max(arrayfun(@(x) coil_parts(x).contour_step,1:numel(coil_parts))).*possible_polarities(best_dir_layout,part_ind);
-combined_field_loops_per1Amp=combined_field_loops_per1Amp+coil_parts(part_ind).field_by_loops./max(arrayfun(@(x) coil_parts(x).contour_step,1:numel(coil_parts))).*possible_polarities(best_dir_loops,part_ind);
+% combined_field_layout_per1Amp=combined_field_layout_per1Amp+coil_parts(part_ind).field_by_layout./max(arrayfun(@(x) coil_parts(x).contour_step,1:numel(coil_parts))).*possible_polarities(best_dir_layout,part_ind);
+% combined_field_loops_per1Amp=combined_field_loops_per1Amp+coil_parts(part_ind).field_by_loops./max(arrayfun(@(x) coil_parts(x).contour_step,1:numel(coil_parts))).*possible_polarities(best_dir_loops,part_ind);
+combined_field_layout_per1Amp=combined_field_layout_per1Amp+coil_parts(part_ind).field_by_layout.*possible_polarities(best_dir_layout,part_ind);
+combined_field_loops_per1Amp=combined_field_loops_per1Amp+coil_parts(part_ind).field_by_loops.*possible_polarities(best_dir_loops,part_ind);
 end
 
 

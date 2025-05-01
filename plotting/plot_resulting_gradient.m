@@ -67,7 +67,7 @@ plot_colors=coil_layouts(single_ind_to_plot).out.field_loops_per1Amp(3,:).*1000;
 plot_limits=[mean(plot_colors)-std(plot_colors)*3 mean(plot_colors)+std(plot_colors)*3];
 histogram(plot_colors,'BinLimits',plot_limits);
 %histogram(coil_layouts(single_ind_to_plot).out.layout_gradient.local_target_gx./coil_layouts.out.potential_step);
-xlabel('[mT/m/A]');
+xlabel('[mT/A]');
 hold off;
 set(gcf,'color','w');
 

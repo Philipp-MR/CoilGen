@@ -200,7 +200,7 @@ end
 %Evaluate the result for the final wire track
 tic;
 disp('Evaluate the result for the final wire track:');
-[coil_parts,field_by_layout,field_by_unconnected_loops,field_layout_per1Amp,field_loops_per1Amp,field_error_vals,opt_current_layout] = evaluate_field_errors(coil_parts,input,target_field,sf_b_field);
+[coil_parts,field_by_layout,field_by_unconnected_loops,field_layout_per1Amp,field_loops_per1Amp,field_error_vals,opt_current_layout, sf_b_field_1A, target_field_1A] = evaluate_field_errors(coil_parts,input,target_field,sf_b_field);
 toc;
 
 %Calculate the resuting gradient field
@@ -232,6 +232,8 @@ result_out.field_layout_per1Amp=field_layout_per1Amp;
 result_out.field_loops_per1Amp=field_loops_per1Amp;
 result_out.needed_current_layout=opt_current_layout;
 result_out.b_field_opt_sf=sf_b_field;
+result_out.b_field_opt_sf_1A=sf_b_field_1A;
+result_out.target_field_1A=target_field_1A;
 result_out.error_vals=field_error_vals;
 result_out.input_data=input_parser.Results;
 result_out.layout_gradient=layout_gradient;
