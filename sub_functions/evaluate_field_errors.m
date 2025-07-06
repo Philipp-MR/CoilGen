@@ -114,7 +114,10 @@ end
 
 
 % Find the ideal current strength for the connected layout to match the target field
-opt_current_layout=abs(mean(target_field.b(3,:)./combined_field_layout(3,:)));
+%opt_current_layout=abs(mean(target_field.b(3,:)./combined_field_layout(3,:)));
+coilBz   = combined_field_layout_per1Amp(3,:)';
+targetBz = target_field.b(3,:)';
+opt_current_layout = (coilBz' * targetBz) / (coilBz' * coilBz);% least-squares optimal current
 
 
 function b_field=biot_savart_calc_b(wire_elements,target_f)
