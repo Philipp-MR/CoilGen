@@ -1,4 +1,4 @@
-# CoilGen2 is here — the future of CoilGen
+# CoilGen2 is here, the future of CoilGen
 
 > [!IMPORTANT]
 > **[CoilGen2](https://github.com/Philipp-MR/Coilgen2) is the new, substantially improved successor to CoilGen and the recommended starting point for all new coil-design projects.**
